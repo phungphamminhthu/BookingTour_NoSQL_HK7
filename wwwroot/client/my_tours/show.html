@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght;500;600;700;800;900&amp;family=Plus+Jakarta+Sans:wght;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "surface-bright": "#f9f9ff",
+              "secondary-fixed-dim": "#ffb59c",
+              "inverse-surface": "#2e3037",
+              "surface-variant": "#e1e2ea",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#bbd0ff",
+              "on-secondary-container": "#6b1f00",
+              "tertiary": "#722b00",
+              "inverse-primary": "#acc7ff",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#380c00",
+              "outline": "#727784",
+              "on-surface-variant": "#424752",
+              "surface-container": "#ededf6",
+              "primary-fixed-dim": "#acc7ff",
+              "tertiary-fixed-dim": "#ffb694",
+              "surface-container-high": "#e7e8f0",
+              "surface-dim": "#d9d9e2",
+              "secondary-fixed": "#ffdbcf",
+              "on-tertiary-container": "#ffc2a7",
+              "on-secondary": "#ffffff",
+              "surface": "#f9f9ff",
+              "surface-container-low": "#f2f3fc",
+              "tertiary-fixed": "#ffdbcc",
+              "on-error-container": "#93000a",
+              "on-primary-fixed-variant": "#004491",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#d7e2ff",
+              "tertiary-container": "#983c00",
+              "surface-container-lowest": "#ffffff",
+              "surface-tint": "#115cb9",
+              "on-background": "#191c21",
+              "surface-container-highest": "#e1e2ea",
+              "primary": "#003f87",
+              "outline-variant": "#c2c6d4",
+              "on-primary-fixed": "#001a40",
+              "on-secondary-fixed-variant": "#822800",
+              "primary-container": "#0056b3",
+              "background": "#f9f9ff",
+              "secondary": "#a43c12",
+              "secondary-container": "#fe7e4f",
+              "on-tertiary-fixed-variant": "#7b2f00",
+              "on-tertiary-fixed": "#351000",
+              "on-surface": "#191c21",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#f0f0f9"
+            },
+            "borderRadius": {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "1.5rem",
+              "full": "9999px"
+            },
+            "fontFamily": {
+              "headline": ["Be Vietnam Pro"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      h1, h2, h3 { font-family: 'Be Vietnam Pro', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-surface text-on-surface selection:bg-primary-container selection:text-primary min-h-screen">
+  
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl font-['Be_Vietnam_Pro'] antialiased shadow-sm shadow-[0_1px_0_0_rgba(0,0,0,0.05)] flex justify-between items-center px-8 h-20">
+    <a href="../home.html" class="text-2xl font-bold tracking-tighter text-blue-900 dark:text-blue-400 cursor-pointer active:scale-95 duration-200 hover:opacity-80 transition-opacity decoration-transparent block">
+      Vietnam Expeditions
+    </a>
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-4">
+        <a href="#" title="Chuyến đi của tôi" class="p-2 rounded-full hover:bg-surface-container transition-all cursor-pointer text-slate-500 dark:text-slate-400">
+          <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+        </a>
+        <a href="#" title="Cài đặt hồ sơ" class="p-2 rounded-full hover:bg-surface-container transition-all cursor-pointer text-slate-500 dark:text-slate-400">
+          <span class="material-symbols-outlined" data-icon="settings">settings</span>
+        </a>
+        <a href="#" class="w-10 h-10 rounded-full bg-primary-fixed overflow-hidden cursor-pointer active:scale-95 duration-200 block">
+          <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_nguyen-van-an_0d8abc_80x80.png" alt="" class="w-full h-full object-cover"/>
+        </a>
+      </div>
+    </div>
+  </header>
+  <div class="flex pt-20">
+    <!-- SideNavBar -->
+    <aside class="hidden md:flex h-screen w-72 flex-col fixed left-0 top-0 pt-24 bg-slate-50 dark:bg-slate-900 px-4 py-6 gap-2">
+      <div class="px-4 mb-8">
+        <h2 class="text-xl font-black text-blue-900 dark:text-blue-400 font-headline">Chào mừng trở lại</h2>
+        
+          <p class="text-xs text-slate-500 font-medium mt-1 truncate">an.nguyen@gmail.com</p>
+        
+      </div>
+      <nav class="flex flex-col gap-2">
+        <a class="flex items-center gap-3 px-4 py-3 # transition-transform duration-300 hover:translate-x-1 rounded-xl text-sm"
+           href="../profile/show.html">
+          <span class="material-symbols-outlined" data-icon="person">person</span>
+          <span>Profile</span>
+        </a>
+        <a href="../my_tours/index.html" class="flex items-center gap-3 px-4 py-3 # transition-transform duration-300 hover:translate-x-1 rounded-xl text-sm" >
+          <span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
+          <span>My Bookings</span>
+        </a>
+        <a href="../payments/history.html"
+           class="flex items-center gap-3 px-4 py-3 # rounded-xl transition-transform duration-300 hover:translate-x-1 text-sm"
+           >
+          <span class="material-symbols-outlined">payments</span>
+          <span>Payment History</span>
+        </a>
+        <a href="../reward_point.html"
+           class="flex items-center gap-3 px-4 py-3 # rounded-xl transition-transform duration-300 hover:translate-x-1 text-sm">
+          <span class="material-symbols-outlined">card_giftcard</span>
+          <span>Reward Points</span>
+        </a>
+      </nav>
+      <div class="mt-auto flex flex-col gap-2 border-t border-slate-200 dark:border-slate-800 pt-6">
+        <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/30 transition-transform duration-300 hover:translate-x-1 rounded-xl font-medium text-sm" href="../policy.html">
+          <span class="material-symbols-outlined" data-icon="help">help</span>
+          <span>Help Center</span>
+        </a>
+        <div class="w-full">
+          <button type="button" data-nav-logout id="sidebarSignOutBtn" class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-slate-800/30 transition-transform duration-300 hover:translate-x-1 rounded-xl font-medium text-sm text-left">
+            <span class="material-symbols-outlined" data-icon="logout">logout</span>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-72 min-h-screen p-6 lg:p-10">
+<div class="max-w-6xl mx-auto space-y-6">
+        <div id="voucherBanner" class="bg-green-100 border border-green-200 text-green-800 px-5 py-4 rounded-2xl text-sm flex items-center gap-3 shadow-sm">
+            <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <span id="voucherBannerMsg" class="font-bold">Đặt tour và xác nhận vé thành công!</span>
+        </div>
+
+    <div class="text-xs text-slate-400 flex items-center gap-2">
+        <a href="index.html" class="hover:text-primary">
+            Chuyến đi của tôi
+        </a>
+        <span class="material-symbols-outlined text-xs">chevron_right</span>
+        <span class="text-slate-600 font-semibold">
+            Chi tiết vé #<span id="voucherBreadcrumbCode">BK-2026-001</span>
+        </span>
+    </div>
+
+    <div class="relative h-72 rounded-2xl overflow-hidden shadow-sm">
+        <img
+            id="voucherTourImage"
+            src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg"
+            alt="Tour"
+            class="w-full h-full object-cover"
+        >
+
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
+        <div class="absolute top-6 left-6 flex flex-wrap gap-2">
+            <span id="voucherCategoryTag" class="bg-primary text-white text-[11px] font-black px-3 py-1 rounded-md uppercase">Du lịch biển đảo</span>
+            <span id="voucherStatusTag" class="bg-emerald-600 text-white text-[11px] font-black px-3 py-1 rounded-md uppercase">Đã xác nhận</span>
+        </div>
+
+        <div class="absolute bottom-6 left-6 right-6 text-white">
+            <h2 id="voucherTourTitle" class="text-2xl md:text-3xl font-black mb-2">Du Thuyền 5 Sao Vịnh Hạ Long</h2>
+
+            <div class="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+                <span id="voucherDepartureLocation">
+                    Khởi hành: <strong>Hà Nội</strong>
+                </span>
+                <span id="voucherDestinationLocation">
+                    Điểm đến: <strong>Quảng Ninh</strong>
+                </span>
+            </div>
+
+            <a
+                id="voucherReviewLink"
+                href="review.html"
+                class="inline-flex mt-4 bg-amber-400 hover:bg-amber-500 text-black font-bold text-xs px-5 py-3 rounded-xl transition"
+            >
+                <span class="material-symbols-outlined text-base mr-2">star</span>
+                Đánh giá tour
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-surface-container-low p-5 rounded-xl border border-slate-100 flex items-center gap-4">
+            <span class="material-symbols-outlined text-2xl text-primary">calendar_month</span>
+            <div>
+                <p class="text-xs text-slate-400 font-bold uppercase">THỜI GIAN</p>
+                <p id="voucherDateRange" class="text-sm font-black text-primary mt-1">
+                    15/11/2026 - 18/11/2026
+                </p>
+                <p id="voucherDurationText" class="text-xs text-slate-500">3 ngày 2 đêm</p>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-low p-5 rounded-xl border border-slate-100 flex items-center gap-4">
+            <span class="material-symbols-outlined text-2xl text-primary">groups</span>
+            <div>
+                <p class="text-xs text-slate-400 font-bold uppercase">SỐ HÀNH KHÁCH</p>
+                <p id="voucherPaxSummary" class="text-sm font-black text-primary mt-1">
+                    2 người lớn, 0 trẻ em
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-low p-5 rounded-xl border border-slate-100 md:row-span-2">
+            <div class="flex items-center gap-2 mb-4 border-b pb-3">
+                <span class="material-symbols-outlined text-primary">credit_card</span>
+                <h4 class="text-xs font-bold uppercase">Chi tiết thanh toán</h4>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div class="flex justify-between gap-3">
+                    <span>Người lớn</span>
+                    <strong id="voucherAdultTickets">2 vé</strong>
+                </div>
+                <div class="flex justify-between gap-3">
+                    <span>Trẻ em</span>
+                    <strong id="voucherChildTickets">0 vé</strong>
+                </div>
+                <div class="flex justify-between gap-3">
+                    <span>Phương thức</span>
+                    <strong id="voucherPaymentMethod">VNPAY</strong>
+                </div>
+                <div class="flex justify-between gap-3">
+                    <span>Trạng thái thanh toán</span>
+                    <strong id="voucherPaymentStatus" class="text-emerald-700">Đã thanh toán</strong>
+                </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-dashed">
+                <p class="text-xs font-bold text-slate-500 uppercase">TỔNG CỘNG</p>
+                <p id="voucherTotalAmount" class="text-2xl font-black text-secondary mt-1">
+                    6.500.000 đ
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 md:col-span-2">
+            <h4 class="text-sm font-bold text-primary uppercase tracking-wider mb-4">
+                Thông tin đặt tour
+            </h4>
+
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between gap-4">
+                    <span class="text-slate-500">Mã đặt tour</span>
+                    <strong id="voucherBookingCode" class="font-mono text-primary font-bold">BK-2026-001</strong>
+                </div>
+                <div class="flex justify-between gap-4">
+                    <span class="text-slate-500">Số hóa đơn</span>
+                    <strong id="voucherInvoiceCode" class="font-mono text-slate-700">INV-2026-001</strong>
+                </div>
+                <div class="flex justify-between gap-4">
+                    <span class="text-slate-500">Trạng thái đơn</span>
+                    <strong id="voucherBookingStatus" class="text-emerald-700">Đã xác nhận</strong>
+                </div>
+                <div class="flex justify-between gap-4">
+                    <span class="text-slate-500">Tổng số hành khách</span>
+                    <strong id="voucherTotalPax">2 khách</strong>
+                </div>
+            </div>
+
+            <!-- Bảng danh sách hành khách đi cùng -->
+            <div class="mt-8 pt-6 border-t border-slate-100">
+                <h4 class="text-sm font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">groups</span>
+                    Danh sách hành khách đi cùng
+                </h4>
+                    <div class="overflow-x-auto rounded-xl border border-slate-100">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-surface-container-low text-slate-600 font-bold uppercase tracking-wider">
+                                <tr>
+                                    <th class="py-3 px-4">STT</th>
+                                    <th class="py-3 px-4">Họ và tên</th>
+                                    <th class="py-3 px-4">Đối tượng</th>
+                                    <th class="py-3 px-4">Ngày sinh</th>
+                                    <th class="py-3 px-4">CCCD / Định danh</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voucherPassengersTable" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+                
+                <p id="voucherEmptyPassengers" class="hidden text-xs text-slate-400 italic mt-2">Chưa có thông tin chi tiết hành khách.</p>
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+    </main>
+  </div>
+  <!-- Mobile Bottom Navigation (Platform Pivot Rule) -->
+  <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 flex justify-around items-center h-20 px-4 z-50">
+    <a href="../home.html" class="flex flex-col items-center gap-1 #">
+      <span class="material-symbols-outlined" data-icon="home">home</span>
+      <span class="text-[10px] font-bold">Trang chủ</span>
+    </a>
+    <a href="../my_tours/index.html" class="flex flex-col items-center gap-1 #">
+      <span class="material-symbols-outlined" data-icon="travel_explore" style="#">travel_explore</span>
+      <span class="text-[10px] font-bold">Chuyến đi</span>
+    </a>
+    <a href="../reward_point.html" class="flex flex-col items-center gap-1 #">
+      <span class="material-symbols-outlined" data-icon="card_giftcard">card_giftcard</span>
+      <span class="text-[10px] font-bold">Điểm thưởng</span>
+    </a>
+    <a href="../profile/show.html" class="flex flex-col items-center gap-1 #">
+      <span class="material-symbols-outlined" data-icon="person">person</span>
+      <span class="text-[10px] font-bold">Hồ sơ</span>
+    </a>
+  </nav>
+
+
+<script src="../../assets/js/api-client.js"></script>
+<script src="../../assets/js/nav-auth.js"></script>
+<script src="../../assets/js/mock-data.js"></script>
+<script src="../../assets/js/customer-pages.js"></script>
+<script src="../../assets/js/icons-fallback.js"></script>
+</body></html>

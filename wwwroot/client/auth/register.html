@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Đăng ký tài khoản - Vietnam Expeditions</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght,400;0,700;0,900;1,900&amp;family=Plus+Jakarta+Sans:wght;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f0f9",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-container": "#bbd0ff",
+                        "surface-container": "#ededf6",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e2ea",
+                        "primary-container": "#0056b3",
+                        "secondary": "#a43c12",
+                        "surface": "#f9f9ff",
+                        "primary-fixed-dim": "#acc7ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8f0",
+                        "on-secondary-fixed-variant": "#822800",
+                        "primary-fixed": "#d7e2ff",
+                        "on-surface": "#191c21",
+                        "on-tertiary-container": "#ffc2a7",
+                        "tertiary-fixed-dim": "#ffb694",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c2c6d4",
+                        "on-secondary-container": "#6b1f00",
+                        "surface-container-low": "#f2f3fc",
+                        "on-background": "#191c21",
+                        "on-secondary-fixed": "#380c00",
+                        "primary": "#003f87",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#424752",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#722b00",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#983c00",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#acc7ff",
+                        "on-primary-fixed-variant": "#004491",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#727784",
+                        "surface-dim": "#d9d9e2",
+                        "secondary-fixed": "#ffdbcf",
+                        "surface-container-highest": "#e1e2ea",
+                        "tertiary-fixed": "#ffdbcc",
+                        "surface-tint": "#115cb9",
+                        "on-tertiary-fixed": "#351000",
+                        "secondary-container": "#fe7e4f",
+                        "on-primary-fixed": "#001a40",
+                        "secondary-fixed-dim": "#ffb59c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Be Vietnam Pro"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .text-shadow-sm {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+         display: none;
+         }
+
+        .no-scrollbar {
+         -ms-overflow-style: none;
+         scrollbar-width: none;
+         }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="../home.html" class="text-2xl font-black text-blue-900 dark:text-white italic font-['Be_Vietnam_Pro'] tracking-tight hover:opacity-80 transition-opacity decoration-transparent">
+            Vietnam Expeditions
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="../tours/by_province.html">Điểm đến</a>
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="../tours/index.html">Tour</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- User state -->
+            <div data-nav-auth="user" class="hidden items-center gap-3">
+                <a href="../profile/show.html"
+                   class="text-blue-900 dark:text-white font-bold hover:text-blue-600 transition flex items-center gap-2 text-sm">
+                    <span>Xin chào,</span>
+                    <span data-nav-user-name class="font-extrabold text-blue-900 dark:text-white"></span>
+                </a>
+                <button type="button" data-nav-logout
+                    class="px-4 py-2 rounded-full text-sm font-bold text-red-600 hover:bg-red-50 transition-transform active:scale-90 inline-block">
+                    Đăng xuất
+                </button>
+            </div>
+            <!-- Guest state -->
+            <div data-nav-auth="guest" class="flex items-center gap-3">
+                <a href="../profile/show.html"
+                   class="text-slate-700 dark:text-slate-300 font-bold hover:text-blue-900 transition flex items-center gap-2 text-sm">
+                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-xs" data-nav-user-initials>NA</span>
+                    <span class="hidden sm:inline">Hồ sơ</span>
+                </a>
+                <a href="../auth/login.html"
+                   class="px-5 py-2 rounded-full font-bold text-xs bg-blue-900 text-white hover:bg-blue-800 transition inline-block">
+                    Đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+<div class="min-h-[85vh] flex items-center justify-center py-24 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg w-full space-y-8 bg-surface-container-lowest p-8 rounded-3xl shadow-xl border border-surface-container">
+        <div class="text-center">
+            <a href="#" class="inline-block">
+                <span class="text-3xl font-extrabold text-primary font-headline tracking-tight">Vietnam Expeditions</span>
+            </a>
+            <h2 class="mt-4 text-xl font-bold text-on-surface">Tạo tài khoản thành viên</h2>
+            <p class="mt-1 text-xs text-on-surface-variant">Nhận ưu đãi giảm giá và tích lũy điểm thưởng sau mỗi chuyến đi</p>
+        </div>
+
+        <form id="registerForm" class="space-y-4" novalidate>
+            
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-on-surface-variant px-1">Họ và Tên</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person</span>
+                    <input type="text"
+                           name="full_name" autocomplete="name"
+                           value=""
+                           class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                           placeholder="Ví dụ: Nguyễn Văn An"
+                           required>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-on-surface-variant px-1">Địa chỉ Email</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">mail</span>
+                        <input type="email"
+                               name="email" autocomplete="email"
+                               value=""
+                               class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                               placeholder="example.com"
+                               required>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-on-surface-variant px-1">Số điện thoại</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">phone</span>
+                        <input type="tel"
+                               name="phone" autocomplete="tel"
+                               value=""                               
+                               class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                               placeholder="0918 767 066"
+                               required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-on-surface-variant px-1">Địa chỉ thường trú</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">home</span>
+                    <input type="text"
+                           name="address"
+                           value=""
+                           class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                           placeholder="Nhập địa chỉ của bạn">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-on-surface-variant px-1">Mật khẩu</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+                    <input type="password"
+                           name="password" autocomplete="new-password"
+                           class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                           placeholder="Nhập mật khẩu của bạn"
+                           required>
+                </div>
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-on-surface-variant px-1">Xác nhận mật khẩu</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+                    <input type="password"
+                           name="password_confirmation" autocomplete="new-password"
+                           class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                           placeholder="Nhập lại mật khẩu của bạn"
+                           required>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-2 pt-1">
+                <input type="checkbox" id="terms" name="terms" value="yes" checked required class="mt-0.5 rounded border-slate-300 text-primary focus:ring-primary">
+                <label for="terms" class="text-xs text-on-surface-variant leading-relaxed">
+                    Tôi đồng ý với <a href="#" class="font-bold text-primary hover:underline">Điều khoản dịch vụ & Chính sách</a> của Vietnam Expeditions.
+                </label>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 bg-primary hover:bg-primary/90 text-white font-bold rounded-full shadow-lg transition-transform hover:scale-[1.01] active:scale-95 text-sm">
+                Đăng ký tài khoản
+            </button>
+
+            <div class="text-center pt-2">
+                <p class="text-xs text-on-surface-variant">
+                    Bạn đã có tài khoản?
+                    <a href="login.html" class="font-bold text-primary hover:underline ml-1">Đăng nhập tại đây</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Footer (Correctly positioned at bottom of page) -->
+<footer class="w-full rounded-t-[2rem] mt-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
+    <div class="w-full px-8 py-12 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+        <div class="mb-8 md:mb-0">
+            <div class="font-black text-xl text-blue-900 dark:text-white mb-4">Vietnam Expeditions</div>
+            <p class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm leading-relaxed max-w-xs">
+                © 2024 Vietnam Expeditions. Những trải nghiệm du lịch được chế tác tỉ mỉ.
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Chính sách bảo mật</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Điều khoản dịch vụ</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Liên hệ</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Hỏi đáp</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Cẩm nang du lịch</a>
+        </div>
+        <div class="flex gap-4 mt-8 md:mt-0">
+            <button aria-label="Website" class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:bg-primary hover:text-white transition-all text-primary border border-slate-100">
+                <span class="material-symbols-outlined text-base">public</span>
+            </button>
+            <button aria-label="Chia sẻ" class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:bg-primary hover:text-white transition-all text-primary border border-slate-100">
+                <span class="material-symbols-outlined text-base">share</span>
+            </button>
+        </div>
+    </div>
+</footer>
+<!-- Scripts -->
+<script src="../../assets/js/api-client.js"></script>
+<script src="../../assets/js/auth-pages.js"></script>
+<script src="../../assets/js/nav-auth.js"></script>
+<script src="../../assets/js/icons-fallback.js"></script>
+</body></html>

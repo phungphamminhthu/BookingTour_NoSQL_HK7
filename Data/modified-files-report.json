@@ -1,0 +1,162 @@
+{
+  "totalModifiedFiles": 39,
+  "totalReplacements": 198,
+  "files": [
+    {
+      "file": "wwwroot/admin/categories/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/customers/create.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/customers/edit.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/customers/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/customers/show.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/dashboard.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/departures/assign_guide.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/departures/create.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/departures/edit.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/departures/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/employees/create.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/employees/edit.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/employees/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/locations/create_province.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/locations/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/tours/create.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/tours/edit.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/tours/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/tours/show.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/admin/transactions/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/assets/js/admin-dashboard.js",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/assets/js/admin-pages.js",
+      "count": 4
+    },
+    {
+      "file": "wwwroot/assets/js/customer-pages.js",
+      "count": 4
+    },
+    {
+      "file": "wwwroot/assets/js/mock-data.js",
+      "count": 122
+    },
+    {
+      "file": "wwwroot/client/home.html",
+      "count": 7
+    },
+    {
+      "file": "wwwroot/client/my_tours/index.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/client/my_tours/review.html",
+      "count": 2
+    },
+    {
+      "file": "wwwroot/client/my_tours/show.html",
+      "count": 2
+    },
+    {
+      "file": "wwwroot/client/payments/history.html",
+      "count": 2
+    },
+    {
+      "file": "wwwroot/client/policy.html",
+      "count": 2
+    },
+    {
+      "file": "wwwroot/client/profile/show.html",
+      "count": 3
+    },
+    {
+      "file": "wwwroot/client/reward_point.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/client/tours/by_province.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/client/tours/index.html",
+      "count": 2
+    },
+    {
+      "file": "wwwroot/client/tours/show.html",
+      "count": 2
+    },
+    {
+      "file": "wwwroot/layouts/admin.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/layouts/user.html",
+      "count": 1
+    },
+    {
+      "file": "wwwroot/welcome.html",
+      "count": 7
+    },
+    {
+      "file": "Data/DbSeeder.cs",
+      "count": 13
+    }
+  ]
+}

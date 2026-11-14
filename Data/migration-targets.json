@@ -1,0 +1,841 @@
+[
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1544644181-1484b3fdfc62_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_1]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_2]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1528127269322-539801943592_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_2]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_1]",
+      "wwwroot/assets/js/admin-pages.js",
+      "wwwroot/assets/js/customer-pages.js",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/client/my_tours/review.html",
+      "wwwroot/client/tours/index.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1559592413-7cec4d0cae2b_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_3]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_6]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/client/tours/by_province.html",
+      "wwwroot/client/tours/index.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1506744038136-46273834b3fb_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_4]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_9]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1501555088652-021faa106b9b_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_5]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_11]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1571896349842-33c89424de2d_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_6]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_12]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1555396273-367ea4eb4db5_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_7]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_7]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?q=80&w=600&auto=format&fit=crop",
+    "category": "categories",
+    "objectKey": "categories/category_1596401057633-54a8fe8ef647_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_8]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_16]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1509042239860-f550ce710b93_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_3]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1578632767115-351597cf2477_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_4]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1580837119756-563d608dd119?auto=format&fit=crop&w=600&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1580837119756-563d608dd119_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_5]",
+      "wwwroot/assets/js/mock-data.js"
+    ],
+    "originalBrokenUrl": "https://images.unsplash.com/photo-1605649487212-47bdab064df8?q=80&w=600&auto=format&fit=crop"
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1584448141569-69f342da535c?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1584448141569-69f342da535c_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_8]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1540555700478-4be289fbecef_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_10]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1583417319070-4a69db38a482_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_13]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1507525428034-b723cf961d3e_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_14]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1519046904884-53103b34b206_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_15]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1469854523086-cc02fe5d8800_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_17]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1509316975850-ff9c5deb0cd9_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_18]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1476514525535-07fb3b4ae5f1_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_19]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop",
+    "category": "locations",
+    "objectKey": "locations/location_1534447677768-be436bb09401_w600.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_20]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1528127269322-539801943592_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_1].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_3].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_5].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[1]",
+      "wwwroot/assets/js/customer-pages.js",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/my_tours/show.html",
+      "wwwroot/client/tours/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1506744038136-46273834b3fb_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_1].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_5].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_6].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_7].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1544644181-1484b3fdfc62_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_1].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_3].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_4].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_6].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_7].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_10].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1559592413-7cec4d0cae2b_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_2].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_8].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_12].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_15].images[1]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/tours/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1555396273-367ea4eb4db5_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_2].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_11].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_12].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1507525428034-b723cf961d3e_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_2].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_4].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_8].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_13].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1501555088652-021faa106b9b_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_3].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_6].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_7].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1571896349842-33c89424de2d_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_4].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_10].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_13].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1578632767115-351597cf2477_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_5].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_15].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1469854523086-cc02fe5d8800_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_8].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1580837119756-563d608dd119?auto=format&fit=crop&w=1200&q=80",
+    "category": "tours",
+    "objectKey": "tours/tour_1580837119756-563d608dd119_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ],
+    "originalBrokenUrl": "https://images.unsplash.com/photo-1605649487212-47bdab064df8?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1519046904884-53103b34b206_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_10].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1596401057633-54a8fe8ef647_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_11].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1534447677768-be436bb09401_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_11].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1584448141569-69f342da535c?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1584448141569-69f342da535c_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_12].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1540555700478-4be289fbecef_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_13].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_14].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1476514525535-07fb3b4ae5f1_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_14].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1509316975850-ff9c5deb0cd9_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_14].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop",
+    "category": "tours",
+    "objectKey": "tours/tour_1509042239860-f550ce710b93_w1200.jpg",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_15].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Nguyen+Van+An&background=003f87&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_nguyen-van-an_003f87.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_1].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Tran+Thi+Bich&background=fe7e4f&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_tran-thi-bich_fe7e4f.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_2].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Le+Van+Cuong&background=0056b3&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_le-van-cuong_0056b3.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_3].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Pham+Thu+Dung&background=a43c12&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_pham-thu-dung_a43c12.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_4].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Hoang+Duc+Em&background=115cb9&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_hoang-duc-em_115cb9.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_5].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Vu+Kim+Giang&background=722b00&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_vu-kim-giang_722b00.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_6].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Dang+Quang+Huy&background=003f87&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_dang-quang-huy_003f87.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_7].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Bui+Thuy+Linh&background=fe7e4f&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_bui-thuy-linh_fe7e4f.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_8].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Do+Tuan+Minh&background=0056b3&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_do-tuan-minh_0056b3.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_9].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ngo+Mai+Nga&background=a43c12&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_ngo-mai-nga_a43c12.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_10].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Duong+Bao+Phuc&background=115cb9&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_duong-bao-phuc_115cb9.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_11].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ly+Ngoc+Quyen&background=722b00&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_ly-ngoc-quyen_722b00.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_12].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Phan+Huu+Sang&background=003f87&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_phan-huu-sang_003f87.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_13].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ta+Phuong+Thao&background=fe7e4f&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_ta-phuong-thao_fe7e4f.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_14].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Vo+Thanh+Trung&background=0056b3&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_vo-thanh-trung_0056b3.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_15].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ho+Khanh+Uyen&background=a43c12&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_ho-khanh-uyen_a43c12.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_16].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Mai+Gia+Vu&background=115cb9&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_mai-gia-vu_115cb9.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_17].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Dinh+Nhu+Y&background=722b00&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_dinh-nhu-y_722b00.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_18].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Trinh+Hoang+Long&background=003f87&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_trinh-hoang-long_003f87.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_19].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Chu+Kim+Yen&background=fe7e4f&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_chu-kim-yen_fe7e4f.png",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_20].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Admin+Viet&background=1e3a8a&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_admin-viet_1e3a8a.png",
+    "locations": [
+      "wwwroot/admin/categories/index.html",
+      "wwwroot/admin/customers/create.html",
+      "wwwroot/admin/customers/edit.html",
+      "wwwroot/admin/customers/index.html",
+      "wwwroot/admin/customers/show.html",
+      "wwwroot/admin/departures/assign_guide.html",
+      "wwwroot/admin/departures/create.html",
+      "wwwroot/admin/departures/edit.html",
+      "wwwroot/admin/departures/index.html",
+      "wwwroot/admin/employees/create.html",
+      "wwwroot/admin/employees/edit.html",
+      "wwwroot/admin/employees/index.html",
+      "wwwroot/admin/locations/create_province.html",
+      "wwwroot/admin/locations/index.html",
+      "wwwroot/admin/tours/create.html",
+      "wwwroot/admin/tours/edit.html",
+      "wwwroot/admin/tours/index.html",
+      "wwwroot/admin/tours/show.html",
+      "wwwroot/admin/transactions/index.html",
+      "wwwroot/layouts/admin.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Admin&background=1e3a8a&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_admin_1e3a8a.png",
+    "locations": [
+      "wwwroot/admin/dashboard.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1000&auto=format&fit=crop",
+    "category": "banners",
+    "objectKey": "banners/banner_1528127269322-539801943592_w1000.jpg",
+    "locations": [
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1000&auto=format&fit=crop",
+    "category": "banners",
+    "objectKey": "banners/banner_1559592413-7cec4d0cae2b_w1000.jpg",
+    "locations": [
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=1000&auto=format&fit=crop",
+    "category": "banners",
+    "objectKey": "banners/banner_1583417319070-4a69db38a482_w1000.jpg",
+    "locations": [
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Nguyen+Van+An&background=0D8ABC&color=fff&size=80",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_nguyen-van-an_0d8abc_80x80.png",
+    "locations": [
+      "wwwroot/client/my_tours/index.html",
+      "wwwroot/client/my_tours/review.html",
+      "wwwroot/client/my_tours/show.html",
+      "wwwroot/client/payments/history.html",
+      "wwwroot/client/profile/show.html",
+      "wwwroot/client/reward_point.html",
+      "wwwroot/layouts/user.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    "category": "other",
+    "objectKey": "tours/tour_1507525428034-b723cf961d3e_w1200.jpg",
+    "locations": [
+      "wwwroot/client/payments/history.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1400&q=80",
+    "category": "banners",
+    "objectKey": "banners/banner_1528127269322-539801943592_w1400.jpg",
+    "locations": [
+      "wwwroot/client/policy.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80",
+    "category": "banners",
+    "objectKey": "banners/banner_1559592413-7cec4d0cae2b_w600.jpg",
+    "locations": [
+      "wwwroot/client/policy.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+    "category": "other",
+    "objectKey": "tours/tour_1528127269322-539801943592_w1200.jpg",
+    "locations": [
+      "wwwroot/client/profile/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Nguyen+Van+An&background=0D8ABC&color=fff&size=128",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_nguyen-van-an_0d8abc_128x128.png",
+    "locations": [
+      "wwwroot/client/profile/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1599707367072-cd6ada2bc375_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1580837119756-563d608dd119?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1580837119756-563d608dd119_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ],
+    "originalBrokenUrl": "https://images.unsplash.com/photo-1570783537298-9914f745741e?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1544735716-392fe2489ffa_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1528127269322-539801943592_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1506744038136-46273834b3fb_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1559592413-7cec4d0cae2b_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1555921015-5532091f6026?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1555921015-5532091f6026_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1578637387939-43c525550085_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1507525428034-b723cf961d3e_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1518709268805-4e9042af9f23_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ],
+    "originalBrokenUrl": "https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1583417319070-4a69db38a482_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1596401057633-54a8fe8ef647_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1544644181-1484b3fdfc62_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1519046904884-53103b34b206_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80",
+    "category": "locations",
+    "objectKey": "locations/location_1563245372-f21724e3856d_w800.jpg",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=KH&background=003f87&color=fff",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_kh_003f87.png",
+    "locations": [
+      "fallback:customer_avatar"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Admin&background=1e3a8a&color=fff&size=80",
+    "category": "avatars",
+    "objectKey": "avatars/avatar_admin_1e3a8a_80x80.png",
+    "locations": [
+      "fallback:admin_avatar"
+    ]
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Trang chủ",
+    "url": "/client/home.html",
+    "htmlStatus": 200,
+    "htmlBytes": 28119,
+    "staticImgsFound": 8,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Danh sách tour",
+    "url": "/client/tours/index.html",
+    "htmlStatus": 200,
+    "htmlBytes": 22167,
+    "staticImgsFound": 2,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Chi tiết tour (tour_1)",
+    "url": "/client/tours/show.html?id=tour_1",
+    "htmlStatus": 200,
+    "htmlBytes": 24696,
+    "staticImgsFound": 2,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Tour theo tỉnh thành",
+    "url": "/client/tours/by_province.html?id=prov_1",
+    "htmlStatus": 200,
+    "htmlBytes": 12790,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Hồ sơ khách hàng",
+    "url": "/client/profile/show.html",
+    "htmlStatus": 200,
+    "htmlBytes": 18054,
+    "staticImgsFound": 3,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Lịch sử thanh toán",
+    "url": "/client/payments/history.html",
+    "htmlStatus": 200,
+    "htmlBytes": 14743,
+    "staticImgsFound": 2,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Tour của tôi",
+    "url": "/client/my_tours/index.html",
+    "htmlStatus": 200,
+    "htmlBytes": 11436,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Dashboard Admin",
+    "url": "/admin/dashboard.html",
+    "htmlStatus": 200,
+    "htmlBytes": 14223,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Quản lý tour Admin",
+    "url": "/admin/tours/index.html",
+    "htmlStatus": 200,
+    "htmlBytes": 16854,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Quản lý danh mục Admin",
+    "url": "/admin/categories/index.html",
+    "htmlStatus": 200,
+    "htmlBytes": 16558,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Quản lý địa điểm Admin",
+    "url": "/admin/locations/index.html",
+    "htmlStatus": 200,
+    "htmlBytes": 24507,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  },
+  {
+    "name": "Quản lý giao dịch Admin",
+    "url": "/admin/transactions/index.html",
+    "htmlStatus": 200,
+    "htmlBytes": 23340,
+    "staticImgsFound": 1,
+    "brokenImages": 0,
+    "hasOldUnsplash": false,
+    "hasOldUiAvatars": false,
+    "status": "PASS"
+  }
+]

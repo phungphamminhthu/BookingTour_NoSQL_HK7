@@ -1,0 +1,1326 @@
+[
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Admin\u0026background=1e3a8a\u0026color=fff\u0026size=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png",
+    "objectKey": "avatars/avatar_admin_1e3a8a_80x80.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1614,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:52.8198304Z",
+    "locations": [
+      "fallback:admin_avatar"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Admin\u0026background=1e3a8a\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a.png",
+    "objectKey": "avatars/avatar_admin_1e3a8a.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1306,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:33.9929265Z",
+    "locations": [
+      "wwwroot/admin/dashboard.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Admin\u002BViet\u0026background=1e3a8a\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png",
+    "objectKey": "avatars/avatar_admin-viet_1e3a8a.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 735,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:33.0768684Z",
+    "locations": [
+      "wwwroot/admin/categories/index.html",
+      "wwwroot/admin/customers/create.html",
+      "wwwroot/admin/customers/edit.html",
+      "wwwroot/admin/customers/index.html",
+      "wwwroot/admin/customers/show.html",
+      "wwwroot/admin/departures/assign_guide.html",
+      "wwwroot/admin/departures/create.html",
+      "wwwroot/admin/departures/edit.html",
+      "wwwroot/admin/departures/index.html",
+      "wwwroot/admin/employees/create.html",
+      "wwwroot/admin/employees/edit.html",
+      "wwwroot/admin/employees/index.html",
+      "wwwroot/admin/locations/create_province.html",
+      "wwwroot/admin/locations/index.html",
+      "wwwroot/admin/tours/create.html",
+      "wwwroot/admin/tours/edit.html",
+      "wwwroot/admin/tours/index.html",
+      "wwwroot/admin/tours/show.html",
+      "wwwroot/admin/transactions/index.html",
+      "wwwroot/layouts/admin.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Bui\u002BThuy\u002BLinh\u0026background=fe7e4f\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_bui-thuy-linh_fe7e4f.png",
+    "objectKey": "avatars/avatar_bui-thuy-linh_fe7e4f.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 767,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:24.9618871Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_8].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Chu\u002BKim\u002BYen\u0026background=fe7e4f\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_chu-kim-yen_fe7e4f.png",
+    "objectKey": "avatars/avatar_chu-kim-yen_fe7e4f.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1065,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:32.7140416Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_20].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Dang\u002BQuang\u002BHuy\u0026background=003f87\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_dang-quang-huy_003f87.png",
+    "objectKey": "avatars/avatar_dang-quang-huy_003f87.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 867,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:24.3901867Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_7].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Dinh\u002BNhu\u002BY\u0026background=722b00\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_dinh-nhu-y_722b00.png",
+    "objectKey": "avatars/avatar_dinh-nhu-y_722b00.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1179,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:31.5508255Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_18].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Do\u002BTuan\u002BMinh\u0026background=0056b3\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_do-tuan-minh_0056b3.png",
+    "objectKey": "avatars/avatar_do-tuan-minh_0056b3.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1273,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:25.4835379Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_9].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Duong\u002BBao\u002BPhuc\u0026background=115cb9\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_duong-bao-phuc_115cb9.png",
+    "objectKey": "avatars/avatar_duong-bao-phuc_115cb9.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1054,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:26.9159919Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_11].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ho\u002BKhanh\u002BUyen\u0026background=a43c12\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_ho-khanh-uyen_a43c12.png",
+    "objectKey": "avatars/avatar_ho-khanh-uyen_a43c12.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 662,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:30.3848718Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_16].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Hoang\u002BDuc\u002BEm\u0026background=115cb9\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_hoang-duc-em_115cb9.png",
+    "objectKey": "avatars/avatar_hoang-duc-em_115cb9.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 471,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:23.1614851Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_5].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=KH\u0026background=003f87\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_kh_003f87.png",
+    "objectKey": "avatars/avatar_kh_003f87.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 845,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:52.1639875Z",
+    "locations": [
+      "fallback:customer_avatar"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Le\u002BVan\u002BCuong\u0026background=0056b3\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_le-van-cuong_0056b3.png",
+    "objectKey": "avatars/avatar_le-van-cuong_0056b3.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 854,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:22.0348496Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_3].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ly\u002BNgoc\u002BQuyen\u0026background=722b00\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_ly-ngoc-quyen_722b00.png",
+    "objectKey": "avatars/avatar_ly-ngoc-quyen_722b00.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1195,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:27.5965218Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_12].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Mai\u002BGia\u002BVu\u0026background=115cb9\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_mai-gia-vu_115cb9.png",
+    "objectKey": "avatars/avatar_mai-gia-vu_115cb9.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1311,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:30.9759863Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_17].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ngo\u002BMai\u002BNga\u0026background=a43c12\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_ngo-mai-nga_a43c12.png",
+    "objectKey": "avatars/avatar_ngo-mai-nga_a43c12.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 743,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:26.0902303Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_10].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Nguyen\u002BVan\u002BAn\u0026background=003f87\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_nguyen-van-an_003f87.png",
+    "objectKey": "avatars/avatar_nguyen-van-an_003f87.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1213,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:20.9472773Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_1].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Nguyen\u002BVan\u002BAn\u0026background=0D8ABC\u0026color=fff\u0026size=128",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_nguyen-van-an_0d8abc_128x128.png",
+    "objectKey": "avatars/avatar_nguyen-van-an_0d8abc_128x128.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 2317,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:37.6585507Z",
+    "locations": [
+      "wwwroot/client/profile/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Nguyen\u002BVan\u002BAn\u0026background=0D8ABC\u0026color=fff\u0026size=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_nguyen-van-an_0d8abc_80x80.png",
+    "objectKey": "avatars/avatar_nguyen-van-an_0d8abc_80x80.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1513,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:36.051952Z",
+    "locations": [
+      "wwwroot/client/my_tours/index.html",
+      "wwwroot/client/my_tours/review.html",
+      "wwwroot/client/my_tours/show.html",
+      "wwwroot/client/payments/history.html",
+      "wwwroot/client/profile/show.html",
+      "wwwroot/client/reward_point.html",
+      "wwwroot/layouts/user.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Pham\u002BThu\u002BDung\u0026background=a43c12\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_pham-thu-dung_a43c12.png",
+    "objectKey": "avatars/avatar_pham-thu-dung_a43c12.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1049,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:22.5987948Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_4].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Phan\u002BHuu\u002BSang\u0026background=003f87\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_phan-huu-sang_003f87.png",
+    "objectKey": "avatars/avatar_phan-huu-sang_003f87.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1188,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:28.4452093Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_13].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Ta\u002BPhuong\u002BThao\u0026background=fe7e4f\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_ta-phuong-thao_fe7e4f.png",
+    "objectKey": "avatars/avatar_ta-phuong-thao_fe7e4f.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 346,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:29.0193694Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_14].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Tran\u002BThi\u002BBich\u0026background=fe7e4f\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_tran-thi-bich_fe7e4f.png",
+    "objectKey": "avatars/avatar_tran-thi-bich_fe7e4f.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 769,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:21.5096492Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_2].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Trinh\u002BHoang\u002BLong\u0026background=003f87\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_trinh-hoang-long_003f87.png",
+    "objectKey": "avatars/avatar_trinh-hoang-long_003f87.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 422,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:32.1174564Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_19].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Vo\u002BThanh\u002BTrung\u0026background=0056b3\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_vo-thanh-trung_0056b3.png",
+    "objectKey": "avatars/avatar_vo-thanh-trung_0056b3.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 887,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:29.7888495Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_15].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://ui-avatars.com/api/?name=Vu\u002BKim\u002BGiang\u0026background=722b00\u0026color=fff",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_vu-kim-giang_722b00.png",
+    "objectKey": "avatars/avatar_vu-kim-giang_722b00.png",
+    "category": "avatars",
+    "contentType": "image/png",
+    "sizeBytes": 1413,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:23.7265461Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:reviews[rev_6].avatar",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?q=80\u0026w=1000\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1528127269322-539801943592_w1000.jpg",
+    "objectKey": "banners/banner_1528127269322-539801943592_w1000.jpg",
+    "category": "banners",
+    "contentType": "image/jpeg",
+    "sizeBytes": 138453,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:34.5754903Z",
+    "locations": [
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format\u0026fit=crop\u0026w=1400\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1528127269322-539801943592_w1400.jpg",
+    "objectKey": "banners/banner_1528127269322-539801943592_w1400.jpg",
+    "category": "banners",
+    "contentType": "image/jpeg",
+    "sizeBytes": 252504,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:36.5064622Z",
+    "locations": [
+      "wwwroot/client/policy.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80\u0026w=1000\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1559592413-7cec4d0cae2b_w1000.jpg",
+    "objectKey": "banners/banner_1559592413-7cec4d0cae2b_w1000.jpg",
+    "category": "banners",
+    "contentType": "image/jpeg",
+    "sizeBytes": 146072,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:34.9804794Z",
+    "locations": [
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format\u0026fit=crop\u0026w=600\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1559592413-7cec4d0cae2b_w600.jpg",
+    "objectKey": "banners/banner_1559592413-7cec4d0cae2b_w600.jpg",
+    "category": "banners",
+    "contentType": "image/jpeg",
+    "sizeBytes": 59492,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:36.8375218Z",
+    "locations": [
+      "wwwroot/client/policy.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80\u0026w=1000\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1583417319070-4a69db38a482_w1000.jpg",
+    "objectKey": "banners/banner_1583417319070-4a69db38a482_w1000.jpg",
+    "category": "banners",
+    "contentType": "image/jpeg",
+    "sizeBytes": 124648,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:35.4636514Z",
+    "locations": [
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1501555088652-021faa106b9b_w600.jpg",
+    "objectKey": "categories/category_1501555088652-021faa106b9b_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 78092,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:58.7044682Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_5]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_11]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1506744038136-46273834b3fb_w600.jpg",
+    "objectKey": "categories/category_1506744038136-46273834b3fb_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 44918,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:58.3115699Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_4]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_9]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg",
+    "objectKey": "categories/category_1528127269322-539801943592_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 56227,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:57.4044897Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_2]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_1]",
+      "wwwroot/assets/js/admin-pages.js",
+      "wwwroot/assets/js/customer-pages.js",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/client/my_tours/review.html",
+      "wwwroot/client/tours/index.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1544644181-1484b3fdfc62_w600.jpg",
+    "objectKey": "categories/category_1544644181-1484b3fdfc62_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 60550,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:57.0106511Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_1]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_2]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1555396273-367ea4eb4db5_w600.jpg",
+    "objectKey": "categories/category_1555396273-367ea4eb4db5_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 91608,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:59.4011785Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_7]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_7]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1559592413-7cec4d0cae2b_w600.jpg",
+    "objectKey": "categories/category_1559592413-7cec4d0cae2b_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 59492,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:57.9743122Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_3]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_6]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/client/tours/by_province.html",
+      "wwwroot/client/tours/index.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1571896349842-33c89424de2d_w600.jpg",
+    "objectKey": "categories/category_1571896349842-33c89424de2d_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 87135,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:59.0501015Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_6]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_12]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1596401057633-54a8fe8ef647_w600.jpg",
+    "objectKey": "categories/category_1596401057633-54a8fe8ef647_w600.jpg",
+    "category": "categories",
+    "contentType": "image/jpeg",
+    "sizeBytes": 69059,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:15:59.9738059Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:categories[cat_8]",
+      "wwwroot/assets/js/mock-data.js:provinces[prov_16]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1469854523086-cc02fe5d8800_w600.jpg",
+    "objectKey": "locations/location_1469854523086-cc02fe5d8800_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 78032,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:06.5724382Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_17]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1476514525535-07fb3b4ae5f1_w600.jpg",
+    "objectKey": "locations/location_1476514525535-07fb3b4ae5f1_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 69654,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:07.1751429Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_19]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1506744038136-46273834b3fb_w800.jpg",
+    "objectKey": "locations/location_1506744038136-46273834b3fb_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 76820,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:43.1993436Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1507525428034-b723cf961d3e_w600.jpg",
+    "objectKey": "locations/location_1507525428034-b723cf961d3e_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 39530,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:05.9187026Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_14]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1507525428034-b723cf961d3e_w800.jpg",
+    "objectKey": "locations/location_1507525428034-b723cf961d3e_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 65474,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:44.6189269Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1509042239860-f550ce710b93_w600.jpg",
+    "objectKey": "locations/location_1509042239860-f550ce710b93_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 106262,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:00.3539304Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_3]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1509316975850-ff9c5deb0cd9_w600.jpg",
+    "objectKey": "locations/location_1509316975850-ff9c5deb0cd9_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 58475,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:06.863307Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_18]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/home.html",
+      "wwwroot/welcome.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1518709268805-4e9042af9f23_w800.jpg",
+    "objectKey": "locations/location_1518709268805-4e9042af9f23_w800.jpg",
+    "category": "locations",
+    "contentType": "",
+    "sizeBytes": 0,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:49.3463893Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1518709268805-4e9042af9f23_w800.jpg",
+    "objectKey": "locations/location_1518709268805-4e9042af9f23_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 120756,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:49:22.0171181Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1519046904884-53103b34b206_w600.jpg",
+    "objectKey": "locations/location_1519046904884-53103b34b206_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 50340,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:06.2498922Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_15]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1519046904884-53103b34b206_w800.jpg",
+    "objectKey": "locations/location_1519046904884-53103b34b206_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 83335,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:51.1821009Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1528127269322-539801943592_w800.jpg",
+    "objectKey": "locations/location_1528127269322-539801943592_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 93380,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:42.8299926Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1534447677768-be436bb09401_w600.jpg",
+    "objectKey": "locations/location_1534447677768-be436bb09401_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 38353,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:07.480095Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_20]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1540555700478-4be289fbecef_w600.jpg",
+    "objectKey": "locations/location_1540555700478-4be289fbecef_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 33735,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:04.9122347Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_10]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1544644181-1484b3fdfc62_w800.jpg",
+    "objectKey": "locations/location_1544644181-1484b3fdfc62_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 98684,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:50.7603051Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1544735716-392fe2489ffa_w800.jpg",
+    "objectKey": "locations/location_1544735716-392fe2489ffa_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 152375,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:42.5036617Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1555921015-5532091f6026?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1555921015-5532091f6026_w800.jpg",
+    "objectKey": "locations/location_1555921015-5532091f6026_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 179330,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:43.9079507Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1559592413-7cec4d0cae2b_w800.jpg",
+    "objectKey": "locations/location_1559592413-7cec4d0cae2b_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 98607,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:43.5388365Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1563245372-f21724e3856d_w800.jpg",
+    "objectKey": "locations/location_1563245372-f21724e3856d_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 64413,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:51.6386047Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1578632767115-351597cf2477_w600.jpg",
+    "objectKey": "locations/location_1578632767115-351597cf2477_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 44267,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:00.6957854Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_4]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1578637387939-43c525550085_w800.jpg",
+    "objectKey": "locations/location_1578637387939-43c525550085_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 46567,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:44.2252883Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1580837119756-563d608dd119?auto=format\u0026fit=crop\u0026w=600\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1580837119756-563d608dd119_w600.jpg",
+    "objectKey": "locations/location_1580837119756-563d608dd119_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 54381,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:49:20.7356025Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_5]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1605649487212-47bdab064df8?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1580837119756-563d608dd119_w600.jpg",
+    "objectKey": "locations/location_1580837119756-563d608dd119_w600.jpg",
+    "category": "locations",
+    "contentType": "",
+    "sizeBytes": 0,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:04.1658975Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_5]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1570783537298-9914f745741e?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1580837119756-563d608dd119_w800.jpg",
+    "objectKey": "locations/location_1580837119756-563d608dd119_w800.jpg",
+    "category": "locations",
+    "contentType": "",
+    "sizeBytes": 0,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:42.0479342Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1580837119756-563d608dd119?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1580837119756-563d608dd119_w800.jpg",
+    "objectKey": "locations/location_1580837119756-563d608dd119_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 94806,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:49:21.7043928Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1583417319070-4a69db38a482_w600.jpg",
+    "objectKey": "locations/location_1583417319070-4a69db38a482_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 51933,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:05.2797344Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_13]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1583417319070-4a69db38a482_w800.jpg",
+    "objectKey": "locations/location_1583417319070-4a69db38a482_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 85180,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:49.75295Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1584448141569-69f342da535c?q=80\u0026w=600\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1584448141569-69f342da535c_w600.jpg",
+    "objectKey": "locations/location_1584448141569-69f342da535c_w600.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 143148,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:04.5559956Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:provinces[prov_8]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1596401057633-54a8fe8ef647_w800.jpg",
+    "objectKey": "locations/location_1596401057633-54a8fe8ef647_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 111954,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:50.0931333Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/locations/location_1599707367072-cd6ada2bc375_w800.jpg",
+    "objectKey": "locations/location_1599707367072-cd6ada2bc375_w800.jpg",
+    "category": "locations",
+    "contentType": "image/jpeg",
+    "sizeBytes": 31153,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:38.1072436Z",
+    "locations": [
+      "Data/DbSeeder.cs:provinces"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format\u0026fit=crop\u0026w=1200\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1507525428034-b723cf961d3e_w1200.jpg",
+    "objectKey": "tours/tour_1507525428034-b723cf961d3e_w1200.jpg",
+    "category": "other",
+    "contentType": "image/jpeg",
+    "sizeBytes": 132435,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:36.1000757Z",
+    "locations": [
+      "wwwroot/client/payments/history.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format\u0026fit=crop\u0026w=1200\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg",
+    "objectKey": "tours/tour_1528127269322-539801943592_w1200.jpg",
+    "category": "other",
+    "contentType": "image/jpeg",
+    "sizeBytes": 190743,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:36.9112144Z",
+    "locations": [
+      "wwwroot/client/profile/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1469854523086-cc02fe5d8800_w1200.jpg",
+    "objectKey": "tours/tour_1469854523086-cc02fe5d8800_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 275301,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:11.938093Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_8].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1476514525535-07fb3b4ae5f1_w1200.jpg",
+    "objectKey": "tours/tour_1476514525535-07fb3b4ae5f1_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 231463,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:19.1257697Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_14].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1501555088652-021faa106b9b_w1200.jpg",
+    "objectKey": "tours/tour_1501555088652-021faa106b9b_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 253097,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:10.7630214Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_3].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_6].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_7].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1506744038136-46273834b3fb_w1200.jpg",
+    "objectKey": "tours/tour_1506744038136-46273834b3fb_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 163720,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:08.3410195Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_1].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_5].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_6].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_7].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1507525428034-b723cf961d3e_w1200.jpg",
+    "objectKey": "tours/tour_1507525428034-b723cf961d3e_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 132435,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:10.3636554Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_2].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_4].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_8].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_13].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1509042239860-f550ce710b93_w1200.jpg",
+    "objectKey": "tours/tour_1509042239860-f550ce710b93_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 343018,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:20.2615896Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_15].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1509316975850-ff9c5deb0cd9_w1200.jpg",
+    "objectKey": "tours/tour_1509316975850-ff9c5deb0cd9_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 279045,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:19.7739889Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_14].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1519046904884-53103b34b206_w1200.jpg",
+    "objectKey": "tours/tour_1519046904884-53103b34b206_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 172348,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:16.1336261Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_10].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg",
+    "objectKey": "tours/tour_1528127269322-539801943592_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 190743,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:07.9579863Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_1].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_3].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_5].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[1]",
+      "wwwroot/assets/js/customer-pages.js",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/my_tours/show.html",
+      "wwwroot/client/tours/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1534447677768-be436bb09401_w1200.jpg",
+    "objectKey": "tours/tour_1534447677768-be436bb09401_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 109767,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:17.11337Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_11].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1540555700478-4be289fbecef_w1200.jpg",
+    "objectKey": "tours/tour_1540555700478-4be289fbecef_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 114918,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:18.5422074Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_13].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_14].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1544644181-1484b3fdfc62_w1200.jpg",
+    "objectKey": "tours/tour_1544644181-1484b3fdfc62_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 194279,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:08.7996116Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_1].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_3].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_4].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_6].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_7].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_10].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1555396273-367ea4eb4db5_w1200.jpg",
+    "objectKey": "tours/tour_1555396273-367ea4eb4db5_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 318217,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:09.9993344Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_2].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_11].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_12].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1559592413-7cec4d0cae2b_w1200.jpg",
+    "objectKey": "tours/tour_1559592413-7cec4d0cae2b_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 200732,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:09.2071998Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_2].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_8].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_12].images[1]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_15].images[1]",
+      "wwwroot/assets/js/mock-data.js",
+      "wwwroot/client/tours/show.html"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1571896349842-33c89424de2d_w1200.jpg",
+    "objectKey": "tours/tour_1571896349842-33c89424de2d_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 260781,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:11.1386033Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_4].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_10].images[2]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_13].images[1]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1578632767115-351597cf2477_w1200.jpg",
+    "objectKey": "tours/tour_1578632767115-351597cf2477_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 166739,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:11.5385192Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_5].images[0]",
+      "wwwroot/assets/js/mock-data.js:tours[tour_15].images[2]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1580837119756-563d608dd119?auto=format\u0026fit=crop\u0026w=1200\u0026q=80",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1580837119756-563d608dd119_w1200.jpg",
+    "objectKey": "tours/tour_1580837119756-563d608dd119_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 208410,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:49:21.2488878Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1605649487212-47bdab064df8?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1580837119756-563d608dd119_w1200.jpg",
+    "objectKey": "tours/tour_1580837119756-563d608dd119_w1200.jpg",
+    "category": "tours",
+    "contentType": "",
+    "sizeBytes": 0,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:15.7327567Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_9].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1584448141569-69f342da535c?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1584448141569-69f342da535c_w1200.jpg",
+    "objectKey": "tours/tour_1584448141569-69f342da535c_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 481791,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:18.2060637Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_12].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  },
+  {
+    "sourceUrl": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?q=80\u0026w=1200\u0026auto=format\u0026fit=crop",
+    "r2Url": "https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1596401057633-54a8fe8ef647_w1200.jpg",
+    "objectKey": "tours/tour_1596401057633-54a8fe8ef647_w1200.jpg",
+    "category": "tours",
+    "contentType": "image/jpeg",
+    "sizeBytes": 219245,
+    "status": "Success",
+    "migratedAt": "2026-11-13T18:16:16.71332Z",
+    "locations": [
+      "wwwroot/assets/js/mock-data.js:tours[tour_11].images[0]",
+      "wwwroot/assets/js/mock-data.js"
+    ]
+  }
+]

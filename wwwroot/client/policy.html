@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Chính sách &amp; Điều khoản - Vietnam Expeditions</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght,400;0,700;0,900;1,900&amp;family=Plus+Jakarta+Sans:wght;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/css/material-symbols.css"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f0f9",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-container": "#bbd0ff",
+                        "surface-container": "#ededf6",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e2ea",
+                        "primary-container": "#0056b3",
+                        "secondary": "#a43c12",
+                        "surface": "#f9f9ff",
+                        "primary-fixed-dim": "#acc7ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8f0",
+                        "on-secondary-fixed-variant": "#822800",
+                        "primary-fixed": "#d7e2ff",
+                        "on-surface": "#191c21",
+                        "on-tertiary-container": "#ffc2a7",
+                        "tertiary-fixed-dim": "#ffb694",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c2c6d4",
+                        "on-secondary-container": "#6b1f00",
+                        "surface-container-low": "#f2f3fc",
+                        "on-background": "#191c21",
+                        "on-secondary-fixed": "#380c00",
+                        "primary": "#003f87",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#424752",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#722b00",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#983c00",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#acc7ff",
+                        "on-primary-fixed-variant": "#004491",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#727784",
+                        "surface-dim": "#d9d9e2",
+                        "secondary-fixed": "#ffdbcf",
+                        "surface-container-highest": "#e1e2ea",
+                        "tertiary-fixed": "#ffdbcc",
+                        "surface-tint": "#115cb9",
+                        "on-tertiary-fixed": "#351000",
+                        "secondary-container": "#fe7e4f",
+                        "on-primary-fixed": "#001a40",
+                        "secondary-fixed-dim": "#ffb59c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Be Vietnam Pro"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .text-shadow-sm {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+         display: none;
+         }
+
+        .no-scrollbar {
+         -ms-overflow-style: none;
+         scrollbar-width: none;
+         }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="home.html" class="text-2xl font-black text-blue-900 dark:text-white italic font-['Be_Vietnam_Pro'] tracking-tight hover:opacity-80 transition-opacity decoration-transparent">
+            Vietnam Expeditions
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="tours/by_province.html">Điểm đến</a>
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="tours/index.html">Tour</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <div data-nav-auth="user" class="hidden items-center gap-3">
+                <a href="profile/show.html"
+                   class="text-blue-900 dark:text-white font-bold hover:text-blue-600 transition flex items-center gap-2 text-sm">
+                    <span>Xin chào,</span>
+                    <span data-nav-user-name class="font-extrabold text-blue-900 dark:text-white"></span>
+                </a>
+                <button type="button" data-nav-logout
+                    class="px-4 py-2 rounded-full text-sm font-bold text-red-600 hover:bg-red-50 transition-transform active:scale-90 inline-block">
+                    Đăng xuất
+                </button>
+            </div>
+            <div data-nav-auth="guest" class="flex items-center gap-3">
+                <a href="profile/show.html"
+                   class="text-slate-700 dark:text-slate-300 font-bold hover:text-blue-900 transition flex items-center gap-2 text-sm">
+                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-xs" data-nav-user-initials>NA</span>
+                    <span class="hidden sm:inline">Hồ sơ</span>
+                </a>
+                <a href="auth/login.html"
+                   class="px-5 py-2 rounded-full font-bold text-xs bg-blue-900 text-white hover:bg-blue-800 transition inline-block">
+                    Đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+<main class="pt-20 pb-20">
+  <!-- Hero Header -->
+  <header class="relative h-[360px] flex items-center overflow-hidden mb-16">
+    <img alt="Ha Long Bay" class="absolute inset-0 w-full h-full object-cover" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1528127269322-539801943592_w1400.jpg"/>
+    <div class="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent"></div>
+    <div class="relative max-w-7xl mx-auto px-6 w-full">
+      <div class="max-w-2xl text-white">
+        <span class="inline-block py-1 px-3 rounded-md bg-secondary text-white text-xs font-bold uppercase tracking-widest mb-4">Pháp lý &amp; Quy định</span>
+        <h1 class="text-4xl md:text-6xl font-black font-headline leading-tight tracking-tight mb-4">Chính sách &amp; Điều khoản</h1>
+        <p class="text-blue-100 text-base md:text-lg font-medium leading-relaxed">
+          Minh bạch thông tin là nền tảng của sự tin tưởng. Chúng tôi cam kết mang lại trải nghiệm du lịch an tâm nhất cho mọi du khách.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <!-- Sidebar Navigation (Anchor Links) -->
+    <aside class="lg:col-span-3 hidden lg:block">
+      <div class="sticky top-28 space-y-2 bg-surface-container-low p-6 rounded-2xl">
+        <p class="text-xs font-bold uppercase tracking-widest text-secondary mb-4">Nội dung chính</p>
+        <a class="block py-2 text-primary font-bold border-l-4 border-primary pl-4 transition-all" href="#general">01. Quy định chung</a>
+        <a class="block py-2 text-on-surface-variant hover:text-primary hover:border-l-4 hover:border-primary/30 pl-4 transition-all" href="#payment">02. Thanh toán &amp; Đặt tour</a>
+        <a class="block py-2 text-on-surface-variant hover:text-primary hover:border-l-4 hover:border-primary/30 pl-4 transition-all" href="#cancellation">03. Quy định hủy tour</a>
+        <a class="block py-2 text-on-surface-variant hover:text-primary hover:border-l-4 hover:border-primary/30 pl-4 transition-all" href="#responsibility">04. Trách nhiệm các bên</a>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <article class="lg:col-span-9 space-y-16">
+      <!-- Section: General -->
+      <section class="scroll-mt-28" id="general">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">gavel</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black font-headline text-primary tracking-tight">01. Quy định chung</h2>
+        </div>
+        <div class="bg-surface-container-low p-8 rounded-2xl space-y-4 text-sm leading-relaxed text-slate-700">
+          <p class="font-medium">
+            Chào mừng bạn đến với Vietnam Expeditions. Bằng việc truy cập và sử dụng dịch vụ của chúng tôi, bạn đồng ý tuân thủ các điều khoản sau đây. Các quy định này được thiết lập nhằm đảm bảo quyền lợi và sự an toàn tối cao cho mọi du khách.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex gap-3">
+              <span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+              <span>Vietnam Expeditions cung cấp các dịch vụ du lịch, lữ hành và các dịch vụ hỗ trợ liên quan trên toàn lãnh thổ Việt Nam.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+              <span>Tất cả thông tin về tour, giá cả và lịch trình có thể thay đổi linh hoạt tùy theo điều kiện thời tiết thực tế để đảm bảo an toàn tuyệt đối.</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section: Payment & Booking -->
+      <section class="scroll-mt-28" id="payment">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">payments</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black font-headline text-primary tracking-tight">02. Thanh toán &amp; Đặt tour</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-surface-container-lowest p-8 rounded-2xl border border-slate-100 shadow-sm">
+            <h3 class="text-lg font-bold mb-3 text-primary">Phương thức đặt tour</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed mb-4">
+              Đặt chỗ của quý khách chỉ được coi là chính thức khi đã hoàn tất thủ tục thanh toán hoặc đặt cọc theo quy định. Chúng tôi hỗ trợ nhiều hình thức: Thẻ tín dụng quốc tế, chuyển khoản ngân hàng QR Pay và ví điện tử MoMo/ZaloPay.
+            </p>
+          </div>
+          <div class="bg-primary p-8 rounded-2xl text-white flex flex-col justify-between">
+            <h3 class="text-lg font-bold mb-4">Chính sách đặt cọc</h3>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between border-b border-white/20 pb-2">
+                <span>Trước khởi hành &gt; 30 ngày</span>
+                <span class="font-bold text-amber-300">30% Tổng giá</span>
+              </div>
+              <div class="flex justify-between border-b border-white/20 pb-2">
+                <span>Trước khởi hành 15 - 30 ngày</span>
+                <span class="font-bold text-amber-300">50% Tổng giá</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Dưới 15 ngày khởi hành</span>
+                <span class="font-bold text-amber-300">100% Tổng giá</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Cancellation -->
+      <section class="scroll-mt-28" id="cancellation">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">event_busy</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black font-headline text-primary tracking-tight">03. Quy định hủy tour</h2>
+        </div>
+        <div class="bg-surface-container-low rounded-2xl p-8">
+          <p class="text-on-surface font-medium leading-relaxed mb-6 text-sm">
+            Chúng tôi hiểu rằng kế hoạch có thể thay đổi. Tuy nhiên, do tính chất đặt chỗ trước với đối tác (du thuyền, khách sạn, hướng dẫn viên), phí hủy sẽ được áp dụng như sau:
+          </p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-white rounded-xl shadow-sm items-center">
+              <div>
+                <p class="text-xs font-bold uppercase text-secondary tracking-wider mb-1">Thời gian</p>
+                <p class="font-bold text-primary text-sm">Trên 30 ngày</p>
+              </div>
+              <div class="md:col-span-2">
+                <p class="text-xs text-on-surface-variant">Hoàn tiền đầy đủ sau khi trừ phí giao dịch ngân hàng.</p>
+              </div>
+              <div class="md:text-right">
+                <span class="text-xs font-bold text-slate-500 uppercase">Phí hủy:</span>
+                <span class="text-xl font-black text-primary ml-1">5%</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-white rounded-xl shadow-sm items-center">
+              <div>
+                <p class="text-xs font-bold uppercase text-secondary tracking-wider mb-1">Thời gian</p>
+                <p class="font-bold text-primary text-sm">15 - 30 ngày</p>
+              </div>
+              <div class="md:col-span-2">
+                <p class="text-xs text-on-surface-variant">Phí bao gồm chi phí cọc khách sạn và phương tiện vận chuyển.</p>
+              </div>
+              <div class="md:text-right">
+                <span class="text-xs font-bold text-slate-500 uppercase">Phí hủy:</span>
+                <span class="text-xl font-black text-primary ml-1">30%</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-white rounded-xl shadow-sm border-l-4 border-secondary items-center">
+              <div>
+                <p class="text-xs font-bold uppercase text-secondary tracking-wider mb-1">Thời gian</p>
+                <p class="font-bold text-primary text-sm">Dưới 7 ngày</p>
+              </div>
+              <div class="md:col-span-2">
+                <p class="text-xs text-on-surface-variant">Hủy sát ngày khởi hành không được hỗ trợ hoàn cọc.</p>
+              </div>
+              <div class="md:text-right">
+                <span class="text-xs font-bold text-slate-500 uppercase">Phí hủy:</span>
+                <span class="text-xl font-black text-secondary ml-1">100%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 flex items-start gap-3 p-4 bg-blue-50 rounded-xl text-blue-900 border border-blue-100">
+            <span class="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
+            <p class="text-xs leading-relaxed">
+              *Trường hợp hủy tour do bão lũ, thiên tai hoặc sự cố bất khả kháng, Vietnam Expeditions sẽ hỗ trợ dời ngày khởi hành hoàn toàn miễn phí hoặc bảo lưu tiền cọc trong vòng 12 tháng.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Responsibility -->
+      <section class="scroll-mt-28" id="responsibility">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">shield_person</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-black font-headline text-primary tracking-tight">04. Trách nhiệm các bên</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold font-headline text-on-surface">Về phía Vietnam Expeditions</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              Chúng tôi có trách nhiệm cung cấp đầy đủ các dịch vụ như đã cam kết trong lịch trình. Đảm bảo bảo hiểm du lịch toàn diện cho hành khách và giải quyết các phản ánh trong suốt hành trình.
+            </p>
+            <div class="aspect-video rounded-2xl overflow-hidden shadow-sm relative">
+              <img alt="Tour Guide" class="w-full h-full object-cover" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/banners/banner_1559592413-7cec4d0cae2b_w600.jpg"/>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold font-headline text-on-surface">Về phía Khách hàng</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              Cung cấp thông tin CCCD/Hộ chiếu chính xác, tuân thủ đúng giờ hẹn khởi hành và các chỉ dẫn an toàn của hướng dẫn viên đoàn.
+            </p>
+            <div class="bg-amber-50 p-6 rounded-2xl border-l-4 border-secondary text-amber-900">
+              <h4 class="font-bold text-sm mb-1">Lưu ý quan trọng:</h4>
+              <p class="text-xs leading-relaxed">Quý khách vui lòng mang theo giấy tờ tùy thân bản gốc và có mặt tại điểm hẹn trước giờ khởi hành ít nhất 30 phút.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section class="bg-gradient-to-r from-primary to-primary-container rounded-[2rem] p-10 text-center text-white relative overflow-hidden shadow-lg">
+        <div class="relative z-10">
+          <h2 class="text-2xl md:text-3xl font-black font-headline mb-4">Bạn còn thắc mắc về điều khoản?</h2>
+          <p class="text-blue-100 text-sm mb-8 max-w-xl mx-auto">
+            Đội ngũ tư vấn viên của chúng tôi luôn sẵn sàng hỗ trợ 24/7 để giải đáp mọi chi tiết cho bạn.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="tel:19008888" class="bg-white text-primary px-8 py-3.5 rounded-full font-bold shadow-md hover:bg-slate-100 transition-all text-sm">
+              Hotline: 1900 8888
+            </a>
+            <a href="mailto:support.vn" class="bg-transparent border-2 border-white/60 text-white px-8 py-3.5 rounded-full font-bold hover:bg-white/10 transition-all text-sm">
+              Gửi email hỗ trợ
+            </a>
+          </div>
+        </div>
+      </section>
+    </article>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full rounded-t-[2rem] mt-20 bg-slate-50 dark:bg-slate-950">
+    <div class="w-full px-8 py-12 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+        <div class="mb-8 md:mb-0">
+            <div class="font-black text-xl text-blue-900 dark:text-white mb-4">Vietnam Expeditions</div>
+            <p class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm leading-relaxed max-w-xs">
+                © 2024 Vietnam Expeditions. Những trải nghiệm du lịch được chế tác tỉ mỉ.
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="policy.html">Chính sách bảo mật</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="policy.html">Điều khoản dịch vụ</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="policy.html">Liên hệ</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="policy.html">Hỏi đáp</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="policy.html">Cẩm nang du lịch</a>
+        </div>
+        <div class="flex gap-4 mt-8 md:mt-0">
+            <button class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:bg-primary hover:text-white transition-all text-primary border border-slate-100">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'opsz' 20;">public</span>
+            </button>
+            <button class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:bg-primary hover:text-white transition-all text-primary border border-slate-100">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'opsz' 20;">share</span>
+            </button>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="../assets/js/api-client.js"></script>
+<script src="../assets/js/nav-auth.js"></script>
+<script src="../assets/js/mock-data.js"></script>
+<script src="../assets/js/customer-pages.js"></script>
+<script src="../assets/js/icons-fallback.js"></script>
+</body></html>

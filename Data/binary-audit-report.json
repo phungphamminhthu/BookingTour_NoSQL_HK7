@@ -1,0 +1,11 @@
+{
+  "totalTested": 160,
+  "passedCount": 160,
+  "failedCount": 0,
+  "byFormat": {
+    "PNG": 27,
+    "JPEG": 122,
+    "WEBP": 11
+  },
+  "failedList": []
+}

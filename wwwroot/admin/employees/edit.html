@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi" >
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Chỉnh sửa Nhân viên - Vietnam Expeditions</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
+  <script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { primary: "#1e3a8a", secondary: "#64748b", accent: "#3b82f6" }
+            }
+        }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+    body { font-family: 'Public Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-slate-50 py-6 border-r border-slate-200">
+  <div class="px-6 mb-8">
+    <h1 class="text-lg font-black text-blue-900 mb-1 tracking-tighter">Admin Portal</h1>
+    <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Vietnam Expedition</p>
+  </div>
+  <nav class="flex-1 space-y-1">
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../dashboard.html">
+      <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../tours/index.html">
+      <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý Tour</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../categories/index.html">
+      <span class="material-symbols-outlined">category</span><span>Quản lý Danh mục</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../departures/index.html">
+      <span class="material-symbols-outlined">map</span><span>Quản lý Chuyến đi</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+       href="../locations/index.html">
+      <span class="material-symbols-outlined">location_on</span>
+      <span>Quản lý Địa điểm</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../customers/index.html">
+      <span class="material-symbols-outlined">group</span><span>Quản lý Khách hàng</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+       href="../transactions/index.html">
+      <span class="material-symbols-outlined">payments</span><span>Quản lý Giao Dịch</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+       href="../employees/index.html">
+      <span class="material-symbols-outlined">badge</span>
+      <span>Quản lý Nhân Viên</span>
+    </a>
+  </nav>
+     <div class="px-4 mt-auto border-t border-slate-200 pt-4">
+    <button id="adminLogoutBtn" type="button" class="w-full text-red-500 hover:bg-red-50 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-all text-sm font-semibold text-left">
+      <span class="material-symbols-outlined">logout</span>
+      <span>Đăng xuất</span>
+    </button>
+  </div>
+</aside>
+
+<main class="md:ml-64 min-h-screen flex flex-col">
+  <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
+
+    <div class="flex items-center gap-4">
+      <div class="text-right hidden sm:block">
+        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+      </div>
+
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
+        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+             alt="Admin Profile"
+             class="w-full h-full object-cover"/>
+      </div>
+    </div>
+  </header>
+
+
+<div class="p-6 md:p-8">
+
+    <!-- NÚT QUAY LẠI: NẰM NGOÀI KHUNG -->
+    <div class="max-w-5xl mx-auto mb-6">
+        <a href="#"
+           class="inline-flex items-center gap-2 bg-white border border-slate-200
+                  text-slate-700 hover:bg-slate-50 transition px-5 py-2.5
+                  rounded-full font-bold shadow-sm text-sm">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="max-w-5xl mx-auto bg-white rounded-2xlshadow-sm border border-slate-200 p-6 md:p-10">
+        <!-- HEADER -->
+        <header class="text-center mb-8">
+            <div>
+                <h2 class="text-3xl font-black text-blue-900 tracking-tight">
+                    Chỉnh Sửa Nhân Viên #
+                </h2>
+                <p class="text-slate-500 mt-2">
+                    Cập nhật thông tin nhân sự và quyền hạn truy cập của nhân viên
+                </p>
+            </div>
+
+        </header>
+
+        <!-- SUCCESS / ERROR -->
+            <div class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-xl max-w-4xl">—</div>
+            <div class="hidden bg-red-50 border border-red-200 text-red-700 p-4 mb-6 rounded-xl max-w-4xl">
+                <p class="font-bold mb-2">Vui lòng kiểm tra lại thông tin:</p>
+                <ul class="list-disc pl-5 space-y-1 text-sm">
+                        
+                    
+                </ul>
+            </div>
+        
+
+        <!-- FORM -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 max-w-4xl mx-auto">
+            <form action="#" method="POST">
+                
+                
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- FULL NAME -->
+                    <div>
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Họ và tên <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                            name="full_name"
+                            value=""
+                            required
+                            maxlength="100"
+                            autocomplete="name"
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        
+                            
+                        
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div>
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Email công vụ <span class="text-red-500">*</span>
+                        </label>
+                        <input type="email"
+                            name="email"
+                            value=""
+                            required
+                            maxlength="100"
+                            autocomplete="email"
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        
+                            
+                        
+                    </div>
+
+                    <!-- PHONE -->
+                    <div>
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Số điện thoại
+                        </label>
+                        <input type="text"
+                            name="phone"
+                            value=""
+                            maxlength="20"
+                            autocomplete="tel"
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        
+                            
+                        
+                    </div>
+
+                    <!-- USERNAME -->
+                    <div>
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Tên đăng nhập <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                            name="username"
+                            value=""
+                            required
+                            maxlength="50"
+                            autocomplete="username"
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        
+                            
+                        
+                    </div>
+
+                    <!-- NEW PASSWORD -->
+                    <div>
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Mật khẩu mới
+                        </label>
+                        <input type="password"
+                            name="password"
+                            placeholder="Để trống nếu không đổi mật khẩu"
+                            minlength="8"
+                            autocomplete="new-password"
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        <p class="text-slate-400 text-xs mt-1">
+                            Chỉ nhập khi bạn muốn đổi mật khẩu.
+                        </p>
+                        
+                            
+                        
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div>
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Xác nhận mật khẩu mới
+                        </label>
+                        <input type="password"
+                            name="password_confirmation"
+                            placeholder="Nhập lại mật khẩu mới"
+                            minlength="8"
+                            autocomplete="new-password"
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                    </div>
+
+                    <!-- ROLE -->
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 font-bold text-slate-700 text-sm">
+                            Vai trò / Chức vụ <span class="text-red-500">*</span>
+                        </label>
+
+                        <select name="role_id"
+                                required
+                                class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                            <option value="">-- Chọn vai trò --</option>
+                            
+                                <option value=""
+                                    >—</option>
+                            
+                        </select>
+
+                        
+                            
+                        
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="mt-8 flex flex-wrap gap-4 pt-6 border-t border-slate-100">
+                    <button type="submit"
+                            class="bg-blue-900 hover:bg-blue-800 transition text-white font-bold px-8 py-3 rounded-xl shadow-sm text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">save_as</span>
+                        Cập nhật nhân viên
+                    </button>
+
+                    <a href="#"
+                    class="bg-slate-100 hover:bg-slate-200 transition text-slate-700 px-8 py-3 rounded-xl font-bold text-sm">
+                        Hủy bỏ
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<script src="../../assets/js/mock-data.js"></script>
+<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/icons-fallback.js"></script>
+</body>
+</html>

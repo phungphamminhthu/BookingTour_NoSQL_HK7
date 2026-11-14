@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi" >
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Thêm Chuyến đi Mới - Vietnam Expeditions</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
+  <script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: { primary: "#1e3a8a", secondary: "#64748b", accent: "#3b82f6" }
+            }
+        }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+    body { font-family: 'Public Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-slate-50 py-6 border-r border-slate-200">
+  <div class="px-6 mb-8">
+    <h1 class="text-lg font-black text-blue-900 mb-1 tracking-tighter">Admin Portal</h1>
+    <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Vietnam Expedition</p>
+  </div>
+  <nav class="flex-1 space-y-1">
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../dashboard.html">
+      <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../tours/index.html">
+      <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý Tour</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../categories/index.html">
+      <span class="material-symbols-outlined">category</span><span>Quản lý Danh mục</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../departures/index.html">
+      <span class="material-symbols-outlined">map</span><span>Quản lý Chuyến đi</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+       href="../locations/index.html">
+      <span class="material-symbols-outlined">location_on</span>
+      <span>Quản lý Địa điểm</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+        href="../customers/index.html">
+      <span class="material-symbols-outlined">group</span><span>Quản lý Khách hàng</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+       href="../transactions/index.html">
+      <span class="material-symbols-outlined">payments</span><span>Quản lý Giao Dịch</span>
+    </a>
+
+    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+       href="../employees/index.html">
+      <span class="material-symbols-outlined">badge</span>
+      <span>Quản lý Nhân Viên</span>
+    </a>
+  </nav>
+     <div class="px-4 mt-auto border-t border-slate-200 pt-4">
+    <button id="adminLogoutBtn" type="button" class="w-full text-red-500 hover:bg-red-50 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-all text-sm font-semibold text-left">
+      <span class="material-symbols-outlined">logout</span>
+      <span>Đăng xuất</span>
+    </button>
+  </div>
+</aside>
+
+<main class="md:ml-64 min-h-screen flex flex-col">
+  <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
+
+    <div class="flex items-center gap-4">
+      <div class="text-right hidden sm:block">
+        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+      </div>
+
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
+        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+             alt="Admin Profile"
+             class="w-full h-full object-cover"/>
+      </div>
+    </div>
+  </header>
+
+
+<div class="min-h-screen bg-slate-50 px-4 py-8 md:px-8">
+
+    <!-- NÚT QUAY LẠI: NẰM NGOÀI KHUNG -->
+    <div class="max-w-5xl mx-auto mb-6">
+        <a href="#"
+           class="inline-flex items-center gap-2 bg-white border border-slate-200
+                  text-slate-700 hover:bg-slate-50 transition px-5 py-2.5
+                  rounded-full font-bold shadow-sm text-sm">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- KHUNG BAO QUANH TIÊU ĐỀ VÀ FORM -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+
+            <!-- HEADER -->
+            <div class="bg-white px-6 py-6 md:px-8 border-b border-slate-100">
+                <div class="flex items-start justify-center">
+                    <div class="text-center">
+                        <h1 class="text-2xl md:text-3xl font-black text-blue-900 mb-2">
+                            Thêm Chuyến Khởi Hành Mới
+                        </h1>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            Tạo lịch khởi hành mới cho các tour có sẵn trong hệ thống,
+                            thiết lập ngày đi, giá vé, số chỗ và hướng dẫn viên phụ trách.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THÔNG BÁO LỖI -->
+            <div class="px-6 pt-6 md:px-8">
+                <div class="hidden bg-red-50 border border-red-200 border-l-4 border-l-red-500
+                            text-red-700 p-4 mb-4 rounded-xl flex items-start gap-2">
+                    <span class="material-symbols-outlined">error</span>
+                    <span>—</span>
+                </div>
+                <div class="hidden bg-red-50 border border-red-200 border-l-4 border-l-red-500
+                            text-red-700 p-4 rounded-xl">
+                    <div class="font-bold mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">warning</span>
+                        Vui lòng kiểm tra lại thông tin
+                    </div>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                            
+                        
+                    </ul>
+                </div>
+                
+
+            </div>
+
+            <!-- FORM -->
+            <form action="#"
+                  method="POST"
+                  class="px-6 pt-1 pb-6 md:px-8 md:pb-8 space-y-8">
+
+                
+
+                <!-- THÔNG TIN TOUR -->
+                <section>
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="material-symbols-outlined text-blue-900">tour</span>
+                        <h2 class="font-bold text-blue-900 text-base">
+                            Thông tin tour
+                        </h2>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">
+                            Thuộc Tour Du Lịch <span class="text-red-500">*</span>
+                        </label>
+
+                        <select name="tourId" required
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                       bg-white focus:border-blue-900 focus:ring-2
+                                       focus:ring-blue-100 outline-none transition text-sm">
+                            <option value="">-- Vui lòng chọn Tour --</option>
+
+                            
+                                <option value=""
+                                    >
+                                    
+                                    (NĐ
+                                    - )
+                                </option>
+                            
+                        </select>
+
+                        
+                            
+                        
+                    </div>
+                </section>
+
+                <!-- LỊCH KHỞI HÀNH -->
+                <section class="pt-7 border-t border-slate-100">
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="material-symbols-outlined text-blue-900">event</span>
+                        <h2 class="font-bold text-blue-900 text-base">
+                            Lịch trình khởi hành
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Ngày khởi hành <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="date"
+                                   name="departureDate"
+                                   id="departureDate"
+                                   min=""
+                                   value=""
+                                   required
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                          focus:border-blue-900 focus:ring-2 focus:ring-blue-100
+                                          outline-none text-sm font-semibold">
+
+                            
+                                
+                            
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Ngày trở về <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="date"
+                                   name="returnDate"
+                                   id="returnDate"
+                                   value=""
+                                   required
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                          focus:border-blue-900 focus:ring-2 focus:ring-blue-100
+                                          outline-none text-sm font-semibold">
+
+                            
+                                
+                            
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- SỐ CHỖ VÀ GIÁ VÉ -->
+                <section class="pt-7 border-t border-slate-100">
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="material-symbols-outlined text-blue-900">payments</span>
+                        <h2 class="font-bold text-blue-900 text-base">
+                            Số lượng chỗ và giá vé
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Tổng số chỗ <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="number"
+                                   name="maxSeats"
+                                   min="1"
+                                   value=""
+                                   required
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                          focus:border-blue-900 focus:ring-2 focus:ring-blue-100
+                                          outline-none text-sm font-bold">
+
+                            
+                                
+                            
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Giá người lớn (VNĐ) <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="number"
+                                   name="adultPrice"
+                                   min="0"
+                                   step="1000"
+                                   value=""
+                                   required
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                          focus:border-blue-900 focus:ring-2 focus:ring-blue-100
+                                          outline-none text-sm font-bold text-blue-900">
+
+                            
+                                
+                            
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Giá trẻ em (VNĐ) <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="number"
+                                   name="childPrice"
+                                   min="0"
+                                   step="1000"
+                                   value=""
+                                   required
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                          focus:border-blue-900 focus:ring-2 focus:ring-blue-100
+                                          outline-none text-sm font-bold text-blue-900">
+
+                            
+                                
+                            
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- HDV VÀ TRẠNG THÁI -->
+                <section class="pt-7 border-t border-slate-100">
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="material-symbols-outlined text-blue-900">manage_accounts</span>
+                        <h2 class="font-bold text-blue-900 text-base">
+                            Phân công và trạng thái
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Hướng dẫn viên phụ trách
+                            </label>
+
+                            <select name="guideId"
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                           bg-white focus:border-blue-900 focus:ring-2
+                                           focus:ring-blue-100 outline-none text-sm">
+                                <option value="">-- Chưa gán HDV (Gán sau) --</option>
+
+                                
+                                    <option value=""
+                                        >
+                                        
+                                        ()
+                                    </option>
+                                
+                            </select>
+
+                            
+                                
+                            
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">
+                                Trạng thái khởi hành
+                            </label>
+
+                            <select name="status"
+                                    id="statusSelect"
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200
+                                           bg-white focus:border-blue-900 focus:ring-2
+                                           focus:ring-blue-100 outline-none text-sm">
+                                <option value="open"
+                                    >
+                                    Đang mở bán (Open)
+                                </option>
+
+                                <option value="full"
+                                    >
+                                    Đã đầy chỗ (Full)
+                                </option>
+
+                                <option value="cancelled"
+                                    >
+                                    Tạm hủy chuyến (Cancelled)
+                                </option>
+                            </select>
+
+                            
+                                
+                            
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- NÚT THAO TÁC -->
+                <div class="pt-6 border-t border-slate-100
+                            flex flex-col-reverse sm:flex-row
+                            justify-end gap-3">
+
+                    <a href="#"
+                       class="inline-flex items-center justify-center gap-2
+                              px-6 py-3 rounded-xl border border-slate-200
+                              text-slate-600 font-bold text-sm
+                              hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                        Hủy bỏ
+                    </a>
+
+                    <button type="submit"
+                            class="inline-flex items-center justify-center gap-2
+                                   px-8 py-3 rounded-xl bg-blue-900 text-white
+                                   font-bold text-sm shadow-sm
+                                   hover:bg-blue-800 transition">
+                        <span class="material-symbols-outlined text-lg">save</span>
+                        Lưu Chuyến Đi
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 mt-5">
+            Vietnam Expeditions · Quản lý chuyến khởi hành
+        </p>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const depInput = document.getElementById('departureDate');
+    const retInput = document.getElementById('returnDate');
+    const statusSelect = document.getElementById('statusSelect');
+    const minOpenDate = "";
+
+    function updateConstraints() {
+        if (statusSelect && statusSelect.value === 'open') {
+            depInput.min = minOpenDate;
+            if (depInput.value && depInput.value < minOpenDate) {
+                depInput.value = minOpenDate;
+            }
+        } else {
+            depInput.removeAttribute('min');
+        }
+
+        if (depInput.value) {
+            retInput.min = depInput.value;
+            if (retInput.value && retInput.value < depInput.value) {
+                retInput.value = depInput.value;
+            }
+        }
+    }
+
+    if (depInput && retInput) {
+        depInput.addEventListener('change', updateConstraints);
+        if (statusSelect) {
+            statusSelect.addEventListener('change', updateConstraints);
+        }
+        updateConstraints();
+    }
+});
+</script>
+
+</main>
+
+<script src="../../assets/js/mock-data.js"></script>
+<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/icons-fallback.js"></script>
+</body>
+</html>

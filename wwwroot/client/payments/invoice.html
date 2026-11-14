@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght;500;600;700;800;900&amp;family=Plus+Jakarta+Sans:wght;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "surface-bright": "#f9f9ff",
+              "secondary-fixed-dim": "#ffb59c",
+              "inverse-surface": "#2e3037",
+              "surface-variant": "#e1e2ea",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#bbd0ff",
+              "on-secondary-container": "#6b1f00",
+              "tertiary": "#722b00",
+              "inverse-primary": "#acc7ff",
+              "error": "#ba1a1a",
+              "on-secondary-fixed": "#380c00",
+              "outline": "#727784",
+              "on-surface-variant": "#424752",
+              "surface-container": "#ededf6",
+              "primary-fixed-dim": "#acc7ff",
+              "tertiary-fixed-dim": "#ffb694",
+              "surface-container-high": "#e7e8f0",
+              "surface-dim": "#d9d9e2",
+              "secondary-fixed": "#ffdbcf",
+              "on-tertiary-container": "#ffc2a7",
+              "on-secondary": "#ffffff",
+              "surface": "#f9f9ff",
+              "surface-container-low": "#f2f3fc",
+              "tertiary-fixed": "#ffdbcc",
+              "on-error-container": "#93000a",
+              "on-primary-fixed-variant": "#004491",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#d7e2ff",
+              "tertiary-container": "#983c00",
+              "surface-container-lowest": "#ffffff",
+              "surface-tint": "#115cb9",
+              "on-background": "#191c21",
+              "surface-container-highest": "#e1e2ea",
+              "primary": "#003f87",
+              "outline-variant": "#c2c6d4",
+              "on-primary-fixed": "#001a40",
+              "on-secondary-fixed-variant": "#822800",
+              "primary-container": "#0056b3",
+              "background": "#f9f9ff",
+              "secondary": "#a43c12",
+              "secondary-container": "#fe7e4f",
+              "on-tertiary-fixed-variant": "#7b2f00",
+              "on-tertiary-fixed": "#351000",
+              "on-surface": "#191c21",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#f0f0f9"
+            },
+            "borderRadius": {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "1.5rem",
+              "full": "9999px"
+            },
+            "fontFamily": {
+              "headline": ["Be Vietnam Pro"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      h1, h2, h3 { font-family: 'Be Vietnam Pro', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-surface text-on-surface selection:bg-primary-container selection:text-primary min-h-screen">
+  
+  <!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="../home.html" class="text-2xl font-black text-blue-900 dark:text-white italic font-['Be_Vietnam_Pro'] tracking-tight hover:opacity-80 transition-opacity decoration-transparent">
+            Vietnam Expeditions
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="../tours/by_province.html">Điểm đến</a>
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="../tours/index.html">Tour</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- User state -->
+            <div data-nav-auth="user" class="hidden items-center gap-3">
+                <a href="../profile/show.html"
+                   class="text-blue-900 dark:text-white font-bold hover:text-blue-600 transition flex items-center gap-2 text-sm">
+                    <span>Xin chào,</span>
+                    <span data-nav-user-name class="font-extrabold text-blue-900 dark:text-white"></span>
+                </a>
+                <button type="button" data-nav-logout
+                    class="px-4 py-2 rounded-full text-sm font-bold text-red-600 hover:bg-red-50 transition-transform active:scale-90 inline-block">
+                    Đăng xuất
+                </button>
+            </div>
+            <!-- Guest state -->
+            <div data-nav-auth="guest" class="flex items-center gap-3">
+                <a href="../profile/show.html"
+                   class="text-slate-700 dark:text-slate-300 font-bold hover:text-blue-900 transition flex items-center gap-2 text-sm">
+                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-xs" data-nav-user-initials>NA</span>
+                    <span class="hidden sm:inline">Hồ sơ</span>
+                </a>
+                <a href="../auth/login.html"
+                   class="px-5 py-2 rounded-full font-bold text-xs bg-blue-900 text-white hover:bg-blue-800 transition inline-block">
+                    Đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto">
+    <!-- Stepper -->
+    <div class="max-w-xl mx-auto mb-10 relative flex justify-between items-center text-xs font-bold text-on-surface-variant">
+        <div class="absolute h-[2px] bg-surface-container-high w-full top-4 left-0 -z-10"></div>
+        <div class="flex flex-col items-center gap-2">
+            <span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm">✓</span>
+            <span class="text-primary">Chọn chuyến đi</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm">✓</span>
+            <span class="text-primary">Thông tin hành khách</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+            <span class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center text-sm shadow">3</span>
+            <span class="text-secondary font-bold">Thanh toán</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 opacity-40">
+            <span class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-sm">4</span>
+            <span>Hoàn tất</span>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h1 class="font-headline font-extrabold text-3xl md:text-4xl text-primary tracking-tight mb-2">Thanh toán &amp; Xác nhận</h1>
+        <p class="text-on-surface-variant text-sm max-w-2xl">Hoàn tất thủ tục thanh toán để bắt đầu hành trình khám phá di sản Việt Nam cùng chúng tôi.</p>
+    </div>
+
+    <form action="#" method="POST" id="checkoutForm">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-8 space-y-8">
+                <section class="bg-surface-container-low rounded-2xl p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">payments</span>
+                        <h2 class="font-headline font-bold text-2xl">Phương thức thanh toán</h2>
+                    </div>
+                    <input type="hidden" name="paymentMethod" value="Thẻ quốc tế"/>
+                    <div class="p-5 rounded-2xl bg-surface-container-lowest border-2 border-primary flex items-center justify-between shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-3xl">credit_card</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-primary text-base">Thẻ thanh toán quốc tế / Thẻ nội địa</p>
+                                <p class="text-xs text-on-surface-variant">Hỗ trợ Visa, Mastercard, JCB, thẻ ghi nợ nội địa</p>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    </div>
+
+                    <!-- Chi tiết thẻ -->
+                    <div id="card-details" class="mt-8 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold px-2">Số thẻ <span class="text-red-500">*</span></label>
+                                <input name="card_number" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="**** **** **** ****" type="text"/>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold px-2">Tên trên thẻ <span class="text-red-500">*</span></label>
+                                <input name="card_holder" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="NGUYEN VAN AN" type="text"/>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="space-y-2 col-span-1">
+                                <label class="text-sm font-semibold px-2">Ngày hết hạn <span class="text-red-500">*</span></label>
+                                <input name="card_expiry" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="MM/YY" type="text"/>
+                            </div>
+                            <div class="space-y-2 col-span-1">
+                                <label class="text-sm font-semibold px-2">CVV <span class="text-red-500">*</span></label>
+                                <input name="card_cvv" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="***" type="password" maxlength="4"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-200">
+                        <a href="#"
+                           class="flex items-center gap-1 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-sm">arrow_back</span>
+                            Quay lại thông tin hành khách
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tóm tắt đơn hàng (Sidebar) -->
+            <div class="lg:col-span-4 space-y-6">
+                <aside class="sticky top-28">
+                    <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-surface-container-high">
+                        <h3 class="font-headline font-bold text-xl mb-4">Tóm tắt đơn hàng</h3>
+                        <div class="rounded-xl overflow-hidden mb-4 relative h-40">
+                            <img alt="" class="w-full h-full object-cover" src=""/>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+                                <span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Xác nhận thanh toán</span>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-bold text-primary text-base">—</h4>
+                                <div class="flex items-center gap-1.5 text-xs text-on-surface-variant mt-1.5 font-semibold">
+                                    <span class="material-symbols-outlined text-sm">calendar_today</span>
+                                    <span>
+                                         - 
+                                        (NĐ)
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 py-3 bg-surface-container-low rounded-xl px-4">
+                                <span class="material-symbols-outlined text-primary">group</span>
+                                <div>
+                                    <p class="text-xs font-bold text-on-surface-variant">Người liên hệ</p>
+                                    <p class="text-sm font-bold text-on-surface"> ( khách)</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 pt-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-on-surface-variant">Người lớn (x)</span>
+                                    <span class="font-medium">đ</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-on-surface-variant">Trẻ em (x)</span>
+                                    <span class="font-medium">đ</span>
+                                </div>
+                                
+                                <div class="flex justify-between text-lg font-bold border-t border-surface-container-high pt-3 mt-3">
+                                    <span>Tổng cộng</span>
+                                    <span class="text-secondary text-2xl font-black">đ</span>
+                                </div>
+                            </div>
+                            <button id="submit-btn" type="submit" class="w-full py-4 rounded-full font-bold bg-primary text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 mt-4 hover:opacity-90">
+                                <span id="submit-icon" class="material-symbols-outlined">lock</span>
+                                <span id="submit-text">Xác nhận thanh toán</span>
+                            </button>
+                            <p class="text-[11px] text-center text-on-surface-variant px-4">
+                                Bằng cách nhấn nút, bạn đồng ý với <a class="underline text-primary" href="#">Điều khoản dịch vụ</a> và chính sách của Vietnam Expeditions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-surface-container-low rounded-2xl p-6 border border-dashed border-primary/20">
+                        <div class="flex gap-4 items-center mb-4">
+                            <span class="material-symbols-outlined text-secondary text-3xl">verified_user</span>
+                            <div>
+                                <h4 class="font-bold">Đảm bảo an toàn</h4>
+                                <p class="text-xs text-on-surface-variant">Dữ liệu được mã hóa SSL 256-bit chuẩn quốc tế.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
+                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">VISA</div>
+                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">MC</div>
+                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">PCI</div>
+                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">SSL</div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('checkoutForm');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitIcon = document.getElementById('submit-icon');
+        const submitText = document.getElementById('submit-text');
+
+        if (form && submitBtn) {
+            form.addEventListener('submit', function() {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+                submitIcon.innerText = "hourglass_empty";
+                submitIcon.classList.add('animate-spin');
+                submitText.innerText = "Đang xử lý thanh toán...";
+            });
+        }
+    });
+</script>
+
+<script src="../../assets/js/api-client.js"></script>
+<!-- Footer -->
+<footer class="w-full rounded-t-[2rem] mt-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
+    <div class="w-full px-8 py-12 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+        <div class="mb-8 md:mb-0">
+            <div class="font-black text-xl text-blue-900 dark:text-white mb-4">Vietnam Expeditions</div>
+            <p class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm leading-relaxed max-w-xs">
+                © 2024 Vietnam Expeditions. Những trải nghiệm du lịch được chế tác tỉ mỉ.
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+            <a class="text-slate-500 dark:text-slate-400 text-sm hover:text-blue-800 transition-opacity" href="../policy.html">Chính sách bảo mật</a>
+            <a class="text-slate-500 dark:text-slate-400 text-sm hover:text-blue-800 transition-opacity" href="../policy.html">Điều khoản dịch vụ</a>
+            <a class="text-slate-500 dark:text-slate-400 text-sm hover:text-blue-800 transition-opacity" href="../policy.html">Liên hệ</a>
+            <a class="text-slate-500 dark:text-slate-400 text-sm hover:text-blue-800 transition-opacity" href="../policy.html">Hỏi đáp</a>
+        </div>
+    </div>
+</footer>
+<script src="../../assets/js/api-client.js"></script>
+<script src="../../assets/js/nav-auth.js"></script>
+<script src="../../assets/js/mock-data.js"></script>
+<script src="../../assets/js/customer-pages.js"></script>
+<script src="../../assets/js/icons-fallback.js"></script>
+</body></html>

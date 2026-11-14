@@ -1,0 +1,57 @@
+/**
+ * My Tours Page Stylesheet
+ * Vietnam Expeditions Client Portal
+ */
+
+/* Tab Navigation */
+.my-tours-tab {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.my-tours-tab.active {
+  background-color: #003f87 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 63, 135, 0.25);
+}
+
+.my-tours-tab.active span:last-child {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* Card Hover Elevation */
+.my-tour-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.my-tour-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -6px rgba(0, 63, 135, 0.08), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+}
+
+/* Hide scrollbar for tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Search input focus transition */
+#myToursSearchInput {
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Pulse animation for upcoming status indicator */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+

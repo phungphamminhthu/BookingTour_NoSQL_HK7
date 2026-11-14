@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Vietnam Expeditions | Trải Nghiệm Du Lịch Tuyển Chọn</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght,400;0,700;0,900;1,900&amp;family=Plus+Jakarta+Sans:wght;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f0f9",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-container": "#bbd0ff",
+                        "surface-container": "#ededf6",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e2ea",
+                        "primary-container": "#0056b3",
+                        "secondary": "#a43c12",
+                        "surface": "#f9f9ff",
+                        "primary-fixed-dim": "#acc7ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e8f0",
+                        "on-secondary-fixed-variant": "#822800",
+                        "primary-fixed": "#d7e2ff",
+                        "on-surface": "#191c21",
+                        "on-tertiary-container": "#ffc2a7",
+                        "tertiary-fixed-dim": "#ffb694",
+                        "background": "#f9f9ff",
+                        "outline-variant": "#c2c6d4",
+                        "on-secondary-container": "#6b1f00",
+                        "surface-container-low": "#f2f3fc",
+                        "on-background": "#191c21",
+                        "on-secondary-fixed": "#380c00",
+                        "primary": "#003f87",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#424752",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#722b00",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#983c00",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#acc7ff",
+                        "on-primary-fixed-variant": "#004491",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#727784",
+                        "surface-dim": "#d9d9e2",
+                        "secondary-fixed": "#ffdbcf",
+                        "surface-container-highest": "#e1e2ea",
+                        "tertiary-fixed": "#ffdbcc",
+                        "surface-tint": "#115cb9",
+                        "on-tertiary-fixed": "#351000",
+                        "secondary-container": "#fe7e4f",
+                        "on-primary-fixed": "#001a40",
+                        "secondary-fixed-dim": "#ffb59c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Be Vietnam Pro"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .text-shadow-sm {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+         display: none;
+         }
+
+        .no-scrollbar {
+         -ms-overflow-style: none;
+         scrollbar-width: none;
+         }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="../home.html" class="text-2xl font-black text-blue-900 dark:text-white italic font-['Be_Vietnam_Pro'] tracking-tight hover:opacity-80 transition-opacity decoration-transparent">
+            Vietnam Expeditions
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="../tours/by_province.html">Điểm đến</a>
+            <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300" href="../tours/index.html">Tour</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- User state -->
+            <div data-nav-auth="user" class="hidden items-center gap-3">
+                <a href="../profile/show.html"
+                   class="text-blue-900 dark:text-white font-bold hover:text-blue-600 transition flex items-center gap-2 text-sm">
+                    <span>Xin chào,</span>
+                    <span data-nav-user-name class="font-extrabold text-blue-900 dark:text-white"></span>
+                </a>
+                <button type="button" data-nav-logout
+                    class="px-4 py-2 rounded-full text-sm font-bold text-red-600 hover:bg-red-50 transition-transform active:scale-90 inline-block">
+                    Đăng xuất
+                </button>
+            </div>
+            <!-- Guest state -->
+            <div data-nav-auth="guest" class="flex items-center gap-3">
+                <a href="../profile/show.html"
+                   class="text-slate-700 dark:text-slate-300 font-bold hover:text-blue-900 transition flex items-center gap-2 text-sm">
+                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-xs" data-nav-user-initials>NA</span>
+                    <span class="hidden sm:inline">Hồ sơ</span>
+                </a>
+                <a href="../auth/login.html"
+                   class="px-5 py-2 rounded-full font-bold text-xs bg-blue-900 text-white hover:bg-blue-800 transition inline-block">
+                    Đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+<div class="pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto">
+    <!-- Expedition Scroller: Image Gallery -->
+    <section class="relative w-full h-[400px] md:h-[550px] mb-12 rounded-3xl overflow-hidden group/carousel shadow-lg">
+        <div id="slider" class="w-full h-full flex overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar">
+            
+                
+                <div class="min-w-full h-full relative snap-start flex-shrink-0">
+                    <img class="w-full h-full object-cover" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg" alt="Tour image"/>
+                    <div class="absolute bottom-6 left-6 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl text-white text-sm font-medium flex items-center gap-2">
+                        <span>Hành trình khám phá di sản</span>
+                        <span class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">Ảnh bìa</span>
+                    </div>
+                </div>
+                
+            
+                <div class="min-w-full h-full relative snap-start flex-shrink-0">
+                    <img class="w-full h-full object-cover" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1559592413-7cec4d0cae2b_w1200.jpg" alt="Hội An lung linh lồng đèn"/>
+                    <div class="absolute bottom-6 left-6 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl text-white text-sm font-medium">
+                        Khám phá vẻ đẹp Việt Nam
+                    </div>
+                </div>
+            
+        </div>
+
+        <button onclick="scrollSlider(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-12 h-12 rounded-full opacity-80 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm z-10 flex items-center justify-center">
+            <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        <button onclick="scrollSlider(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-12 h-12 rounded-full opacity-80 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm z-10 flex items-center justify-center">
+            <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+    </section>
+
+    <!-- Content Layout with Sticky Sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Left Column: Details -->
+        <div class="lg:col-span-2">
+            <header class="mb-8">
+                <div class="flex items-center gap-2 mb-3">
+                    <span id="tourDetailCategory" class="bg-secondary/10 text-secondary text-xs font-black uppercase px-3 py-1 rounded-full">Du lịch tuyển chọn</span>
+                    <span id="tourDetailStatusBadge" class="bg-blue-50 text-blue-700 text-xs font-black uppercase px-3 py-1 rounded-full">Khởi hành định kỳ</span>
+                </div>
+                <h1 id="tourDetailTitle" class="font-headline font-black text-3xl md:text-5xl text-primary tracking-tight mb-4">Chi tiết chuyến du lịch</h1>
+                
+                <div class="flex items-center gap-4 text-slate-500 text-sm">
+                    <div class="flex items-center gap-1">
+                        <span class="material-symbols-outlined text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span id="tourDetailRating" class="font-bold text-on-surface">5.0</span>
+                        <span id="tourDetailReviewCount">(0 đánh giá)</span>
+                    </div>
+                    <div class="w-1 h-1 bg-slate-300 rounded-full"></div>
+                    <div class="flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined text-sm">location_on</span>
+                        <span id="tourDetailLocation" class="font-semibold">Việt Nam</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Description Content -->
+            <div class="space-y-12">
+                <section>
+                    <h2 class="font-headline font-bold text-2xl text-primary mb-4">Về chuyến đi</h2>
+                    <p id="tourDetailDesc" class="text-on-surface-variant leading-relaxed text-base mb-6">Khám phá hành trình tuyệt vời cùng Vietnam Expeditions.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-surface-container-low p-4 rounded-2xl">
+                            <span class="material-symbols-outlined text-secondary block mb-1">schedule</span>
+                            <span class="text-xs text-slate-500 font-bold block">THỜI GIAN</span>
+                            <span id="tourDetailDuration" class="font-bold text-primary text-sm">-- ngày -- đêm</span>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-2xl">
+                            <span class="material-symbols-outlined text-secondary block mb-1">translate</span>
+                            <span class="text-xs text-slate-500 font-bold block">NGÔN NGỮ</span>
+                            <span id="tourDetailLanguage" class="font-bold text-primary text-sm">Tiếng Việt, English</span>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-2xl">
+                            <span class="material-symbols-outlined text-secondary block mb-1">directions_bus</span>
+                            <span class="text-xs text-slate-500 font-bold block">DI CHUYỂN</span>
+                            <span id="tourDetailTransport" class="font-bold text-primary text-sm">Xe du lịch cao cấp</span>
+                        </div>
+                        <div class="bg-surface-container-low p-4 rounded-2xl">
+                            <span class="material-symbols-outlined text-secondary block mb-1">hotel</span>
+                            <span class="text-xs text-slate-500 font-bold block">KHÁCH SẠN</span>
+                            <span id="tourDetailHotel" class="font-bold text-primary text-sm">Tiêu chuẩn 4 sao</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Inclusions & Exclusions -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-surface-container-low p-6 rounded-3xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4 text-green-700 font-bold text-base">
+                            <span class="material-symbols-outlined text-green-600">check_circle</span>
+                            <h3>Dịch vụ bao gồm</h3>
+                        </div>
+                        <ul id="tourDetailInclusions" class="space-y-3 text-sm text-slate-700">
+                            <!-- JS populated -->
+                        </ul>
+                    </div>
+                    <div class="bg-surface-container-low p-6 rounded-3xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4 text-slate-700 font-bold text-base">
+                            <span class="material-symbols-outlined text-slate-400">cancel</span>
+                            <h3>Dịch vụ không bao gồm</h3>
+                        </div>
+                        <ul id="tourDetailExclusions" class="space-y-3 text-sm text-slate-600">
+                            <!-- JS populated -->
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Itinerary Section -->
+                <section class="bg-surface-container-low p-8 rounded-3xl relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="font-headline font-bold text-2xl text-primary">Lịch trình chi tiết</h3>
+                            <p class="text-slate-500 text-xs mt-1">Hành trình được thiết kế tối ưu trải nghiệm</p>
+                        </div>
+                        <span id="itineraryDaysCount" class="text-xs font-bold text-primary bg-white px-3 py-1.5 rounded-full border border-slate-200"></span>
+                    </div>
+                    <div id="itineraryContainer" class="space-y-6 relative">
+                        <!-- JS renders days dynamically here -->
+                    </div>
+                </section>
+
+                <!-- Reviews Section -->
+                <section>
+                    <div class="flex justify-between items-end mb-8">
+                        <div>
+                            <h3 class="font-headline font-bold text-2xl text-primary mb-1">Tiếng nói lữ khách</h3>
+                            <p class="text-slate-500 text-sm">Những chia sẻ chân thật từ khách hàng đã trải nghiệm</p>
+                        </div>
+                        <a id="btnWriteReviewLink" href="#" class="px-5 py-2.5 bg-surface-container-low text-primary hover:bg-primary hover:text-white rounded-full text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
+                            <span class="material-symbols-outlined text-sm">edit_note</span>
+                            <span>Gửi đánh giá</span>
+                        </a>
+                    </div>
+                    <div id="reviewsContainer" class="space-y-4">
+                        <!-- JS renders reviews or empty state dynamically here -->
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Right Column: Booking Sidebar -->
+        <div class="lg:col-span-1">
+            <div class="sticky top-28 space-y-6">
+                <div class="bg-surface-container-lowest p-8 rounded-3xl shadow-lg border border-surface-container">
+                    <div class="mb-6">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Giá người lớn từ</span>
+                        <div id="tourDetailPrice" class="text-3xl font-black text-primary">
+                            <span>0</span> <span class="text-sm font-bold text-slate-500">VNĐ/khách</span>
+                        </div>
+                        <div id="tourDetailChildPriceWrapper" class="text-xs font-semibold text-slate-500 mt-1">
+                            Giá trẻ em: <strong id="tourDetailChildPrice" class="text-secondary">0 VNĐ</strong>
+                        </div>
+                    </div>
+
+                    <form action="../booking/create.html" method="GET" id="bookingActionForm" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider flex items-center justify-between">
+                                <span>Chọn ngày khởi hành</span>
+                                <span id="selectedSeatsBadge" class="text-[11px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full border border-green-200 hidden"></span>
+                            </label>
+                            <div class="relative">
+                                <select name="departure_id"
+                                        id="departureSelect"
+                                        class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3.5 font-medium text-slate-800 focus:ring-2 focus:ring-primary/20 text-sm cursor-pointer"
+                                        required>
+                                    <option value="">-- Đang nạp lịch khởi hành... --</option>
+                                </select>
+                            </div>
+                            <div id="departureGuideInfo" class="mt-2 text-[11px] text-slate-500 flex items-center gap-1 hidden">
+                                <span class="material-symbols-outlined text-xs text-primary">badge</span>
+                                <span>Hướng dẫn viên: <strong id="departureGuideName" class="text-slate-700"></strong></span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2 border-t border-slate-100 text-xs text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-green-600">verified</span>
+                                <span>Xác nhận chỗ tức thì</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-green-600">security</span>
+                                <span>Bảo hiểm du lịch trọn gói</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-green-600">support_agent</span>
+                                <span>Hỗ trợ tư vấn 24/7</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnBookNow" class="w-full text-center bg-gradient-to-br from-primary to-primary-container text-white py-4 rounded-full font-black text-base shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5 block">
+                            Đặt tour ngay
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function scrollSlider(direction) {
+    const slider = document.getElementById('slider');
+    const itemWidth = slider.clientWidth;
+    slider.scrollBy({
+        left: direction * itemWidth,
+        behavior: 'smooth'
+    });
+}
+</script>
+
+<!-- Footer (Correctly positioned at bottom of page) -->
+<footer class="w-full rounded-t-[2rem] mt-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
+    <div class="w-full px-8 py-12 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+        <div class="mb-8 md:mb-0">
+            <div class="font-black text-xl text-blue-900 dark:text-white mb-4">Vietnam Expeditions</div>
+            <p class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm leading-relaxed max-w-xs">
+                © 2024 Vietnam Expeditions. Những trải nghiệm du lịch được chế tác tỉ mỉ.
+            </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Chính sách bảo mật</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Điều khoản dịch vụ</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Liên hệ</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Hỏi đáp</a>
+            <a class="text-slate-500 dark:text-slate-400 font-['Plus_Jakarta_Sans'] text-sm hover:text-blue-800 dark:hover:text-blue-300 transition-opacity opacity-80 hover:opacity-100" href="../policy.html">Cẩm nang du lịch</a>
+        </div>
+        <div class="flex gap-4 mt-8 md:mt-0">
+            <button aria-label="Website" class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:bg-primary hover:text-white transition-all text-primary border border-slate-100">
+                <span class="material-symbols-outlined text-base">public</span>
+            </button>
+            <button aria-label="Chia sẻ" class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:bg-primary hover:text-white transition-all text-primary border border-slate-100">
+                <span class="material-symbols-outlined text-base">share</span>
+            </button>
+        </div>
+    </div>
+</footer>
+<!-- Scripts -->
+<script src="../../assets/js/api-client.js"></script>
+<script src="../../assets/js/nav-auth.js"></script>
+<script src="../../assets/js/mock-data.js"></script>
+<script src="../../assets/js/customer-pages.js"></script>
+<script src="../../assets/js/icons-fallback.js"></script>
+</body></html>
