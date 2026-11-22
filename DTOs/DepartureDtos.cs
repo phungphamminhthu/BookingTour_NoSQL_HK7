@@ -42,7 +42,7 @@ public class DepartureCreateRequest
 public class DepartureUpdateRequest : DepartureCreateRequest
 {
     [JsonPropertyName("available_seats")]
-    public int AvailableSeats { get; set; }
+    public int? AvailableSeats { get; set; }
 }
 
 public class AssignGuideRequest

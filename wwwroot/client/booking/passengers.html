@@ -153,7 +153,7 @@
 
 
 
-<form action="../payments/invoice.html" method="GET">
+<form id="passengersForm" action="../payments/invoice.html" method="GET">
     
     <div class="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto">
         <div class="flex items-center gap-2 text-xs text-on-surface-variant mb-6 font-medium">
@@ -288,63 +288,78 @@
                         <span class="material-symbols-outlined text-sm">arrow_back</span>
                         Quay lại
                     </a>
-                    <button type="submit" class="px-8 py-3.5 rounded-full font-bold bg-primary text-white shadow-md transition-transform hover:scale-[1.02] flex items-center gap-2 text-sm">
+                    <button type="submit" disabled class="px-8 py-3.5 rounded-full font-bold bg-primary text-white shadow-md transition-transform hover:scale-[1.02] flex items-center gap-2 text-sm">
                         Tiếp tục thanh toán
                         <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Thông tin booking hiện tại (Sidebar) -->
             <div class="lg:col-span-4">
                 <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-surface-container sticky top-24">
+
                     <div class="rounded-xl overflow-hidden mb-4 h-44 relative">
-                        <img src="1"
-                             alt="1"
-                             class="w-full h-full object-cover"/>
-                        <span class="absolute top-3 left-3 bg-secondary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase shadow">
-                            1
+                        <img id="passengersTourImage"
+                            src=""
+                            alt="Ảnh tour"
+                            class="w-full h-full object-cover"/>
+
+                        <span id="passengersTourCategory"
+                            class="absolute top-3 left-3 bg-secondary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase shadow">
+                            Tour du lịch
                         </span>
                     </div>
-                    <h3 class="font-headline font-bold text-base text-primary mb-3">
-                        1
+
+                    <h3 id="passengersTourTitle"
+                        class="font-headline font-bold text-base text-primary mb-3">
+                        Đang tải thông tin tour...
                     </h3>
 
                     <div class="space-y-3 mb-5">
                         <div class="flex items-center gap-2 text-xs text-on-surface-variant">
                             <span class="material-symbols-outlined text-sm text-primary">calendar_month</span>
-                            <span>Ngày đi: <span class="font-semibold text-on-surface">1 (1N1Đ)</span></span>
+                            <span>Ngày đi:
+                                <span id="passengersDepartureDate" class="font-semibold text-on-surface">—</span>
+                            </span>
                         </div>
+
                         <div class="flex items-center gap-2 text-xs text-on-surface-variant">
                             <span class="material-symbols-outlined text-sm text-primary">group</span>
-                            <span>Số lượng: <span class="font-semibold text-on-surface">1 người lớn1</span></span>
+                            <span>Số lượng:
+                                <span id="passengersCount" class="font-semibold text-on-surface">—</span>
+                            </span>
                         </div>
+
                         <div class="flex items-center gap-2 text-xs text-on-surface-variant">
                             <span class="material-symbols-outlined text-sm text-primary">location_on</span>
-                            <span>Khởi hành: <span class="font-semibold text-on-surface">1</span></span>
+                            <span>Khởi hành:
+                                <span id="passengersDepartureLocation" class="font-semibold text-on-surface">—</span>
+                            </span>
                         </div>
                     </div>
 
                     <div class="border-t border-surface-container pt-4 space-y-2 text-xs">
                         <div class="flex justify-between">
-                            <span class="text-on-surface-variant">Người lớn (1 x 1đ)</span>
-                            <span class="font-semibold text-on-surface">1đ</span>
+                            <span id="passengersAdultLabel" class="text-on-surface-variant">Người lớn</span>
+                            <span id="passengersAdultAmount" class="font-semibold text-on-surface">0 đ</span>
                         </div>
-                         
-                        <div class="flex justify-between">
-                            <span class="text-on-surface-variant">Trẻ em (1 x 1đ)</span>
-                            <span class="font-semibold text-on-surface">1đ</span>
+
+                        <div id="passengersChildRow" class="flex justify-between">
+                            <span id="passengersChildLabel" class="text-on-surface-variant">Trẻ em</span>
+                            <span id="passengersChildAmount" class="font-semibold text-on-surface">0 đ</span>
                         </div>
-                        
+
                         <div class="flex justify-between items-end border-t border-surface-container pt-3 mt-2">
                             <span class="font-bold text-sm text-on-surface">Tổng cộng</span>
-                            <span class="text-2xl font-black text-secondary">1đ</span>
+                            <span id="passengersTotal" class="text-2xl font-black text-secondary">0 đ</span>
                         </div>
                     </div>
 
                     <div class="mt-4 p-3 bg-blue-50 rounded-xl flex items-start gap-2 border border-blue-100">
                         <span class="material-symbols-outlined text-blue-600 text-sm mt-0.5">verified</span>
-                        <p class="text-[11px] text-blue-800 leading-relaxed">Giá đã bao gồm thuế VAT và bảo hiểm du lịch toàn diện.</p>
+                        <p class="text-[11px] text-blue-800 leading-relaxed">
+                            Giá đã bao gồm thuế VAT và bảo hiểm du lịch toàn diện.
+                        </p>
                     </div>
                 </div>
             </div>

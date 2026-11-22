@@ -199,7 +199,7 @@ public class TourService : ITourService
             DurationDays = request.DurationDays,
             DurationNights = request.DurationNights,
             PickupPoint = request.PickupPoint?.Trim(),
-            MinPrice = request.MinPrice,
+            MinPrice = request.MinPrice ?? 0m,
             Description = request.Description?.Trim(),
             ItinerarySummary = request.ItinerarySummary?.Trim(),
             IncludedServices = request.IncludedServices?.Trim(),
@@ -242,7 +242,7 @@ public class TourService : ITourService
         tour.DurationDays = request.DurationDays;
         tour.DurationNights = request.DurationNights;
         tour.PickupPoint = request.PickupPoint?.Trim();
-        tour.MinPrice = request.MinPrice > 0 ? request.MinPrice : tour.MinPrice;
+        tour.MinPrice = request.MinPrice ?? tour.MinPrice;
         tour.Description = request.Description?.Trim();
         tour.ItinerarySummary = request.ItinerarySummary?.Trim();
         tour.IncludedServices = request.IncludedServices?.Trim();
@@ -293,61 +293,72 @@ public class TourService : ITourService
 
     public async Task<TourScheduleEmbedded> AddScheduleAsync(int tourId, ScheduleCreateRequest request)
     {
-        var tour = await _context.Tours.Find(t => t.Id == tourId).FirstOrDefaultAsync()
-                   ?? throw new KeyNotFoundException($"Không tìm thấy tour {tourId}.");
+        var filters = Builders<Tour>.Filter;
+        var byId = filters.Eq(t => t.Id, tourId);
+        var uniqueDay = filters.Not(filters.ElemMatch(t => t.Schedules, item => item.DayNumber == request.DayNumber));
+        if (!await _context.Tours.Find(byId).AnyAsync())
+            throw new KeyNotFoundException($"Không tìm thấy tour {tourId}.");
 
-        if (tour.Schedules.Any(s => s.DayNumber == request.DayNumber))
-        {
-            throw new ArgumentException($"Ngày thứ {request.DayNumber} đã tồn tại trong lịch trình của tour này.");
-        }
-
-        var nextSchedId = await _context.GetNextSequenceAsync("schedules");
         var schedule = new TourScheduleEmbedded
         {
-            Id = nextSchedId,
+            Id = await _context.GetNextSequenceAsync("schedules"),
             DayNumber = request.DayNumber,
             Title = request.Title.Trim(),
             Activities = request.Activities?.Trim()
         };
+        var result = await _context.Tours.UpdateOneAsync(byId & uniqueDay, Builders<Tour>.Update
+            .Push(t => t.Schedules, schedule)
+            .Set(t => t.UpdatedAt, DateTime.UtcNow));
+        if (result.MatchedCount == 0)
+            throw new ArgumentException($"Không thể thêm ngày {request.DayNumber}. Ngày này đã có hoặc tour không còn tồn tại.");
 
-        tour.Schedules.Add(schedule);
-        tour.UpdatedAt = DateTime.UtcNow;
-
-        await _context.Tours.ReplaceOneAsync(t => t.Id == tourId, tour);
         return schedule;
     }
 
     public async Task<bool> UpdateScheduleAsync(int scheduleId, ScheduleUpdateRequest request)
     {
-        var tour = await _context.Tours.Find(t => t.Schedules.Any(s => s.Id == scheduleId)).FirstOrDefaultAsync()
-                   ?? throw new KeyNotFoundException($"Không tìm thấy lịch trình mã {scheduleId}.");
-
-        var duplicate = tour.Schedules.Any(s => s.Id != scheduleId && s.DayNumber == request.DayNumber);
-        if (duplicate)
+        var filters = Builders<Tour>.Filter;
+        var hasSchedule = filters.ElemMatch(t => t.Schedules, item => item.Id == scheduleId);
+        var uniqueDay = filters.Not(filters.ElemMatch(t => t.Schedules,
+            item => item.Id != scheduleId && item.DayNumber == request.DayNumber));
+        var schedule = new TourScheduleEmbedded
         {
+            Id = scheduleId,
+            DayNumber = request.DayNumber,
+            Title = request.Title.Trim(),
+            Activities = request.Activities?.Trim()
+        };
+        var result = await _context.Tours.UpdateOneAsync(hasSchedule & uniqueDay, Builders<Tour>.Update
+            .Set("schedules.$[item]", schedule)
+            .Set(t => t.UpdatedAt, DateTime.UtcNow),
+            new UpdateOptions
+            {
+                ArrayFilters = new[]
+                {
+                    new BsonDocumentArrayFilterDefinition<TourScheduleEmbedded>(
+                        new MongoDB.Bson.BsonDocument("item.id", scheduleId))
+                }
+            });
+        if (result.MatchedCount == 0)
+        {
+            if (!await _context.Tours.Find(hasSchedule).AnyAsync())
+                throw new KeyNotFoundException($"Không tìm thấy lịch trình mã {scheduleId}.");
             throw new ArgumentException($"Ngày thứ {request.DayNumber} đã tồn tại trong lịch trình.");
         }
 
-        var item = tour.Schedules.First(s => s.Id == scheduleId);
-        item.DayNumber = request.DayNumber;
-        item.Title = request.Title.Trim();
-        item.Activities = request.Activities?.Trim();
-        tour.UpdatedAt = DateTime.UtcNow;
-
-        var result = await _context.Tours.ReplaceOneAsync(t => t.Id == tour.Id, tour);
-        return result.ModifiedCount > 0;
+        return true;
     }
 
     public async Task<bool> DeleteScheduleAsync(int scheduleId)
     {
-        var tour = await _context.Tours.Find(t => t.Schedules.Any(s => s.Id == scheduleId)).FirstOrDefaultAsync()
-                   ?? throw new KeyNotFoundException($"Không tìm thấy lịch trình mã {scheduleId}.");
+        var filter = Builders<Tour>.Filter.ElemMatch(t => t.Schedules, item => item.Id == scheduleId);
+        var result = await _context.Tours.UpdateOneAsync(filter, Builders<Tour>.Update
+            .PullFilter(t => t.Schedules, item => item.Id == scheduleId)
+            .Set(t => t.UpdatedAt, DateTime.UtcNow));
+        if (result.MatchedCount == 0)
+            throw new KeyNotFoundException($"Không tìm thấy lịch trình mã {scheduleId}.");
 
-        tour.Schedules.RemoveAll(s => s.Id == scheduleId);
-        tour.UpdatedAt = DateTime.UtcNow;
-
-        var result = await _context.Tours.ReplaceOneAsync(t => t.Id == tour.Id, tour);
-        return result.ModifiedCount > 0;
+        return true;
     }
 
     public async Task<TourImageEmbedded> AddImageAsync(int tourId, string imgUrl, bool isThumbnail)

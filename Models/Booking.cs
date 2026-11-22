@@ -49,6 +49,11 @@ public class Booking : BaseEntity
     [JsonPropertyName("passengers")]
     public List<BookingPassengerEmbedded> Passengers { get; set; } = new();
 
+    [BsonElement("payment_option")]
+    [BsonIgnoreIfNull]
+    [JsonPropertyName("payment_option")]
+    public string? PaymentOption { get; set; }
+
     // Additional info for responses
     [BsonIgnore]
     [JsonPropertyName("tour_image")]

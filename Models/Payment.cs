@@ -33,5 +33,37 @@ public class Payment : BaseEntity
     [BsonIgnore]
     [JsonPropertyName("booking_status")]
     public string? BookingStatus { get; set; }
+    [BsonIgnore]
+    [JsonPropertyName("bill_number")]
+    public string? BillNumber { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("customer_email")]
+    public string? CustomerEmail { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("customer_phone")]
+    public string? CustomerPhone { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("customer_address")]
+    public string? CustomerAddress { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("departure_date")]
+    public DateTime? DepartureDate { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("total_adults")]
+    public int? TotalAdults { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("total_children")]
+    public int? TotalChildren { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("awaiting_payment_confirmation")]
+    public bool AwaitingPaymentConfirmation { get; set; }
+
 }
 

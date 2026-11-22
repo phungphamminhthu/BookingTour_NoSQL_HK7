@@ -177,46 +177,20 @@
                         <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">payments</span>
                         <h2 class="font-headline font-bold text-2xl">Phương thức thanh toán</h2>
                     </div>
-                    <input type="hidden" name="paymentMethod" value="Thẻ quốc tế"/>
-                    <div class="p-5 rounded-2xl bg-surface-container-lowest border-2 border-primary flex items-center justify-between shadow-sm">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-3xl">credit_card</span>
-                            </div>
-                            <div>
-                                <p class="font-bold text-primary text-base">Thẻ thanh toán quốc tế / Thẻ nội địa</p>
-                                <p class="text-xs text-on-surface-variant">Hỗ trợ Visa, Mastercard, JCB, thẻ ghi nợ nội địa</p>
-                            </div>
-                        </div>
-                        <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                    </div>
-
-                    <!-- Chi tiết thẻ -->
-                    <div id="card-details" class="mt-8 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <label class="text-sm font-semibold px-2">Số thẻ <span class="text-red-500">*</span></label>
-                                <input name="card_number" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="**** **** **** ****" type="text"/>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-sm font-semibold px-2">Tên trên thẻ <span class="text-red-500">*</span></label>
-                                <input name="card_holder" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="NGUYEN VAN AN" type="text"/>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="space-y-2 col-span-1">
-                                <label class="text-sm font-semibold px-2">Ngày hết hạn <span class="text-red-500">*</span></label>
-                                <input name="card_expiry" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="MM/YY" type="text"/>
-                            </div>
-                            <div class="space-y-2 col-span-1">
-                                <label class="text-sm font-semibold px-2">CVV <span class="text-red-500">*</span></label>
-                                <input name="card_cvv" required class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary-container transition-all" value="" placeholder="***" type="password" maxlength="4"/>
-                            </div>
-                        </div>
-                    </div>
+                    <label class="block text-sm font-semibold mb-2" for="checkout-payment-method">Chọn cách thanh toán</label>
+                    <select id="checkout-payment-method" name="payment_method" class="w-full mb-4 rounded-xl border border-slate-200 px-4 py-3">
+                        <option value="bank_transfer">Chuyển khoản ngân hàng</option>
+                        <option value="cash">Tiền mặt</option>
+                    </select>
+                    <p id="checkout-transfer-note" class="rounded-xl bg-surface-container-lowest p-4 text-sm">
+                        Sau khi giữ chỗ, dùng mã đơn làm nội dung chuyển khoản. Nhân viên sẽ xác nhận sau khi đối chiếu tiền đã nhận.
+                    </p>
+                    <p id="checkout-cash-note" class="hidden rounded-xl bg-surface-container-lowest p-4 text-sm">
+                        Giữ chỗ online và thanh toán tiền mặt tại quầy. Cung cấp mã đơn để nhân viên đối chiếu và xác nhận.
+                    </p>
 
                     <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-200">
-                        <a href="#"
+                        <a id="checkoutBackLink" href="../booking/passengers.html"
                            class="flex items-center gap-1 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors">
                             <span class="material-symbols-outlined text-sm">arrow_back</span>
                             Quay lại thông tin hành khách
@@ -230,46 +204,43 @@
                 <aside class="sticky top-28">
                     <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-surface-container-high">
                         <h3 class="font-headline font-bold text-xl mb-4">Tóm tắt đơn hàng</h3>
-                        <div class="rounded-xl overflow-hidden mb-4 relative h-40">
-                            <img alt="" class="w-full h-full object-cover" src=""/>
+                        <div id="checkoutTourCover" class="rounded-xl overflow-hidden mb-4 relative h-40 hidden">
+                            <img id="checkoutTourImage" alt="" class="w-full h-full object-cover" hidden/>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
                                 <span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Xác nhận thanh toán</span>
                             </div>
                         </div>
                         <div class="space-y-4">
                             <div>
-                                <h4 class="font-bold text-primary text-base">—</h4>
+                                <h4 id="checkoutTourTitle" class="font-bold text-primary text-base">—</h4>
                                 <div class="flex items-center gap-1.5 text-xs text-on-surface-variant mt-1.5 font-semibold">
                                     <span class="material-symbols-outlined text-sm">calendar_today</span>
-                                    <span>
-                                         - 
-                                        (NĐ)
-                                    </span>
+                                    <span id="checkoutDates">—</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 py-3 bg-surface-container-low rounded-xl px-4">
                                 <span class="material-symbols-outlined text-primary">group</span>
                                 <div>
                                     <p class="text-xs font-bold text-on-surface-variant">Người liên hệ</p>
-                                    <p class="text-sm font-bold text-on-surface"> ( khách)</p>
+                                    <p id="checkoutParty" class="text-sm font-bold text-on-surface">—</p>
                                 </div>
                             </div>
                             <div class="space-y-2 pt-2">
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-on-surface-variant">Người lớn (x)</span>
-                                    <span class="font-medium">đ</span>
+                                    <span id="checkoutAdultsLabel" class="text-on-surface-variant">Người lớn (x)</span>
+                                    <span id="checkoutAdultsAmount" class="font-medium">—</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-on-surface-variant">Trẻ em (x)</span>
-                                    <span class="font-medium">đ</span>
+                                    <span id="checkoutChildrenLabel" class="text-on-surface-variant">Trẻ em (x)</span>
+                                    <span id="checkoutChildrenAmount" class="font-medium">—</span>
                                 </div>
                                 
                                 <div class="flex justify-between text-lg font-bold border-t border-surface-container-high pt-3 mt-3">
                                     <span>Tổng cộng</span>
-                                    <span class="text-secondary text-2xl font-black">đ</span>
+                                    <span id="checkoutTotal" class="text-secondary text-2xl font-black">0 đ</span>
                                 </div>
                             </div>
-                            <button id="submit-btn" type="submit" class="w-full py-4 rounded-full font-bold bg-primary text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 mt-4 hover:opacity-90">
+                            <button id="submit-btn" type="submit" disabled class="w-full py-4 rounded-full font-bold bg-primary text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 mt-4 hover:opacity-90">
                                 <span id="submit-icon" class="material-symbols-outlined">lock</span>
                                 <span id="submit-text">Xác nhận thanh toán</span>
                             </button>
@@ -278,45 +249,11 @@
                             </p>
                         </div>
                     </div>
-                    <div class="bg-surface-container-low rounded-2xl p-6 border border-dashed border-primary/20">
-                        <div class="flex gap-4 items-center mb-4">
-                            <span class="material-symbols-outlined text-secondary text-3xl">verified_user</span>
-                            <div>
-                                <h4 class="font-bold">Đảm bảo an toàn</h4>
-                                <p class="text-xs text-on-surface-variant">Dữ liệu được mã hóa SSL 256-bit chuẩn quốc tế.</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
-                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">VISA</div>
-                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">MC</div>
-                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">PCI</div>
-                            <div class="h-6 w-10 bg-surface-container-high rounded flex items-center justify-center font-bold text-[8px]">SSL</div>
-                        </div>
-                    </div>
                 </aside>
             </div>
         </div>
     </form>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('checkoutForm');
-        const submitBtn = document.getElementById('submit-btn');
-        const submitIcon = document.getElementById('submit-icon');
-        const submitText = document.getElementById('submit-text');
-
-        if (form && submitBtn) {
-            form.addEventListener('submit', function() {
-                submitBtn.disabled = true;
-                submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
-                submitIcon.innerText = "hourglass_empty";
-                submitIcon.classList.add('animate-spin');
-                submitText.innerText = "Đang xử lý thanh toán...";
-            });
-        }
-    });
-</script>
 
 <script src="../../assets/js/api-client.js"></script>
 <!-- Footer -->
@@ -336,7 +273,6 @@
         </div>
     </div>
 </footer>
-<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/nav-auth.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
 <script src="../../assets/js/customer-pages.js"></script>

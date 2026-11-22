@@ -98,6 +98,10 @@
 </aside>
 
 <main class="md:ml-64 min-h-screen flex flex-col">
+  <section class="m-6 rounded-2xl bg-white border border-slate-200 p-5">
+    <h2 class="text-lg font-bold text-blue-900 mb-3">Thanh toán chờ xác nhận</h2>
+    <div id="pendingPayments" class="space-y-2 text-sm text-slate-700" aria-live="polite">Đang tải…</div>
+  </section>
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
 
     <div class="flex items-center gap-4">
@@ -140,7 +144,7 @@
             </button>
 
             <a
-                href="#"
+                id="btnRefreshTransactions" href="#"
                 class="inline-flex items-center gap-2 rounded-xl bg-blue-950 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-900"
             >
                 <span class="material-symbols-outlined text-lg">refresh</span>
@@ -553,7 +557,8 @@
 </main>
 
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/api-client.js"></script>
+<script src="../../assets/js/admin-pages.js?v=2.3.3"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
 </body>
 </html>

@@ -43,6 +43,16 @@ public class DeparturesController : ControllerBase
         return Ok(ApiResponse<TourDeparture>.Ok(departure, "Lấy chi tiết chuyến đi thành công."));
     }
 
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpGet("guides")]
+    public async Task<IActionResult> GetGuides([FromServices] IAdminManagementService management)
+    {
+        var employees = await management.GetAllEmployeesAsync();
+        var guides = employees.Where(e => e.RoleId == 3)
+            .Select(e => new { e.Id, FullName = e.FullName }).ToList();
+        return Ok(ApiResponse<object>.Ok(guides));
+    }
+
     [HttpPost]
     [Authorize(Roles = "Admin,Sale")]
     public async Task<IActionResult> CreateDeparture([FromBody] DepartureCreateRequest request)

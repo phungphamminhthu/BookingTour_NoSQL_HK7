@@ -341,40 +341,50 @@ public class AdminManagementService : IAdminManagementService
             .Limit(ps)
             .ToListAsync();
 
-        // Enrich payments with booking and customer info
-        var bookingIds = items.Select(x => x.BookingId).Distinct().ToList();
-        var bookings = await _context.Bookings.Find(b => bookingIds.Contains(b.Id)).ToListAsync();
-        var bookingMap = bookings.ToDictionary(b => b.Id);
-
-        foreach (var pay in items)
-        {
-            if (bookingMap.TryGetValue(pay.BookingId, out var b))
-            {
-                pay.BookingCode = b.BookingCode;
-                pay.CustomerName = b.CustomerName;
-                pay.TourTitle = b.TourTitle;
-                pay.BookingStatus = b.Status;
-            }
-        }
-
+        await PopulateTransactionDetailsAsync(items);
         return (items, total);
     }
 
     public async Task<Payment?> GetTransactionByIdAsync(int id)
     {
         var payment = await _context.Payments.Find(p => p.Id == id).FirstOrDefaultAsync();
-        if (payment == null) return null;
+        if (payment is not null) await PopulateTransactionDetailsAsync(new[] { payment });
+        return payment;
+    }
 
-        var booking = await _context.Bookings.Find(b => b.Id == payment.BookingId).FirstOrDefaultAsync();
-        if (booking != null)
+    private async Task PopulateTransactionDetailsAsync(IReadOnlyCollection<Payment> payments)
+    {
+        if (payments.Count == 0) return;
+
+        var bookingIds = payments.Select(p => p.BookingId).Distinct().ToList();
+        var bookings = await _context.Bookings.Find(b => bookingIds.Contains(b.Id)).ToListAsync();
+        var bookingMap = bookings.ToDictionary(b => b.Id);
+        var bills = await _context.Bills.Find(b => bookingIds.Contains(b.BookingId)).ToListAsync();
+        var billMap = bills.ToLookup(b => b.BookingId);
+        var customers = bookings.Select(b => b.CustomerId).Distinct().ToList();
+        var customerMap = (await _context.Customers.Find(c => customers.Contains(c.Id)).ToListAsync()).ToDictionary(c => c.Id);
+        var departures = bookings.Select(b => b.DepartureId).Distinct().ToList();
+        var departureMap = (await _context.TourDepartures.Find(d => departures.Contains(d.Id)).ToListAsync()).ToDictionary(d => d.Id);
+
+        foreach (var payment in payments)
         {
+            if (!bookingMap.TryGetValue(payment.BookingId, out var booking)) continue;
+
             payment.BookingCode = booking.BookingCode;
-            payment.CustomerName = booking.CustomerName;
             payment.TourTitle = booking.TourTitle;
             payment.BookingStatus = booking.Status;
+            payment.AwaitingPaymentConfirmation = booking.PaymentOption is not null && booking.Status == "pending";
+            payment.BillNumber = billMap[booking.Id].FirstOrDefault()?.BillNumber;
+            payment.TotalAdults = booking.TotalAdults;
+            payment.TotalChildren = booking.TotalChildren;
+            customerMap.TryGetValue(booking.CustomerId, out var customer);
+            payment.CustomerName = booking.CustomerName ?? customer?.FullName;
+            payment.CustomerEmail = customer?.Email;
+            payment.CustomerPhone = customer?.Phone;
+            payment.CustomerAddress = customer?.Address;
+            if (departureMap.TryGetValue(booking.DepartureId, out var departure))
+                payment.DepartureDate = departure.DepartureDate;
         }
-
-        return payment;
     }
     #endregion
 
