@@ -11,5 +11,9 @@ public interface IBookingService
     Task<List<Booking>> GetCustomerBookingsAsync(int customerId);
     Task<List<object>> GetCustomerPaymentHistoryAsync(int customerId);
     Task<Review> SubmitReviewAsync(int customerId, int bookingId, ReviewCreateRequest request);
+    Task<List<Review>> GetCustomerReviewsAsync(int customerId);
+    Task<Review> UpdateReviewAsync(int customerId, int reviewId, ReviewCreateRequest request);
+    Task<bool> DeleteReviewAsync(int customerId, int reviewId);
+    Task<bool> CancelBookingAsync(int customerId, int bookingId);
 }
 

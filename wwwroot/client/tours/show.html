@@ -156,26 +156,7 @@
 <div class="pt-24 pb-16 px-4 md:px-8 max-w-7xl mx-auto">
     <!-- Expedition Scroller: Image Gallery -->
     <section class="relative w-full h-[400px] md:h-[550px] mb-12 rounded-3xl overflow-hidden group/carousel shadow-lg">
-        <div id="slider" class="w-full h-full flex overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar">
-            
-                
-                <div class="min-w-full h-full relative snap-start flex-shrink-0">
-                    <img class="w-full h-full object-cover" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg" alt="Tour image"/>
-                    <div class="absolute bottom-6 left-6 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl text-white text-sm font-medium flex items-center gap-2">
-                        <span>Hành trình khám phá di sản</span>
-                        <span class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">Ảnh bìa</span>
-                    </div>
-                </div>
-                
-            
-                <div class="min-w-full h-full relative snap-start flex-shrink-0">
-                    <img class="w-full h-full object-cover" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1559592413-7cec4d0cae2b_w1200.jpg" alt="Hội An lung linh lồng đèn"/>
-                    <div class="absolute bottom-6 left-6 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl text-white text-sm font-medium">
-                        Khám phá vẻ đẹp Việt Nam
-                    </div>
-                </div>
-            
-        </div>
+        <div id="slider" class="w-full h-full flex overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar"></div>
 
         <button onclick="scrollSlider(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-12 h-12 rounded-full opacity-80 group-hover/carousel:opacity-100 transition-opacity duration-300 backdrop-blur-sm z-10 flex items-center justify-center">
             <span class="material-symbols-outlined">chevron_left</span>
@@ -270,9 +251,7 @@
                         </div>
                         <span id="itineraryDaysCount" class="text-xs font-bold text-primary bg-white px-3 py-1.5 rounded-full border border-slate-200"></span>
                     </div>
-                    <div id="itineraryContainer" class="space-y-6 relative">
-                        <!-- JS renders days dynamically here -->
-                    </div>
+                    <div id="itineraryContainer" class="space-y-6 relative">Đang tải lịch trình...</div>
                 </section>
 
                 <!-- Reviews Section -->
@@ -287,9 +266,7 @@
                             <span>Gửi đánh giá</span>
                         </a>
                     </div>
-                    <div id="reviewsContainer" class="space-y-4">
-                        <!-- JS renders reviews or empty state dynamically here -->
-                    </div>
+                    <div id="reviewsContainer" class="space-y-4">Đang tải đánh giá...</div>
                 </section>
             </div>
         </div>
@@ -393,7 +370,7 @@ function scrollSlider(direction) {
 <!-- Scripts -->
 <script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/nav-auth.js"></script>
-<script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/customer-pages.js"></script>
+<script src="../../assets/js/part2-common.js"></script>
+<script src="../../assets/js/client-part2.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
 </body></html>

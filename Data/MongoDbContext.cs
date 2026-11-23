@@ -134,10 +134,18 @@ public class MongoDbContext
         // Reviews indexes
         await Reviews.Indexes.CreateManyAsync(new[]
         {
+            // Dữ liệu mẫu cũ chưa có booking_id; chỉ áp dụng unique cho bản ghi có ID số.
+            new CreateIndexModel<Review>(Builders<Review>.IndexKeys.Ascending(r => r.BookingId),
+                new CreateIndexOptions<Review> { Unique = true, PartialFilterExpression =
+                    new MongoDB.Bson.BsonDocument("booking_id", new MongoDB.Bson.BsonDocument("$type", "number")) }),
             new CreateIndexModel<Review>(Builders<Review>.IndexKeys.Ascending(r => r.Id), new CreateIndexOptions { Unique = true }),
             new CreateIndexModel<Review>(Builders<Review>.IndexKeys.Ascending(r => r.TourId)),
             new CreateIndexModel<Review>(Builders<Review>.IndexKeys.Ascending(r => r.CustomerId))
         });
+        await Tours.Indexes.CreateOneAsync(new CreateIndexModel<Tour>(
+            Builders<Tour>.IndexKeys.Ascending(t => t.ProvinceId).Ascending(t => t.MinPrice).Ascending(t => t.Id)));
+        await TourDepartures.Indexes.CreateOneAsync(new CreateIndexModel<TourDeparture>(
+            Builders<TourDeparture>.IndexKeys.Ascending(d => d.TourId).Ascending(d => d.DepartureDate)));
     }
 }
 

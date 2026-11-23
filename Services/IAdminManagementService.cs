@@ -24,6 +24,9 @@ public interface IAdminManagementService
     Task<Employee?> GetEmployeeByIdAsync(int id);
     Task<Employee> CreateEmployeeAsync(EmployeeCreateRequest request);
     Task<Employee> UpdateEmployeeAsync(int id, EmployeeUpdateRequest request);
+    Task<(List<Employee> Items, long Total)> QueryEmployeesAsync(string? search, int? roleId, int page, int pageSize);
+    Task<List<Role>> GetRolesAsync();
+    Task<bool> DeleteEmployeeAsync(int id, int currentEmployeeId);
 
     // Customers
     Task<(List<Customer> Items, long TotalCount)> GetCustomersAsync(string? search, int page = 1, int pageSize = 10);

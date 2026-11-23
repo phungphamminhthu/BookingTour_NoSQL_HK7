@@ -178,7 +178,7 @@ public class ToursController : ControllerBase
     #region Images
     [HttpPost("{id:int}/images")]
     [Authorize(Roles = "Admin,Sale")]
-    public async Task<IActionResult> UploadImage(int id, [FromForm] IFormFile? file, [FromForm] string? imageUrl, [FromForm] bool isThumbnail = false)
+    public async Task<IActionResult> UploadImage(int id, IFormFile? file, [FromForm] string? imageUrl, [FromForm] bool isThumbnail = false)
     {
         string? url = imageUrl;
 

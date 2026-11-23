@@ -201,7 +201,6 @@ public class DepartureService : IDepartureService
             }
             if (d.GuideId.HasValue && guideMap.TryGetValue(d.GuideId.Value, out var guide))
             {
-                d.Guide = guide;
                 d.GuideName = guide.FullName;
             }
         }

@@ -245,7 +245,7 @@
               Xóa bộ lọc
             </a>
           </div>
-        </form>
+        <div class="space-y-3 mt-4"><label class="block text-xs font-bold">Giá từ (VNĐ)<input class="w-full rounded-lg border-slate-200 text-sm" type="number" min="0" name="gia_tu"></label><label class="block text-xs font-bold">Điểm đến / Từ khóa<input class="w-full rounded-lg border-slate-200 text-sm" name="destination"></label><label class="block text-xs font-bold">Ngày khởi hành từ<input class="w-full rounded-lg border-slate-200 text-sm" type="date" name="startDate"></label><label class="block text-xs font-bold">Nơi khởi hành<input class="w-full rounded-lg border-slate-200 text-sm" name="pickupPoint"></label></div></form>
       </div>
     </aside>
 
@@ -257,7 +257,7 @@
           <span class="text-secondary font-bold text-xs uppercase tracking-[0.2em]">Bộ sưu tập chọn lọc</span>
           <h1 class="text-4xl font-black font-headline text-primary mt-1 tracking-tight">Khám phá Việt Nam</h1>
           <p class="text-xs text-slate-500 mt-1">
-            Hiển thị <strong>15</strong> chuyến du lịch tuyển chọn
+            Hiển thị <strong id="catalogCount">15</strong> chuyến du lịch tuyển chọn
           </p>
         </div>
         <div class="flex items-center space-x-3 bg-surface-container-low px-4 py-2 rounded-full">
@@ -274,92 +274,7 @@
       </div>
 
       <!-- Tour Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- Tour 1 -->
-          <div class="group bg-surface-container-low rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all duration-300">
-            <div class="relative h-64 overflow-hidden">
-              <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Vịnh Hạ Long" />
-              <div class="absolute bottom-4 right-4 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold shadow-md">
-                <span>3.250.000</span> VNĐ
-              </div>
-              <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-primary uppercase">
-                Bán chạy nhất
-              </div>
-            </div>
-            <div class="p-6 flex-1 flex flex-col justify-between bg-surface-container-lowest">
-              <div>
-                <div class="flex items-center text-secondary mb-2">
-                  <span class="material-symbols-outlined text-sm">location_on</span>
-                  <span class="text-xs font-bold uppercase ml-1 tracking-wider">Quảng Ninh</span>
-                </div>
-                <h3 class="text-xl font-bold font-headline text-primary mb-3">
-                  Du Thuyền 5 Sao Vịnh Hạ Long - Vịnh Lan Hạ Đẳng Cấp
-                </h3>
-                <div class="flex items-center space-x-3 text-slate-500 text-xs mb-4">
-                  <span class="flex items-center">
-                    <span class="material-symbols-outlined text-xs mr-1">schedule</span>
-                    2 ngày 1 đêm
-                  </span>
-                  <span class="flex items-center">
-                    <span class="material-symbols-outlined text-xs mr-1">pin_drop</span>
-                    Khởi hành từ Hà Nội
-                  </span>
-                </div>
-              </div>
-              <a href="show.html" class="block text-center w-full py-3 bg-surface-container-highest text-primary rounded-full font-bold text-sm hover:bg-primary hover:text-white transition-all">
-                Xem chi tiết
-              </a>
-            </div>
-          </div>
-
-          <!-- Tour 2 -->
-          <div class="group bg-surface-container-low rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all duration-300">
-            <div class="relative h-64 overflow-hidden">
-              <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1559592413-7cec4d0cae2b_w600.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Hội An Đà Nẵng" />
-              <div class="absolute bottom-4 right-4 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold shadow-md">
-                <span>4.590.000</span> VNĐ
-              </div>
-              <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-primary uppercase">
-                Di sản miền Trung
-              </div>
-            </div>
-            <div class="p-6 flex-1 flex flex-col justify-between bg-surface-container-lowest">
-              <div>
-                <div class="flex items-center text-secondary mb-2">
-                  <span class="material-symbols-outlined text-sm">location_on</span>
-                  <span class="text-xs font-bold uppercase ml-1 tracking-wider">Đà Nẵng</span>
-                </div>
-                <h3 class="text-xl font-bold font-headline text-primary mb-3">
-                  Đà Nẵng - Bán Đảo Sơn Trà - Phố Cổ Hội An Lung Linh
-                </h3>
-                <div class="flex items-center space-x-3 text-slate-500 text-xs mb-4">
-                  <span class="flex items-center">
-                    <span class="material-symbols-outlined text-xs mr-1">schedule</span>
-                    3 ngày 2 đêm
-                  </span>
-                  <span class="flex items-center">
-                    <span class="material-symbols-outlined text-xs mr-1">pin_drop</span>
-                    Khởi hành từ Đà Nẵng
-                  </span>
-                </div>
-              </div>
-              <a href="show.html" class="block text-center w-full py-3 bg-surface-container-highest text-primary rounded-full font-bold text-sm hover:bg-primary hover:text-white transition-all">
-                Xem chi tiết
-              </a>
-            </div>
-          </div>
-          
-        
-          <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-slate-100">
-            <span class="material-symbols-outlined text-5xl text-slate-300 mb-3">travel_explore</span>
-            <p class="text-base font-bold text-slate-600">Không tìm thấy tour phù hợp với tiêu chí lọc.</p>
-            <p class="text-xs text-slate-400 mt-1">Vui lòng thử điều chỉnh lại bộ lọc hoặc từ khóa tìm kiếm.</p>
-            <a href="#" class="inline-block mt-4 px-6 py-2 bg-primary text-white text-xs font-bold rounded-full">
-              Xem tất cả tour
-            </a>
-          </div>
-        
-      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="catalogTourGrid"><p>Đang tải tour...</p></div>
 
       <!-- Pagination -->
       <div id="catalogPagination" class="mt-16 flex justify-center items-center space-x-2"></div>
@@ -398,7 +313,7 @@
 <!-- Scripts -->
 <script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/nav-auth.js"></script>
-<script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/customer-pages.js"></script>
+<script src="../../assets/js/part2-common.js"></script>
+<script src="../../assets/js/client-part2.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
 </body></html>

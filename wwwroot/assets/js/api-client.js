@@ -16,8 +16,11 @@ async function apiRequest(path, options = {}) {
   const contentType = response.headers.get('content-type') || '';
   const payload = contentType.includes('application/json') ? await response.json() : await response.text();
   if (!response.ok || payload?.success === false) {
-    const message = payload?.message || (typeof payload === 'string' ? payload : `HTTP ${response.status}`);
-    throw new Error(message);
+    const validation = payload?.errors ? Object.values(payload.errors).flat().filter(x => typeof x === 'string').join(' ') : '';
+    const message = validation || payload?.message || payload?.title || (typeof payload === 'string' ? payload : `HTTP ${response.status}`);
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
   return payload;
 }
