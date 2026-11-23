@@ -1,8 +1,7 @@
 /**
  * Customer Pages Controller
  * Vietnam Expeditions Client Portal
- * Powered by centralized Relational Mock Database (BookingTourDB)
- * Delivers 100% complete interactive user experience:
+ * Customer portal for:
  * Home, Tours Catalog, Tour Details, Booking Wizard, Payment/Invoice,
  * My Bookings, Ticket Voucher, Reviews, Profile, Points, and Transactions History.
  */
@@ -11,6 +10,69 @@
   if (!db) {
     console.error('BookingTourDB is required for customer-pages.js');
     return;
+  }
+  const api = window.BookingTourApi;
+  const get = async (path, data) => (await api.apiRequest(path, data ? {
+    method: 'POST', body: JSON.stringify(data)
+  } : {})).data;
+  const id = value => /^[1-9][0-9]*$/.test(value || '') && Number(value) <= 2147483647;
+  const html = value => String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+  const departureView = d => ({ ...d, start_date: d.departure_date, end_date: d.return_date });
+  const day = value => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh',
+    year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(value));
+  const openDeparture = d => d.status === 'open' && d.available_seats > 0 &&
+    day(d.departure_date) >= day(Date.now());
+  const tourView = t => ({
+    ...t,
+    category: { name: t.category_name },
+    province: { name: t.province_name },
+    departure_location: t.pickup_point || '—',
+    adult_price: t.min_price,
+    images: [t.thumbnail_url, ...(t.images || []).map(i => i.img_url)].filter(Boolean),
+    itinerary: (t.schedules || []).map(d => ({ day: d.day_number, title: d.title, content: d.activities })),
+    departures: (t.departures || []).map(departureView)
+  });
+
+  async function liveTour(value) {
+    if (!id(value)) throw new Error('Vui lòng chọn tour từ danh sách tour.');
+    return tourView(await get('/api/tours/' + value));
+  }
+
+  async function bookingDeparture(params) {
+    const value = params.get('departure_id');
+    if (!id(value)) throw new Error('Vui lòng chọn lịch khởi hành từ chi tiết tour.');
+    const dep = departureView(await get('/api/departures/' + value));
+    if (params.get('tour_id') !== String(dep.tour_id) || !openDeparture(dep)) {
+      throw new Error('Lịch khởi hành không còn mở bán hoặc không thuộc tour đã chọn.');
+    }
+    return { dep, tour: dep.tour ? tourView(dep.tour) : await liveTour(dep.tour_id) };
+  }
+
+  function requireCustomer() {
+    const token = api.getAuthToken();
+    if (token && !token.startsWith('demo-jwt-')) return true;
+    window.location.href = '/client/auth/login.html?returnTo=' + encodeURIComponent(location.pathname + location.search);
+    return false;
+  }
+
+  function readDraft(departureId) {
+    const draft = JSON.parse(sessionStorage.getItem('booking_draft') || 'null');
+    if (draft?.request?.departure_id !== departureId) {
+      throw new Error('Thông tin đặt tour đã hết hiệu lực. Vui lòng quay lại bước chọn số khách.');
+    }
+    return draft;
+  }
+
+  function showError(error) {
+    const main = document.querySelector('main');
+    if (!main) return alert(error.message);
+    const message = document.createElement('p');
+    message.className = 'p-6 text-red-700';
+    message.setAttribute('role', 'alert');
+    message.textContent = error.message;
+    main.prepend(message);
   }
 
   function formatMoney(amount) {
@@ -25,7 +87,7 @@
       return d.toLocaleDateString('vi-VN', {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric'
+        year: 'numeric', timeZone: 'Asia/Ho_Chi_Minh'
       });
     } catch (_) {
       return dateStr;
@@ -99,49 +161,88 @@
     const path = window.location.pathname.toLowerCase();
 
     if (path.endsWith('/client/home.html') || path.endsWith('/client/')) {
-      handleHomePage();
+      handleHomePage().catch(showError);
     } else if (path.includes('/tours/index.html')) {
-      handleToursCatalog();
+      handleToursCatalog().catch(showError);
     } else if (path.includes('/tours/show.html')) {
-      handleTourDetail();
+      handleTourDetail().catch(showError);
     } else if (path.includes('/tours/by_province.html')) {
-      handleToursByProvince();
+      handleToursByProvince().catch(showError);
     } else if (path.includes('/departures/show.html')) {
-      handleDepartureShow();
+      handleDepartureShow().catch(showError);
     } else if (path.includes('/booking/create.html')) {
-      handleBookingCreate();
+      handleBookingCreate().catch(showError);
     } else if (path.includes('/booking/passengers.html')) {
-      handleBookingPassengers();
+      handleBookingPassengers().catch(showError);
     } else if (path.includes('/payments/invoice.html')) {
-      handlePaymentInvoice();
+      handlePaymentInvoice().catch(showError);
     } else if (path.includes('/my_tours/index.html') || path.endsWith('/my_tours/') || path.endsWith('/my_tours')) {
-      handleMyToursIndex();
+      handleMyToursIndex().catch(showError);
     } else if (path.includes('/my_tours/show.html')) {
-      handleMyTourVoucher();
+      handleMyTourVoucher().catch(showError);
     } else if (path.includes('/my_tours/review.html')) {
-      handleMyTourReview();
+      handleMyTourReview().catch(showError);
     } else if (path.includes('/profile/show.html')) {
       handleProfileShow();
     } else if (path.includes('/reward_point.html')) {
       handleRewardPoint();
     } else if (path.includes('/payments/history.html')) {
-      handlePaymentsHistory();
+      handlePaymentsHistory().catch(showError);
     }
   }
 
+  async function listTours(path = '/api/tours') {
+    const tours = [];
+    for (let page = 1; ; page++) {
+      const result = await api.apiRequest(path + '?pageSize=100&page=' + page);
+      tours.push(...result.data.map(tourView));
+      if (!result.data.length || tours.length >= (result.total ?? tours.length)) return tours;
+    }
+  }
+
+  const loadProvinces = async () => (await get('/api/provinces')).map(p => ({
+    ...p, name: p.province_name, tour_count: p.tours_count
+  }));
+
   // 1. Trang Chủ (client/home.html)
-  function handleHomePage() {
+  async function handleHomePage() {
+    const featured = (await get('/api/tours/featured?limit=4')).map(tourView);
+    const cards = Array.from(document.querySelectorAll('a[href^="tours/show.html?id="]'));
+    cards.forEach((link, index) => {
+      const card = link.closest('.group');
+      const tour = featured[index];
+      if (!tour) {
+        card?.remove();
+        return;
+      }
+      link.href = 'tours/show.html?id=' + tour.id;
+      const title = card?.querySelector('h3');
+      if (title) title.textContent = tour.title;
+      const image = card?.querySelector('img');
+      if (image && tour.images[0]) {
+        image.src = tour.images[0];
+        image.alt = tour.title;
+      }
+      const price = card?.querySelector('.absolute.bottom-3.right-3');
+      if (price) price.textContent = formatMoney(tour.min_price);
+      const destination = card?.querySelector('.tracking-wider');
+      if (destination) destination.textContent = tour.province?.name || 'Việt Nam';
+      const duration = card?.querySelector('.text-slate-500 .flex.items-center');
+      if (duration?.lastChild?.nodeType === Node.TEXT_NODE) {
+        duration.lastChild.textContent = ' ' + tour.duration_days + ' ngày ' + tour.duration_nights + ' đêm';
+      }
+    });
     // Populate Categories Carousel / Grid
     const catContainer = document.querySelector('[data-categories-container]') || document.querySelector('.categories-grid');
     if (catContainer) {
-      const cats = db.getCategories();
+      const cats = (await get("/api/categories")).map(c => ({ ...c, name: c.category_name, image: c.image_url || db.getCategories().find(mock => mock.name === c.category_name)?.image || featured[0]?.images[0], tour_count: c.tours_count ?? 0 }));
       catContainer.innerHTML = cats.map(c => `
         <a href="tours/index.html?category_id=${c.id}" class="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col justify-end p-5 h-64 bg-slate-900">
-          <img src="${c.image}" alt="${c.name}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70 group-hover:opacity-80"/>
+          <img src="${html(c.image)}" alt="${html(c.name)}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70 group-hover:opacity-80"/>
           <div class="relative z-10 text-white">
-            <span class="material-symbols-outlined text-2xl text-amber-400 mb-1">${c.icon || 'explore'}</span>
-            <h3 class="font-bold text-lg leading-tight">${c.name}</h3>
-            <p class="text-xs text-slate-200 mt-1 line-clamp-2">${c.description}</p>
+            <span class="material-symbols-outlined text-2xl text-amber-400 mb-1">${html(c.icon || 'explore')}</span>
+            <h3 class="font-bold text-lg leading-tight">${html(c.name)}</h3>
+            <p class="text-xs text-slate-200 mt-1 line-clamp-2">${html(c.description)}</p>
             <span class="inline-block mt-2 text-[11px] font-bold uppercase tracking-wider text-amber-300">${c.tour_count} chuyến đi</span>
           </div>
         </a>
@@ -151,9 +252,9 @@
     // Populate Search Form Destination Dropdown
     const destSelect = document.querySelector('select[name="province_id"]') || document.querySelector('select[name="destination"]');
     if (destSelect) {
-      const provs = db.getProvinces();
+      const provs = await loadProvinces();
       destSelect.innerHTML = '<option value="">-- Tất cả điểm đến --</option>' +
-        provs.map(p => `<option value="${p.id}">${p.name} (${p.region})</option>`).join('');
+        provs.map(p => `<option value="${p.id}">${html(p.name)} (${html(p.region)})</option>`).join('');
     }
 
     // Wire Search Form Submit
@@ -173,7 +274,10 @@
   }
 
   // 2. Danh Sách Tour (client/tours/index.html)
-  function handleToursCatalog() {
+  async function handleToursCatalog() {
+    const [tours, provinces, categories] = await Promise.all([
+      listTours(), loadProvinces(), get('/api/categories')
+    ]);
     const urlParams = new URLSearchParams(window.location.search);
     const searchVal = urlParams.get('q') || '';
     const catParam = urlParams.getAll('category_id[]').length > 0 ? urlParams.getAll('category_id[]') : (urlParams.get('category_id') ? [urlParams.get('category_id')] : []);
@@ -193,24 +297,24 @@
     // Province dropdown
     const provSelect = document.querySelector('select[name="province_id"]');
     if (provSelect) {
-      const provs = db.getProvinces();
+      const provs = provinces;
       provSelect.innerHTML = '<option value="">-- Tất cả điểm đến --</option>' +
-        provs.map(p => `<option value="${p.id}" ${p.id === provParam ? 'selected' : ''}>${p.name}</option>`).join('');
+        provs.map(p => `<option value="${p.id}" ${String(p.id) === provParam ? 'selected' : ''}>${html(p.name)}</option>`).join('');
     }
 
     // Category checkboxes
-    const catContainer = document.querySelector('.space-y-3');
+    const catContainer = document.querySelector('input[name="category_id[]"]')?.closest('.space-y-3') || document.querySelector('.space-y-3');
     if (catContainer) {
-      const cats = db.getCategories();
+      const cats = categories.map(c => ({ ...c, name: c.category_name, tour_count: tours.filter(t => t.category_id === c.id).length }));
       catContainer.innerHTML = cats.map(c => `
         <label class="flex items-center space-x-3 cursor-pointer group">
           <input class="rounded text-primary focus:ring-primary border-outline-variant w-4 h-4 cursor-pointer"
                  type="checkbox"
                  name="category_id[]"
                  value="${c.id}"
-                 ${catParam.includes(c.id) ? 'checked' : ''} />
+                 ${catParam.includes(String(c.id)) ? 'checked' : ''} />
           <span class="text-sm font-medium text-slate-700 group-hover:text-primary">
-            ${c.name} (${c.tour_count})
+            ${html(c.name)} (${c.tour_count})
           </span>
         </label>
       `).join('');
@@ -236,15 +340,17 @@
     if (sortSelect) sortSelect.value = sortParam;
 
     // Filter Tours
-    const filteredTours = db.getTours({
-      search: searchVal,
-      category_id: catParam.length > 0 ? catParam : undefined,
-      province_id: provParam,
-      region: regionParam,
-      max_price: maxPriceParam ? Number(maxPriceParam) : undefined,
-      max_days: maxDaysParam ? Number(maxDaysParam) : undefined,
-      sort: sortParam
-    });
+    const filteredTours = tours.filter(t =>
+      (!searchVal || [t.title, t.province?.name, t.description].some(value => value?.toLowerCase().includes(searchVal.toLowerCase()))) &&
+      (!catParam.length || catParam.includes(String(t.category_id))) &&
+      (!provParam || String(t.province_id) === provParam) &&
+      (!regionParam || provinces.some(p => p.id === t.province_id && p.region === regionParam)) &&
+      (!maxPriceParam || t.min_price <= Number(maxPriceParam)) &&
+      (!maxDaysParam || t.duration_days <= Number(maxDaysParam))
+    );
+    if (sortParam === 'asc' || sortParam === 'desc') {
+      filteredTours.sort((a, b) => (a.min_price - b.min_price) * (sortParam === 'asc' ? 1 : -1));
+    }
 
     // Update count text
     const countEl = document.querySelector('section p strong');
@@ -257,7 +363,7 @@
     const paginatedTours = filteredTours.slice(startIndex, startIndex + pageSize);
 
     // Render Tour Grid
-    const gridContainer = document.querySelector('.grid.grid-cols-1.lg\:grid-cols-2');
+    const gridContainer = document.querySelector('.grid.grid-cols-1[class~="lg:grid-cols-2"]');
     if (gridContainer) {
       if (paginatedTours.length === 0) {
         gridContainer.innerHTML = `
@@ -281,22 +387,22 @@
           return `
             <div class="group bg-surface-container-low rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100">
               <div class="relative h-64 overflow-hidden">
-                <img src="${img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${t.title}" />
+                <img src="${html(img)}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${html(t.title)}" />
                 <div class="absolute bottom-4 right-4 bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md">
                   <span>${price}</span>
                 </div>
                 <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-primary uppercase shadow-sm">
-                  ${tag}
+                  ${html(tag)}
                 </div>
               </div>
               <div class="p-6 flex-1 flex flex-col justify-between bg-white">
                 <div>
                   <div class="flex items-center text-secondary mb-2">
                     <span class="material-symbols-outlined text-sm">location_on</span>
-                    <span class="text-xs font-bold uppercase ml-1 tracking-wider">${provName}</span>
+                    <span class="text-xs font-bold uppercase ml-1 tracking-wider">${html(provName)}</span>
                   </div>
                   <h3 class="text-xl font-bold font-headline text-primary mb-3 line-clamp-2 hover:text-blue-700 transition">
-                    ${t.title}
+                    ${html(t.title)}
                   </h3>
                   <div class="flex items-center space-x-3 text-slate-500 text-xs mb-4">
                     <span class="flex items-center">
@@ -305,7 +411,7 @@
                     </span>
                     <span class="flex items-center">
                       <span class="material-symbols-outlined text-xs mr-1">pin_drop</span>
-                      Khởi hành từ ${t.departure_location}
+                      Khởi hành từ ${html(t.departure_location)}
                     </span>
                   </div>
                 </div>
@@ -363,12 +469,9 @@
   }
 
   // 3. Chi Tiết Tour (client/tours/show.html)
-  function handleTourDetail() {
+  async function handleTourDetail() {
     const urlParams = new URLSearchParams(window.location.search);
-    const tourId = urlParams.get('id') || 'tour_1';
-    const tour = db.getTourById(tourId) || db.getTourById('tour_1');
-
-    if (!tour) return;
+    const tour = await liveTour(urlParams.get('id'));
 
     // 1. Page Title & Tour Headline
     document.title = `${tour.title} | Vietnam Expeditions`;
@@ -403,9 +506,9 @@
     if (slider && Array.isArray(tour.images) && tour.images.length > 0) {
       slider.innerHTML = tour.images.map((img, idx) => `
         <div class="min-w-full h-full relative snap-start flex-shrink-0">
-          <img class="w-full h-full object-cover" src="${img}" alt="${tour.title} - Ảnh ${idx + 1}" onerror="this.src='https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg'"/>
+          <img class="w-full h-full object-cover" src="${html(img)}" alt="${html(tour.title)} - Ảnh ${idx + 1}" onerror="this.src='https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/tours/tour_1528127269322-539801943592_w1200.jpg'"/>
           <div class="absolute bottom-6 left-6 bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl text-white text-sm font-medium flex items-center gap-2">
-            <span>${tour.title}</span>
+            <span>${html(tour.title)}</span>
             ${idx === 0 ? '<span class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">Ảnh bìa</span>' : `<span class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded font-bold">Ảnh ${idx + 1}/${tour.images.length}</span>`}
           </div>
         </div>
@@ -447,7 +550,7 @@
       incList.innerHTML = tour.inclusions.map(inc => `
         <li class="flex items-start gap-3 text-sm text-slate-700">
           <span class="material-symbols-outlined text-green-600 text-base shrink-0 mt-0.5">check_circle</span>
-          <span>${inc}</span>
+          <span>${html(inc)}</span>
         </li>
       `).join('');
     }
@@ -457,7 +560,7 @@
       excList.innerHTML = tour.exclusions.map(exc => `
         <li class="flex items-start gap-3 text-sm text-slate-600">
           <span class="material-symbols-outlined text-slate-400 text-base shrink-0 mt-0.5">cancel</span>
-          <span>${exc}</span>
+          <span>${html(exc)}</span>
         </li>
       `).join('');
     }
@@ -475,10 +578,10 @@
             <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary border-4 border-surface-container-low flex items-center justify-center text-[10px] text-white font-bold"></div>
             <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
               <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                <h4 class="font-bold text-primary text-base">Ngày ${it.day}: ${it.title}</h4>
+                <h4 class="font-bold text-primary text-base">Ngày ${it.day}: ${html(it.title)}</h4>
                 <span class="text-[11px] font-bold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">Chi tiết ngày ${it.day}</span>
               </div>
-              <p class="text-on-surface-variant text-sm leading-relaxed">${it.content}</p>
+              <p class="text-on-surface-variant text-sm leading-relaxed">${html(it.content)}</p>
             </div>
           </div>
         `).join('')}
@@ -488,7 +591,7 @@
     // 8. Reviews Section
     const reviewBtn = document.getElementById('btnWriteReviewLink');
     if (reviewBtn) {
-      reviewBtn.href = `../my_tours/review.html?tour_id=${tour.id}`;
+      reviewBtn.href = '../my_tours/index.html?tab=completed';
     }
 
     const reviewsContainer = document.getElementById('reviewsContainer') || document.getElementById('reviewsList') || document.querySelector('.reviews-container');
@@ -499,7 +602,7 @@
             <span class="material-symbols-outlined text-5xl text-slate-300 mb-2">rate_review</span>
             <p class="text-base font-bold text-slate-700">Chưa có đánh giá nào cho chuyến đi này.</p>
             <p class="text-xs text-slate-400 mt-1">Hãy là người đầu tiên trải nghiệm và chia sẻ cảm nhận thực tế của bạn!</p>
-            <a href="../my_tours/review.html?tour_id=${tour.id}" class="inline-block mt-4 px-6 py-2.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-blue-800 transition shadow-sm">
+            <a href="../my_tours/index.html?tab=completed" class="inline-block mt-4 px-6 py-2.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-blue-800 transition shadow-sm">
               Viết đánh giá ngay
             </a>
           </div>
@@ -512,9 +615,9 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition">
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-3">
-                  <img src="${avatar}" alt="${r.customer_name}" class="w-11 h-11 rounded-full object-cover border border-slate-200 shadow-sm"/>
+                  <img src="${html(avatar)}" alt="${html(r.customer_name)}" class="w-11 h-11 rounded-full object-cover border border-slate-200 shadow-sm"/>
                   <div>
-                    <h4 class="font-bold text-sm text-primary">${r.customer_name}</h4>
+                    <h4 class="font-bold text-sm text-primary">${html(r.customer_name)}</h4>
                     <p class="text-[11px] text-slate-400">${formatDate(r.created_at)}</p>
                   </div>
                 </div>
@@ -523,7 +626,7 @@
                   <span class="text-xs font-bold text-amber-700 ml-1">${r.rating}.0</span>
                 </div>
               </div>
-              <p class="text-slate-700 text-sm leading-relaxed">${r.comment}</p>
+              <p class="text-slate-700 text-sm leading-relaxed">${html(r.comment)}</p>
             </div>
           `;
         }).join('');
@@ -531,9 +634,7 @@
     }
 
     // 9. Sticky Booking Widget on Sidebar
-    const allDepartures = tour.departures || db.getDepartures({ tour_id: tour.id }) || [];
-    // Chỉ lấy lịch hợp lệ: status open và còn chỗ trống
-    const validDepartures = allDepartures.filter(d => d.status === 'open' && Number(d.available_seats) > 0);
+    const validDepartures = tour.departures.filter(openDeparture);
 
     const depSelect = document.getElementById('departureSelect') || document.querySelector('select[name="departure_id"]') || document.querySelector('select[name="departureId"]');
     const priceDisplay = document.getElementById('tourDetailPrice') || document.querySelector('[data-booking-price-display]') || document.querySelector('.text-3xl.font-black.text-primary');
@@ -559,7 +660,7 @@
         }
       } else {
         depSelect.innerHTML = validDepartures.map(d => `
-          <option value="${d.id}" data-adult-price="${d.adult_price}" data-child-price="${d.child_price}" data-seats="${d.available_seats}" data-guide="${d.guide_name || ''}">
+          <option value="${d.id}" data-adult-price="${d.adult_price}" data-child-price="${d.child_price}" data-seats="${d.available_seats}" data-guide="${html(d.guide_name || '')}">
             Khởi hành: ${formatDate(d.start_date)} - Về: ${formatDate(d.end_date)} (Còn ${d.available_seats} chỗ)
           </option>
         `).join('');
@@ -567,7 +668,7 @@
         // Hàm cập nhật widget theo lịch được chọn
         const updateWidgetForSelectedDep = () => {
           const selectedDepId = depSelect.value;
-          const selectedDep = validDepartures.find(d => d.id === selectedDepId) || validDepartures[0];
+          const selectedDep = validDepartures.find(d => String(d.id) === selectedDepId) || validDepartures[0];
           if (!selectedDep) return;
 
           if (priceDisplay) {
@@ -608,7 +709,7 @@
           return;
         }
 
-        const chosenDep = db.getDepartureById(selectedDepId);
+        const chosenDep = validDepartures.find(d => String(d.id) === selectedDepId);
         if (!chosenDep || Number(chosenDep.available_seats) <= 0) {
           alert('Lịch khởi hành này hiện đã hết chỗ trống! Quý khách vui lòng chọn ngày khác.');
           return;
@@ -621,13 +722,10 @@
   }
 
   // 4. Đặt Tour - Bước 1 (client/booking/create.html)
-  function handleBookingCreate() {
+  async function handleBookingCreate() {
     const urlParams = new URLSearchParams(window.location.search);
-    const tourId = urlParams.get('tour_id') || 'tour_1';
-    const depId = urlParams.get('departure_id') || 'dep_1';
-
-    const tour = db.getTourById(tourId) || db.getTourById('tour_1');
-    const dep = db.getDepartureById(depId) || tour.departures?.[0] || db.getDepartures()[0];
+    if (!requireCustomer()) return;
+    const { tour, dep } = await bookingDeparture(urlParams);
 
     // Summary Card Details
     const tourImg = document.querySelector('.rounded-xl.overflow-hidden img');
@@ -641,7 +739,7 @@
 
     // Departure Location & Dates
     const summaryLocEl = document.querySelector('.material-symbols-outlined.text-xs.text-primary + span');
-    if (summaryLocEl) summaryLocEl.innerHTML = `Khởi hành: <strong>${tour.departure_location}</strong>`;
+    if (summaryLocEl) summaryLocEl.innerHTML = `Khởi hành: <strong>${html(tour.departure_location)}</strong>`;
 
     const summaryDateEl = document.querySelector('.material-symbols-outlined.text-xs:not(.text-primary) + span');
     if (summaryDateEl) {
@@ -649,8 +747,8 @@
     }
 
     // Adult & Child Pricing
-    const adultPrice = Number(dep.adult_price || tour.adult_price);
-    const childPrice = Number(dep.child_price || tour.child_price);
+    const adultPrice = Number(dep.adult_price);
+    const childPrice = Number(dep.child_price);
 
     const adultPriceLabel = document.querySelectorAll('.flex.justify-between.items-center p.text-xs.font-bold.text-primary')[0];
     if (adultPriceLabel) adultPriceLabel.textContent = `${formatMoney(adultPrice)}/vé`;
@@ -659,10 +757,12 @@
     if (childPriceLabel) childPriceLabel.textContent = `${formatMoney(childPrice)}/vé`;
 
     // Quantity inputs & summary
+    const saved = JSON.parse(sessionStorage.getItem('booking_draft') || 'null')?.request;
+    const initial = saved?.departure_id === dep.id ? saved : null;
     const adultsInput = document.getElementById('total_adults');
     const childrenInput = document.getElementById('total_children');
-    if (adultsInput && !adultsInput.value) adultsInput.value = '2';
-    if (childrenInput && !childrenInput.value) childrenInput.value = '0';
+    adultsInput.value = Math.min(dep.available_seats, initial?.total_adults ?? (Number(adultsInput.value) || 1));
+    childrenInput.value = Math.min(dep.available_seats - Number(adultsInput.value), initial?.total_children ?? 0);
 
     function recalculate() {
       const aCount = Math.max(1, Number(adultsInput.value) || 1);
@@ -694,7 +794,8 @@
         let val = Number(input.value) + change;
         if (targetId === 'total_adults' && val < 1) val = 1;
         if (targetId === 'total_children' && val < 0) val = 0;
-        input.value = val;
+        const other = input === adultsInput ? childrenInput : adultsInput;
+        input.value = Math.min(val, 20, dep.available_seats - Number(other.value));
         recalculate();
       };
     });
@@ -704,39 +805,97 @@
     const nameInput = document.querySelector('input[name="userFullName"]');
     const phoneInput = document.querySelector('input[name="userPhone"]');
     const emailInput = document.querySelector('input[name="userEmail"]');
-    if (nameInput) nameInput.value = user.full_name || 'Nguyễn Văn An';
-    if (phoneInput) phoneInput.value = user.phone || '0901234001';
-    if (emailInput) emailInput.value = user.email || 'an.nguyen@gmail.com';
+    if (nameInput) nameInput.value = initial?.userFullName ?? user?.full_name ?? user?.fullName ?? '';
+    if (phoneInput) phoneInput.value = initial?.userPhone ?? user?.phone ?? '';
+    if (emailInput) emailInput.value = initial?.userEmail ?? user?.email ?? '';
 
     // Submit passes parameters to passengers.html
     const form = document.getElementById('bookingForm');
     if (form) {
-      form.addEventListener('submit', (e) => {
+      const button = form.querySelector('button[type="submit"]');
+      if (button) button.disabled = false;
+      form.addEventListener('submit', async e => {
         e.preventDefault();
-        const aCount = adultsInput.value;
-        const cCount = childrenInput.value;
-        const contactName = nameInput.value;
-        const contactPhone = phoneInput.value;
-        const contactEmail = emailInput.value;
-
-        const nextUrl = `passengers.html?tour_id=${tour.id}&departure_id=${dep.id}&adults=${aCount}&children=${cCount}&name=${encodeURIComponent(contactName)}&phone=${encodeURIComponent(contactPhone)}&email=${encodeURIComponent(contactEmail)}`;
-        window.location.href = nextUrl;
+        if (button) button.disabled = true;
+        const request = {
+          departure_id: dep.id, total_adults: Number(adultsInput.value),
+          total_children: Number(childrenInput.value), userFullName: nameInput.value.trim(),
+          userPhone: phoneInput.value.trim(), userEmail: emailInput.value.trim()
+        };
+        try {
+          await get('/api/bookings/validate-draft', request);
+          sessionStorage.setItem('booking_draft', JSON.stringify({ request }));
+          window.location.href = 'passengers.html?' + new URLSearchParams({ tour_id: tour.id, departure_id: dep.id });
+        } catch (error) {
+          alert(error.message);
+          if (button) button.disabled = false;
+        }
       });
     }
   }
 
   // 5. Thông Tin Hành Khách (client/booking/passengers.html)
-  function handleBookingPassengers() {
+  async function handleBookingPassengers() {
     const urlParams = new URLSearchParams(window.location.search);
-    const tourId = urlParams.get('tour_id') || 'tour_1';
-    const depId = urlParams.get('departure_id') || 'dep_1';
-    const adultsCount = parseInt(urlParams.get('adults') || '2', 10);
-    const childrenCount = parseInt(urlParams.get('children') || '0', 10);
-    const contactName = urlParams.get('name') || 'Nguyễn Văn An';
-    const contactPhone = urlParams.get('phone') || '0901234001';
-    const contactEmail = urlParams.get('email') || 'an.nguyen@gmail.com';
+    if (!requireCustomer()) return;
+    const { tour, dep } = await bookingDeparture(urlParams);
+    const { request, passengers: previousPassengers } = readDraft(dep.id);
+    const quote = await get('/api/bookings/validate-draft', request);
+    const tourId = tour.id;
+    const depId = dep.id;
+    const { totalAdults: adultsCount, totalChildren: childrenCount, adultPrice, childPrice, contactName } = quote;
 
-    const container = document.querySelector('.lg\:col-span-8.space-y-6');
+    const adultTotal = adultsCount * adultPrice;
+    const childTotal = childrenCount * childPrice;
+    const grandTotal = adultTotal + childTotal;
+
+    // Hàm cập nhật nội dung theo ID
+    const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    // Cập nhật hình ảnh tour
+    const tourImage = document.getElementById('passengersTourImage');
+    if (tourImage) {
+        tourImage.src = tour.images?.[0] || '';
+        tourImage.alt = tour.title;
+    }
+
+    // Cập nhật thông tin tour
+    setText('passengersTourCategory', tour.category?.name || 'Tour du lịch');
+    setText('passengersTourTitle', tour.title);
+    setText(
+        'passengersDepartureDate',
+        `${formatDate(dep.start_date)} (${tour.duration_days} ngày ${tour.duration_nights} đêm)`
+    );
+    setText(
+        'passengersCount',
+        `${adultsCount} người lớn${childrenCount > 0 ? `, ${childrenCount} trẻ em` : ''}`
+    );
+    setText('passengersDepartureLocation', tour.departure_location);
+
+    // Cập nhật chi phí
+    setText(
+        'passengersAdultLabel',
+        `Người lớn (${adultsCount} x ${formatMoney(adultPrice)})`
+    );
+    setText('passengersAdultAmount', formatMoney(adultTotal));
+
+    const childRow = document.getElementById('passengersChildRow');
+    if (childRow) {
+        childRow.classList.toggle('hidden', childrenCount === 0);
+    }
+
+    setText(
+        'passengersChildLabel',
+        `Trẻ em (${childrenCount} x ${formatMoney(childPrice)})`
+    );
+    setText('passengersChildAmount', formatMoney(childTotal));
+    setText('passengersTotal', formatMoney(grandTotal));
+
+    const htmlEscapeContact = html(contactName);
+    const container = document.querySelector('[class~="lg:col-span-8"].space-y-6');
     if (container) {
       let html = '<h2 class="font-headline font-extrabold text-2xl text-primary mb-2">Chi tiết hành khách</h2>';
 
@@ -751,15 +910,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-1.5">
                 <label class="text-xs font-bold text-on-surface-variant px-1">Họ và tên *</label>
-                <input type="text" name="passenger_adult_name_${i}" value="${i === 1 ? contactName : ''}" placeholder="Nhập họ và tên như trên CCCD" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
+                <input type="text" name="passenger_adult_name_${i}" value="${i === 1 ? htmlEscapeContact : ''}" placeholder="Nhập họ và tên như trên CCCD" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
               </div>
               <div class="space-y-1.5">
                 <label class="text-xs font-bold text-on-surface-variant px-1">Ngày sinh *</label>
-                <input type="date" name="passenger_adult_dob_${i}" value="1992-06-15" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
+                <input type="date" name="passenger_adult_dob_${i}" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
               </div>
               <div class="space-y-1.5 md:col-span-2">
                 <label class="text-xs font-bold text-on-surface-variant px-1">Số CMND/CCCD/Hộ chiếu *</label>
-                <input type="text" name="passenger_adult_id_${i}" value="00109001234${i}" placeholder="Ví dụ: 001090012345" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
+                <input type="text" name="passenger_adult_id_${i}" placeholder="Ví dụ: 001090012345" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
               </div>
             </div>
           </div>
@@ -780,8 +939,8 @@
                 <input type="text" name="passenger_child_name_${c}" placeholder="Nhập họ và tên bé" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
               </div>
               <div class="space-y-1.5">
-                <label class="text-xs font-bold text-on-surface-variant px-1">Ngày sinh (2-11 tuổi) *</label>
-                <input type="date" name="passenger_child_dob_${c}" value="2018-05-10" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
+                <label class="text-xs font-bold text-on-surface-variant px-1">Ngày sinh (dưới 12 tuổi) *</label>
+                <input type="date" name="passenger_child_dob_${c}" class="w-full bg-surface-container-low border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 focus:ring-secondary transition-all" required/>
               </div>
             </div>
           </div>
@@ -801,10 +960,21 @@
       `;
 
       container.innerHTML = html;
+      const counters = { adult: 0, child: 0 };
+      for (const passenger of previousPassengers || []) {
+        const type = passenger.passenger_type;
+        const index = ++counters[type];
+        for (const [field, value] of Object.entries({
+          name: passenger.full_name, dob: passenger.date_of_birth, id: passenger.id_card
+        })) {
+          const input = container.querySelector('[name="passenger_' + type + '_' + field + '_' + index + '"]');
+          if (input) input.value = value || '';
+        }
+      }
     }
 
     // Submit handler forward to invoice.html
-    const form = document.querySelector('form');
+    const form = document.getElementById('passengersForm');
     if (form) {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -827,117 +997,113 @@
           });
         }
 
-        // Save passengers draft in sessionStorage
-        sessionStorage.setItem('booking_passengers_draft', JSON.stringify(passList));
-
-        const nextUrl = `../payments/invoice.html?tour_id=${tourId}&departure_id=${depId}&adults=${adultsCount}&children=${childrenCount}&name=${encodeURIComponent(contactName)}&phone=${encodeURIComponent(contactPhone)}&email=${encodeURIComponent(contactEmail)}`;
-        window.location.href = nextUrl;
+        sessionStorage.setItem('booking_draft', JSON.stringify({
+          request, passengers: passList.map(p => ({
+            full_name: p.name.trim(), passenger_type: p.type,
+            id_card: p.id_card.trim() || null, date_of_birth: p.dob
+          }))
+        }));
+        window.location.href = '../payments/invoice.html?' + new URLSearchParams({ tour_id: tourId, departure_id: depId });
       });
     }
   }
 
   // 6. Thanh Toán & Hóa Đơn (client/payments/invoice.html)
-  function handlePaymentInvoice() {
+  async function handlePaymentInvoice() {
     const urlParams = new URLSearchParams(window.location.search);
-    const tourId = urlParams.get('tour_id') || 'tour_1';
-    const depId = urlParams.get('departure_id') || 'dep_1';
-    const adultsCount = parseInt(urlParams.get('adults') || '2', 10);
-    const childrenCount = parseInt(urlParams.get('children') || '0', 10);
-    const contactName = urlParams.get('name') || 'Nguyễn Văn An';
-    const contactPhone = urlParams.get('phone') || '0901234001';
-    const contactEmail = urlParams.get('email') || 'an.nguyen@gmail.com';
-
-    const tour = db.getTourById(tourId) || db.getTourById('tour_1');
-    const dep = db.getDepartureById(depId) || tour.departures?.[0] || db.getDepartures()[0];
-
-    const adultPrice = Number(dep.adult_price || tour.adult_price);
-    const childPrice = Number(dep.child_price || tour.child_price);
-    const grandTotal = (adultsCount * adultPrice) + (childrenCount * childPrice);
-
-    // Update order summary card
-    const tourTitleEl = document.querySelector('aside h3.font-headline') || document.querySelector('aside h3');
-    if (tourTitleEl) tourTitleEl.textContent = tour.title;
-
-    const asideSpans = document.querySelectorAll('aside .text-xs span.font-semibold');
-    if (asideSpans.length >= 2) {
-      asideSpans[0].textContent = formatDate(dep.start_date);
-      asideSpans[1].textContent = formatDate(dep.end_date);
+    if (!requireCustomer()) return;
+    const { tour, dep } = await bookingDeparture(urlParams);
+    const { request, passengers } = readDraft(dep.id);
+    const { totalAdults: adultsCount, totalChildren: childrenCount, totalAmount: grandTotal, adultPrice, childPrice } =
+      await get('/api/bookings/validate-draft', request);
+    if (!Array.isArray(passengers) || passengers.length !== adultsCount + childrenCount ||
+        passengers.filter(p => p.passenger_type === 'adult').length !== adultsCount ||
+        passengers.filter(p => p.passenger_type === 'child').length !== childrenCount) {
+      throw new Error('Vui lòng nhập đầy đủ danh sách hành khách trước khi thanh toán.');
     }
 
-    const paxSummaryEl = document.querySelector('aside p.text-xs.text-slate-500');
-    if (paxSummaryEl) paxSummaryEl.textContent = `${adultsCount} người lớn${childrenCount > 0 ? `, ${childrenCount} trẻ em` : ''}`;
-
-    const totalEl = document.querySelector('aside .text-2xl.font-black.text-secondary');
-    if (totalEl) totalEl.textContent = formatMoney(grandTotal);
+    const cover = document.getElementById('checkoutTourCover');
+    const image = document.getElementById('checkoutTourImage');
+    const imageUrl = tour.images[0] || dep.thumbnail_url;
+    if (imageUrl) {
+      image.addEventListener('error', () => cover.classList.add('hidden'), { once: true });
+      image.alt = tour.title;
+      image.src = imageUrl;
+      image.hidden = false;
+      cover.classList.remove('hidden');
+    }
+    const summary = {
+      checkoutTourTitle: tour.title,
+      checkoutDates: formatDate(dep.start_date) + ' – ' + formatDate(dep.end_date),
+      checkoutParty: request.userFullName + ' · ' + (adultsCount + childrenCount) + ' khách',
+      checkoutAdultsLabel: 'Người lớn (' + adultsCount + ' × ' + formatMoney(adultPrice) + ')',
+      checkoutAdultsAmount: formatMoney(adultsCount * adultPrice),
+      checkoutChildrenLabel: 'Trẻ em (' + childrenCount + ' × ' + formatMoney(childPrice) + ')',
+      checkoutChildrenAmount: formatMoney(childrenCount * childPrice),
+      checkoutTotal: formatMoney(grandTotal)
+    };
+    for (const [elementId, value] of Object.entries(summary)) {
+      document.getElementById(elementId).textContent = value;
+    }
+    document.getElementById('checkoutBackLink').href = '../booking/passengers.html?' + urlParams;
 
     // Payment Form Handler
     const form = document.getElementById('checkoutForm');
     if (form) {
-      form.addEventListener('submit', (e) => {
+      const submitBtn = document.getElementById('submit-btn');
+      const submitText = document.getElementById('submit-text');
+      const method = form.elements.payment_method;
+      const updatePaymentMethod = () => {
+        const isTransfer = method.value === 'bank_transfer';
+        document.getElementById('checkout-transfer-note').classList.toggle('hidden', !isTransfer);
+        document.getElementById('checkout-cash-note').classList.toggle('hidden', isTransfer);
+        if (submitText) submitText.textContent = isTransfer ? 'Giữ chỗ và xem thông tin chuyển khoản' : 'Giữ chỗ và trả tại quầy';
+      };
+      method.addEventListener('change', updatePaymentMethod);
+      updatePaymentMethod();
+      if (submitBtn) submitBtn.disabled = false;
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const submitBtn = document.getElementById('submit-btn');
+
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = 'Đang ghi nhận giao dịch...';
         }
 
-        // Retrieve passengers from draft or generate
-        let passengers = [];
+        if (submitText) {
+          submitText.textContent = 'Đang ghi nhận giao dịch...';
+        }
+
         try {
-          const raw = sessionStorage.getItem('booking_passengers_draft');
-          if (raw) passengers = JSON.parse(raw);
-        } catch (_) {}
-
-        if (passengers.length === 0) {
-          passengers.push({
-            name: contactName,
-            type: 'adult',
-            id_card: '001090012345'
+          const fields = new FormData(form);
+          const booking = await get('/api/bookings/checkout', {
+            ...request, passengers, expected_total_amount: grandTotal,
+            payment_method: fields.get('payment_method')
           });
+          sessionStorage.removeItem('booking_draft');
+          window.location.href = '../my_tours/show.html?id=' + booking.id;
+        } catch (error) {
+          console.error('Checkout failed:', error);
+          alert('Đặt tour thất bại: ' + error.message);
+        } finally {
+         if (submitBtn) {
+            submitBtn.disabled = false;
+          }
+
+          updatePaymentMethod();
         }
 
-        const user = getActiveCustomer();
-
-        // Call BookingTourDB.createBooking
-        const newBooking = db.createBooking({
-          customer_id: user.id || 'cust_1',
-          customer_name: contactName,
-          customer_email: contactEmail,
-          customer_phone: contactPhone,
-          tour_id: tour.id,
-          tour_title: tour.title,
-          tour_image: tour.images?.[0],
-          departure_id: dep.id,
-          departure_date: dep.start_date,
-          return_date: dep.end_date,
-          adults_count: adultsCount,
-          children_count: childrenCount,
-          total_amount: grandTotal,
-          payment_method: 'VNPAY',
-          passengers
-        });
-
-        sessionStorage.removeItem('booking_passengers_draft');
-
-        alert(`Đặt tour thành công! Mã đặt vé của bạn là: ${newBooking.booking_code}`);
-        window.location.href = `../my_tours/show.html?id=${newBooking.id}`;
       });
     }
   }
 
   // 7. Chuyến Đi Của Tôi (client/my_tours/index.html)
-  function handleMyToursIndex() {
-    // Check authentication protection
-    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('bookingtour_logged_out') === 'true') {
-      window.location.replace('/client/auth/login.html');
-      return;
-    }
-
-    const user = getActiveCustomer();
-    if (!user) {
-      window.location.replace('/client/auth/login.html');
-      return;
-    }
+  async function handleMyToursIndex() {
+    if (!requireCustomer()) return;
+    const user = db.getCurrentUser() || {};
+    const allBookings = (await get('/api/bookings/my-tours')).map(b => ({
+      ...b, booking_status: b.status, adults_count: b.total_adults,
+      children_count: b.total_children, payment_status: b.payment_method ? 'paid' : 'unpaid'
+    }));
 
     // Sync aside customer info if present
     const asideEmail = document.querySelector('aside p.truncate');
@@ -1002,9 +1168,6 @@
     }
 
     function refresh() {
-      // 1. Fetch live bookings strictly for this customer
-      const allBookings = user.id ? db.getBookings({ customer_id: user.id }) : [];
-
       // Calculate stats
       const total = allBookings.length;
       const upcoming = allBookings.filter(b => b.booking_status === 'confirmed' || b.booking_status === 'pending');
@@ -1075,15 +1238,12 @@
         if (listContainer) {
           listContainer.classList.remove('hidden');
           listContainer.innerHTML = filtered.map(b => {
-            // Relate with Tour database
-            const tour = db.getTourById(b.tour_id);
-            const tourTitle = b.tour_title || tour?.title || 'Tour Du Lịch Trải Nghiệm Tuyển Chọn';
-            const tourImage = b.tour_image || tour?.images?.[0] || 'https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg';
+            const tourTitle = b.tour_title || 'Tour Du Lịch Trải Nghiệm Tuyển Chọn';
+            const tourImage = b.tour_image || 'https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg';
 
             const statusBadge = renderStatusBadge(b.booking_status);
             const paymentBadge = renderPaymentBadge(b.payment_status);
             const paxText = `${b.adults_count || 1} người lớn${b.children_count > 0 ? `, ${b.children_count} trẻ em` : ''}`;
-            const isCancelled = b.booking_status === 'cancelled' || b.booking_status === 'canceled';
             const isCompleted = b.booking_status === 'completed';
             const isUpcoming = b.booking_status === 'confirmed' || b.booking_status === 'pending';
 
@@ -1092,8 +1252,8 @@
                 <!-- Left: Tour Image & Information -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 w-full lg:w-auto flex-1 min-w-0">
                   <div class="relative w-full sm:w-44 h-44 sm:h-32 rounded-2xl overflow-hidden shrink-0 shadow-xs border border-slate-100 bg-slate-100">
-                    <img src="${tourImage}" alt="${tourTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg'"/>
-                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-slate-900/70 backdrop-blur-xs text-white text-[10px] font-mono font-bold rounded-md">#${b.booking_code}</span>
+                    <img src="${html(tourImage)}" alt="${html(tourTitle)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg'"/>
+                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-slate-900/70 backdrop-blur-xs text-white text-[10px] font-mono font-bold rounded-md">#${html(b.booking_code)}</span>
                   </div>
 
                   <div class="space-y-2 flex-1 min-w-0 w-full">
@@ -1104,7 +1264,7 @@
                     </div>
 
                     <h3 class="font-bold text-base md:text-lg text-primary line-clamp-1 group-hover:text-secondary transition font-headline">
-                      <a href="../my_tours/show.html?id=${b.id}">${tourTitle}</a>
+                      <a href="../my_tours/show.html?id=${b.id}">${html(tourTitle)}</a>
                     </h3>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-500 pt-1">
@@ -1138,29 +1298,14 @@
                         <span>Đánh giá tour</span>
                       </a>
                     ` : ''}
-                    ${!isCancelled && !isCompleted ? `
-                      <button type="button" class="btn-cancel-booking px-3.5 py-2 text-rose-600 hover:bg-rose-50 rounded-full font-bold text-xs transition border border-rose-200 active:scale-95" data-id="${b.id}" data-code="${b.booking_code}">
-                        Hủy tour
-                      </button>
-                    ` : ''}
+
                   </div>
                 </div>
               </article>
             `;
           }).join('');
 
-          // Wire cancel booking actions
-          listContainer.querySelectorAll('.btn-cancel-booking').forEach(btn => {
-            btn.onclick = () => {
-              const bId = btn.getAttribute('data-id');
-              const bCode = btn.getAttribute('data-code') || bId;
-              if (confirm(`Bạn có chắc chắn muốn hủy đơn đặt tour #${bCode}?\nGhế sẽ được hoàn trả vào hệ thống.`)) {
-                db.cancelBooking(bId, 'Khách hàng tự hủy trên giao diện');
-                alert(`Đã hủy đặt tour #${bCode} thành công!`);
-                refresh();
-              }
-            };
-          });
+
         }
       }
     }
@@ -1234,57 +1379,103 @@
   }
 
   // 8. Vé Điện Tử Voucher (client/my_tours/show.html)
-  function handleMyTourVoucher() {
+  async function handleMyTourVoucher() {
     const urlParams = new URLSearchParams(window.location.search);
-    const bookingId = urlParams.get('id') || 'bk_1';
-    const booking = db.getBookingById(bookingId) || db.getBookings()[0];
-
-    if (!booking) return;
-
-    const codeEls = document.querySelectorAll('[data-booking-code]');
-    codeEls.forEach(el => el.textContent = booking.booking_code);
-
-    const titleEl = document.querySelector('[data-booking-tour]');
-    if (titleEl) titleEl.textContent = booking.tour_title;
-
-    const dateEl = document.querySelector('[data-booking-date]');
-    if (dateEl) dateEl.textContent = `${formatDate(booking.departure_date)} – ${formatDate(booking.return_date)}`;
-
-    const totalEl = document.querySelector('[data-booking-total]');
-    if (totalEl) totalEl.textContent = formatMoney(booking.total_amount);
-
-    const statusEl = document.querySelector('[data-booking-status]');
-    if (statusEl) statusEl.innerHTML = renderStatusBadge(booking.booking_status);
+    if (!requireCustomer()) return;
+    const bookingId = urlParams.get('id');
+    if (!id(bookingId)) throw new Error('Mã đặt tour không hợp lệ.');
+    const b = await get('/api/bookings/' + bookingId);
+    const pendingTransfer = b.payment_option === 'bank_transfer' && b.status === 'pending';
+    const pendingCash = b.payment_option === 'cash' && b.status === 'pending';
+    const pendingPayment = pendingTransfer || pendingCash;
+    const status = { confirmed: 'Đã xác nhận', pending: pendingPayment ? 'Chờ thanh toán' : 'Chờ xử lý', completed: 'Hoàn thành',
+      cancelled: 'Đã hủy', canceled: 'Đã hủy' }[b.status] || 'Chưa rõ';
+    const values = {
+      voucherBannerMsg: 'Chi tiết đặt tour #' + b.booking_code,
+      voucherBreadcrumbCode: b.booking_code, voucherBookingCode: b.booking_code,
+      voucherTourTitle: b.tour_title, voucherDateRange: formatDate(b.departure_date) + ' – ' + formatDate(b.return_date),
+      voucherDestinationLocation: b.destination, voucherDurationText: '', voucherDepartureLocation: '',
+      voucherCategoryTag: '', voucherStatusTag: status, voucherBookingStatus: status,
+      voucherPaxSummary: b.total_adults + ' người lớn, ' + b.total_children + ' trẻ em',
+      voucherAdultTickets: b.total_adults + ' vé', voucherChildTickets: b.total_children + ' vé',
+      voucherTotalPax: (b.total_adults + b.total_children) + ' khách', voucherInvoiceCode: b.bill_number,
+      voucherPaymentMethod: b.payment_method || ({ bank_transfer: 'Chuyển khoản', cash: 'Tiền mặt' }[b.payment_option]),
+      voucherPaymentStatus: b.payment_method ? 'Đã ghi nhận' : 'Chờ thanh toán',
+      voucherTotalAmount: formatMoney(b.total_amount)
+    };
+    for (const [elementId, value] of Object.entries(values)) {
+      document.getElementById(elementId).textContent = value ?? '—';
+    }
+    document.getElementById('voucherCategoryTag').classList.toggle('hidden', !values.voucherCategoryTag);
+    const statusTag = document.getElementById('voucherStatusTag');
+    statusTag.classList.toggle('bg-emerald-600', !pendingPayment);
+    statusTag.classList.toggle('bg-amber-700', pendingPayment);
+    const image = document.getElementById('voucherTourImage');
+    image.hidden = !b.tour_image;
+    if (b.tour_image) image.src = b.tour_image;
+    image.alt = b.tour_title || '';
+    const review = document.getElementById('voucherReviewLink');
+    review.classList.toggle('hidden', b.status !== 'completed');
+    review.href = 'review.html?' + new URLSearchParams({ tour_id: b.tour_id, booking_id: b.id });
+    document.getElementById('voucherContent')?.classList.remove('hidden');
+    if (pendingCash) {
+      document.getElementById('voucherCashInstructions').classList.remove('hidden');
+      document.getElementById('voucherCashAmount').textContent = formatMoney(b.total_amount);
+      document.getElementById('voucherCashReference').textContent = b.booking_code;
+    }
+    if (pendingTransfer) {
+      const panel = document.getElementById('voucherTransferInstructions');
+      panel.classList.remove('hidden');
+      document.getElementById('voucherTransferAmount').textContent = formatMoney(b.total_amount);
+      document.getElementById('voucherTransferReference').textContent = b.booking_code;
+      const account = document.getElementById('voucherTransferAccount');
+      try {
+        const details = await get('/api/bookings/bank-transfer-instructions');
+        account.textContent = details
+          ? [details.bankName, details.accountNumber, details.accountHolder].join(' · ')
+          : 'Vui lòng liên hệ nhân viên để nhận thông tin tài khoản chuyển khoản.';
+      } catch {
+        account.textContent = 'Không tải được thông tin tài khoản. Vui lòng liên hệ nhân viên.';
+      }
+    }
+    const passengers = b.passengers || [];
+    document.getElementById('voucherPassengersTable').innerHTML = passengers.map((p, index) =>
+      '<tr>' + [index + 1, p.full_name, p.passenger_type === 'adult' ? 'Người lớn' : 'Trẻ em',
+        formatDate(p.date_of_birth), p.id_card || '—'].map(value =>
+        '<td class="px-4 py-3">' + html(value) + '</td>').join('') + '</tr>'
+    ).join('');
+    document.getElementById('voucherEmptyPassengers').classList.toggle('hidden', passengers.length > 0);
   }
 
   // 9. Đánh Giá Chuyến Đi (client/my_tours/review.html)
-  function handleMyTourReview() {
+  async function handleMyTourReview() {
     const urlParams = new URLSearchParams(window.location.search);
-    const tourId = urlParams.get('tour_id') || 'tour_1';
-    const tour = db.getTourById(tourId);
-
-    const titleEl = document.querySelector('h2.font-headline') || document.querySelector('[data-tour-title]');
-    if (titleEl && tour) titleEl.textContent = `Đánh giá: ${tour.title}`;
-
-    const form = document.querySelector('form');
-    if (form) {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const rating = form.querySelector('input[name="rating"]:checked')?.value || 5;
-        const comment = form.querySelector('textarea')?.value || 'Chuyến đi rất tuyệt vời!';
-        const user = getActiveCustomer();
-
-        db.addReview({
-          tour_id: tourId,
-          customer_name: user.full_name || 'Khách hàng',
-          rating: Number(rating),
-          comment
-        });
-
-        alert('Cảm ơn quý khách đã gửi đánh giá trải nghiệm!');
-        window.location.href = `../tours/show.html?id=${tourId}`;
-      });
+    const bookingId = urlParams.get('booking_id');
+    if (!requireCustomer()) return;
+    if (!id(bookingId)) throw new Error('Vui lòng chọn chuyến đi đã đặt để gửi đánh giá.');
+    const booking = await get('/api/bookings/' + bookingId);
+    const values = {
+      reviewTourTitle: booking.tour_title, reviewTourDest: booking.destination,
+      reviewTourDeparture: formatDate(booking.departure_date), reviewTourDestination: booking.destination,
+      reviewBookingCode: booking.booking_code, reviewTourCategory: ''
+    };
+    for (const [elementId, value] of Object.entries(values)) {
+      document.getElementById(elementId).textContent = value ?? '—';
     }
+    if (booking.tour_image) document.getElementById('reviewTourImage').src = booking.tour_image;
+    const form = document.getElementById('reviewForm');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const fields = new FormData(form);
+      try {
+        await get('/api/bookings/' + bookingId + '/review', {
+          rating: Number(fields.get('rating')), comment: form.querySelector('textarea').value.trim()
+        });
+        window.location.href = 'show.html?id=' + bookingId;
+      } catch (error) {
+        alert(error.message);
+      }
+    });
   }
 
   // 10. Hồ Sơ Khách Hàng (client/profile/show.html)
@@ -1365,37 +1556,40 @@
   }
 
   // 12. Lịch Sử Thanh Toán (client/payments/history.html)
-  function handlePaymentsHistory() {
-    const user = getActiveCustomer();
-    const txns = user?.id ? db.getTransactions({ customer_id: user.id }) : [];
+  async function handlePaymentsHistory() {
+    if (!requireCustomer()) return;
+    const txns = await get('/api/customer/payment-history');
 
-    const tbody = document.querySelector('table tbody');
-    if (tbody) {
-      if (txns.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-10 text-center text-slate-400">Quý khách chưa có giao dịch thanh toán nào.</td></tr>';
-      } else {
-        tbody.innerHTML = txns.map(t => `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="px-6 py-4 font-mono font-bold text-blue-900">${t.transaction_code}</td>
-            <td class="px-4 py-4 font-mono text-slate-600 text-xs">${t.booking_code}</td>
-            <td class="px-4 py-4 font-bold text-green-700 whitespace-nowrap">${formatMoney(t.amount)}</td>
-            <td class="px-4 py-4"><span class="px-2.5 py-1 bg-slate-100 rounded-full font-bold text-xs">${t.payment_method}</span></td>
-            <td class="px-4 py-4 text-slate-500 text-sm whitespace-nowrap">${formatDate(t.created_at)}</td>
-            <td class="px-6 py-4 whitespace-nowrap">${renderStatusBadge(t.status)}</td>
-          </tr>
-        `).join('');
-      }
-    }
+    document.getElementById('totalSpentDisplay').textContent =
+      formatMoney(txns.reduce((sum, payment) => sum + Number(payment.amount), 0));
+    document.getElementById('txnEmptySection').classList.toggle('hidden', txns.length !== 0);
+    document.getElementById('txnTableSection').classList.toggle('hidden', txns.length === 0);
+    document.getElementById('paymentHistoryBody').innerHTML = txns.map(t => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="px-6 py-4 font-mono font-bold text-blue-900">${html(t.payment_id)}</td>
+        <td class="px-6 py-4">${html(t.tour_title || t.booking_code || '—')}</td>
+        <td class="px-6 py-4 whitespace-nowrap">${formatDate(t.payment_date)}</td>
+        <td class="px-6 py-4 font-bold text-green-700 whitespace-nowrap">${formatMoney(t.amount)}</td>
+        <td class="px-6 py-4">${html(t.payment_method || '—')}</td>
+        <td class="px-6 py-4">${renderPaymentBadge('paid')}</td>
+        <td class="px-6 py-4 text-right">${id(t.booking_id) ?
+          '<a class="font-bold text-primary" href="../my_tours/show.html?id=' + t.booking_id + '">' +
+            html(t.bill_number || 'Xem vé') + '</a>' : '—'}</td>
+      </tr>
+    `).join('');
   }
 
   
   // 13. Tour Theo Tỉnh Thành (client/tours/by_province.html)
-  function handleToursByProvince() {
+  async function handleToursByProvince() {
     const urlParams = new URLSearchParams(window.location.search);
-    const selectedProvId = urlParams.get('province_id') || 'prov_1';
+    const selectedProvId = urlParams.get('province_id');
 
-    const provs = db.getProvinces();
-    const currentProv = provs.find(p => p.id === selectedProvId) || provs[0];
+    const region = urlParams.get('region');
+    const provs = (await loadProvinces()).filter(p => !region || p.region === region);
+    const currentProv = provs.find(p => String(p.id) === selectedProvId) || provs[0];
+
+    if (!currentProv) return;
 
     // Header info
     const headerTitle = document.querySelector('h2.text-3xl');
@@ -1412,7 +1606,7 @@
       tabsDiv.className = 'flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar';
       tabsDiv.innerHTML = provs.map(p => `
         <a href="by_province.html?province_id=${p.id}" class="px-5 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shadow-sm ${p.id === currentProv.id ? 'bg-blue-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'}">
-          ${p.name} (${p.tour_count || 1})
+          ${html(p.name)} (${p.tour_count || 1})
         </a>
       `).join('');
       const grid = document.querySelector('.grid.grid-cols-1');
@@ -1420,22 +1614,22 @@
     }
 
     // Render Tours Grid
-    const tours = db.getTours({ province_id: currentProv.id });
+    const tours = await listTours("/api/tours/province/" + currentProv.id);
     const gridContainer = document.querySelector('.grid.grid-cols-1');
     if (gridContainer) {
-      const displayTours = tours.length > 0 ? tours : db.getTours().slice(0, 6);
+      const displayTours = tours;
       gridContainer.innerHTML = displayTours.map(t => {
         const img = (t.images && t.images[0]) || 'https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/categories/category_1528127269322-539801943592_w600.jpg';
         return `
           <div class="p-5 rounded-2xl shadow-sm bg-white hover:shadow-xl transition duration-300 border border-slate-100 flex flex-col justify-between">
             <div>
               <div class="mb-4 overflow-hidden rounded-xl h-48">
-                <img src="${img}" class="w-full h-full object-cover hover:scale-105 transition duration-500" alt="${t.title}"/>
+                <img src="${html(img)}" class="w-full h-full object-cover hover:scale-105 transition duration-500" alt="${html(t.title)}"/>
               </div>
-              <h3 class="font-bold text-lg text-blue-900 mb-2 line-clamp-2">${t.title}</h3>
+              <h3 class="font-bold text-lg text-blue-900 mb-2 line-clamp-2">${html(t.title)}</h3>
               <p class="text-xs text-slate-500 mb-2 flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">schedule</span>
-                ${t.duration_days} ngày ${t.duration_nights} đêm • Khởi hành từ ${t.departure_location}
+                ${t.duration_days} ngày ${t.duration_nights} đêm • Khởi hành từ ${html(t.departure_location)}
               </p>
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
@@ -1451,13 +1645,12 @@
   }
 
   // 14. Chi Tiết Chuyến Đi (client/departures/show.html)
-  function handleDepartureShow() {
+  async function handleDepartureShow() {
     const urlParams = new URLSearchParams(window.location.search);
-    const depId = urlParams.get('id') || 'dep_1';
-    const dep = db.getDepartureById(depId) || db.getDepartures()[0];
-    if (!dep) return;
-
-    const tour = dep.tour || db.getTourById(dep.tour_id) || db.getTours()[0];
+    const depId = urlParams.get('id');
+    if (!id(depId)) throw new Error('Mã lịch khởi hành không hợp lệ.');
+    const dep = departureView(await get('/api/departures/' + depId));
+    const tour = dep.tour || await liveTour(dep.tour_id);
 
     // Title & Tour Name
     const titleP = document.querySelector('p.text-slate-500.text-lg.font-semibold');
@@ -1482,13 +1675,13 @@
 
     // Seats & Guide
     const seatsSpan = document.querySelector('.text-blue-600.font-bold');
-    if (seatsSpan) seatsSpan.textContent = dep.total_seats - dep.available_seats;
+    if (seatsSpan) seatsSpan.textContent = dep.max_seats - dep.available_seats;
 
     const totalSeatsSpan = seatsSpan?.parentElement?.querySelector('span:last-child');
-    if (totalSeatsSpan) totalSeatsSpan.textContent = dep.total_seats;
+    if (totalSeatsSpan) totalSeatsSpan.textContent = dep.max_seats;
 
     const guideP = document.querySelectorAll('p.text-lg.font-semibold.text-slate-900')[1];
-    if (guideP) guideP.textContent = dep.guide_name || 'Nguyễn Hoàng Nam (HDV)';
+    if (guideP) guideP.textContent = dep.guide_name || '—';
   }
 
   document.addEventListener('DOMContentLoaded', initPage);

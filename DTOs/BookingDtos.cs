@@ -22,7 +22,7 @@ public class PassengerDto
 
 public class DraftBookingRequest
 {
-    [Required]
+    [Range(1, int.MaxValue)]
     [JsonPropertyName("departure_id")]
     public int DepartureId { get; set; }
 
@@ -51,25 +51,28 @@ public class DraftBookingRequest
 
 public class CheckoutRequest : DraftBookingRequest
 {
+    [JsonPropertyName("expected_total_amount")]
+    public decimal? ExpectedTotalAmount { get; set; }
+
     [Required(ErrorMessage = "Vui lòng cung cấp danh sách hành khách.")]
     [JsonPropertyName("passengers")]
     public List<PassengerDto> Passengers { get; set; } = new();
 
-    [Required(ErrorMessage = "Vui lòng nhập số thẻ.")]
+    [JsonPropertyName("payment_method")]
+    public string PaymentMethod { get; set; } = "card";
+
     [JsonPropertyName("card_number")]
-    public string CardNumber { get; set; } = string.Empty;
+    public string? CardNumber { get; set; }
 
-    [Required(ErrorMessage = "Vui lòng nhập tên trên thẻ.")]
     [JsonPropertyName("card_holder")]
-    public string CardHolder { get; set; } = string.Empty;
+    public string? CardHolder { get; set; }
 
-    [Required(ErrorMessage = "Vui lòng nhập hạn thẻ (MM/YY).")]
     [JsonPropertyName("card_expiry")]
-    public string CardExpiry { get; set; } = string.Empty;
+    public string? CardExpiry { get; set; }
 
-    [Required(ErrorMessage = "Vui lòng nhập mã bảo mật CVV.")]
     [JsonPropertyName("card_cvv")]
-    public string CardCvv { get; set; } = string.Empty;
+    public string? CardCvv { get; set; }
+
 }
 
 public class ReviewCreateRequest

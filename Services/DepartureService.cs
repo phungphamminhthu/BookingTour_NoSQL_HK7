@@ -111,6 +111,21 @@ public class DepartureService : IDepartureService
         return departure;
     }
 
+    private static void ValidateDeparture(DepartureCreateRequest request)
+    {
+        if (request.DepartureDate == default || request.ReturnDate < request.DepartureDate)
+            throw new ArgumentException("Ngày về phải bằng hoặc sau ngày khởi hành.");
+        if (request.Status is not ("open" or "full" or "cancelled"))
+            throw new ArgumentException("Trạng thái chuyến khởi hành không hợp lệ.");
+    }
+
+    private async Task<Employee?> FindGuideAsync(int? id)
+    {
+        if (id is null) return null;
+        return await _context.Employees.Find(e => e.Id == id.Value && e.RoleId == 3).FirstOrDefaultAsync()
+            ?? throw new ArgumentException("Hướng dẫn viên không hợp lệ.");
+    }
+
     public async Task<TourDeparture> CreateDepartureAsync(DepartureCreateRequest request)
     {
         if (request.TourId <= 0)
@@ -149,12 +164,7 @@ public class DepartureService : IDepartureService
         var adultPrice = request.AdultPrice > 0 ? request.AdultPrice : tour.MinPrice;
         var childPrice = request.ChildPrice > 0 ? request.ChildPrice : Math.Round(adultPrice * 0.7m);
 
-        string? guideName = null;
-        if (request.GuideId.HasValue && request.GuideId.Value > 0)
-        {
-            var guide = await _context.Employees.Find(e => e.Id == request.GuideId.Value).FirstOrDefaultAsync();
-            guideName = guide?.FullName;
-        }
+        var guide = await FindGuideAsync(request.GuideId);
 
         var nextId = await _context.GetNextSequenceAsync("tour_departures");
         var now = DateTime.UtcNow;
@@ -172,7 +182,7 @@ public class DepartureService : IDepartureService
             ChildPrice = childPrice,
             Status = string.IsNullOrWhiteSpace(request.Status) ? "open" : request.Status.Trim().ToLower(),
             GuideId = request.GuideId,
-            GuideName = guideName,
+            GuideName = guide?.FullName,
             CreatedAt = now,
             UpdatedAt = now
         };
@@ -187,66 +197,42 @@ public class DepartureService : IDepartureService
         var departure = await _context.TourDepartures.Find(d => d.Id == id).FirstOrDefaultAsync()
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {id}.");
 
+        ValidateDeparture(request);
         var tour = await _context.Tours.Find(t => t.Id == request.TourId).FirstOrDefaultAsync()
                    ?? throw new ArgumentException($"Tour du lịch mã {request.TourId} không tồn tại.");
+        var guide = await FindGuideAsync(request.GuideId);
+        var reserved = Math.Max(0, departure.MaxSeats - departure.AvailableSeats);
+        var available = request.AvailableSeats ?? request.MaxSeats - reserved;
+        if (available < 0 || available > request.MaxSeats - reserved)
+            throw new ArgumentException($"Sức chứa và chỗ trống phải giữ đủ {reserved} chỗ đã đặt.");
+        if (tour.Id != departure.TourId && (reserved > 0 ||
+            await _context.Bookings.Find(b => b.DepartureId == id).AnyAsync()))
+            throw new ArgumentException("Không thể đổi tour của lịch đã có khách đặt.");
 
-        if (request.ReturnDate < request.DepartureDate)
-        {
-            throw new ArgumentException("Ngày kết thúc phải cùng ngày hoặc sau ngày khởi hành.");
-        }
+        var adultPrice = request.AdultPrice > 0 ? request.AdultPrice : (departure.AdultPrice > 0 ? departure.AdultPrice : tour.MinPrice);
+        var childPrice = request.ChildPrice > 0 ? request.ChildPrice : Math.Round(adultPrice * 0.7m);
 
-        if (request.MaxSeats <= 0)
-        {
-            throw new ArgumentException("Số lượng khách tối đa phải lớn hơn 0.");
-        }
-
-        if (request.AdultPrice < 0 || request.ChildPrice < 0)
-        {
-            throw new ArgumentException("Giá vé không được là số âm.");
-        }
-
-        string? guideName = null;
-        if (request.GuideId.HasValue && request.GuideId.Value > 0)
-        {
-            var guide = await _context.Employees.Find(e => e.Id == request.GuideId.Value).FirstOrDefaultAsync();
-            guideName = guide?.FullName;
-        }
-
-        departure.TourId = tour.Id;
-        departure.TourTitle = tour.Title;
-        departure.DepartureDate = request.DepartureDate;
-        departure.ReturnDate = request.ReturnDate;
-
-        if (request.AvailableSeats.HasValue)
-        {
-            departure.AvailableSeats = request.AvailableSeats.Value;
-        }
-        else
-        {
-            var booked = Math.Max(0, departure.MaxSeats - departure.AvailableSeats);
-            departure.AvailableSeats = Math.Max(0, request.MaxSeats - booked);
-        }
-        departure.MaxSeats = request.MaxSeats;
-
-        departure.AdultPrice = request.AdultPrice > 0 ? request.AdultPrice : tour.MinPrice;
-        departure.ChildPrice = request.ChildPrice > 0 ? request.ChildPrice : Math.Round(departure.AdultPrice * 0.7m);
-
-        if (departure.AvailableSeats <= 0)
-        {
-            departure.Status = "full";
-        }
-        else if (!string.IsNullOrWhiteSpace(request.Status))
-        {
-            departure.Status = request.Status.Trim().ToLower();
-        }
-
-        departure.GuideId = (request.GuideId.HasValue && request.GuideId.Value > 0) ? request.GuideId : null;
-        departure.GuideName = guideName;
-        departure.UpdatedAt = DateTime.UtcNow;
-
-        await _context.TourDepartures.ReplaceOneAsync(d => d.Id == id, departure);
-        departure.Tour = tour;
-        return departure;
+        var update = Builders<TourDeparture>.Update
+            .Set(d => d.TourId, tour.Id)
+            .Set(d => d.TourTitle, tour.Title)
+            .Set(d => d.DepartureDate, request.DepartureDate)
+            .Set(d => d.ReturnDate, request.ReturnDate)
+            .Set(d => d.MaxSeats, request.MaxSeats)
+            .Set(d => d.AvailableSeats, available)
+            .Set(d => d.AdultPrice, adultPrice)
+            .Set(d => d.ChildPrice, childPrice)
+            .Set(d => d.Status, available == 0 && request.Status == "open" ? "full" : (request.Status ?? departure.Status))
+            .Set(d => d.GuideId, request.GuideId)
+            .Set(d => d.GuideName, guide?.FullName)
+            .Set(d => d.UpdatedAt, DateTime.UtcNow);
+        var updated = await _context.TourDepartures.FindOneAndUpdateAsync(
+            d => d.Id == id && d.AvailableSeats == departure.AvailableSeats &&
+                 d.MaxSeats == departure.MaxSeats && d.UpdatedAt == departure.UpdatedAt,
+            update, new FindOneAndUpdateOptions<TourDeparture> { ReturnDocument = ReturnDocument.After });
+        if (updated == null)
+            throw new ArgumentException("Lịch hoặc số ghế đã thay đổi. Vui lòng tải lại trang và thử lại.");
+        updated.Tour = tour;
+        return updated;
     }
 
     public async Task<bool> DeleteDepartureAsync(int id)
@@ -255,13 +241,16 @@ public class DepartureService : IDepartureService
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {id}.");
 
         var hasBookings = await _context.Bookings.Find(b => b.DepartureId == id).AnyAsync();
-        if (hasBookings)
+        if (hasBookings || departure.AvailableSeats < departure.MaxSeats)
         {
             throw new InvalidOperationException($"Không thể xóa chuyến đi mã {id} vì đã có khách đặt chỗ.");
         }
 
-        var result = await _context.TourDepartures.DeleteOneAsync(d => d.Id == id);
-        return result.DeletedCount > 0;
+        var result = await _context.TourDepartures.DeleteOneAsync(d => d.Id == id &&
+            d.AvailableSeats == departure.AvailableSeats && d.UpdatedAt == departure.UpdatedAt);
+        if (result.DeletedCount == 0)
+            throw new InvalidOperationException("Lịch hoặc số ghế đã thay đổi. Vui lòng tải lại trang.");
+        return true;
     }
 
     public async Task<bool> AssignGuideAsync(int id, int guideId)
@@ -269,7 +258,7 @@ public class DepartureService : IDepartureService
         var departure = await _context.TourDepartures.Find(d => d.Id == id).FirstOrDefaultAsync()
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {id}.");
 
-        var guide = await _context.Employees.Find(e => e.Id == guideId).FirstOrDefaultAsync()
+        var guide = await _context.Employees.Find(e => e.Id == guideId && e.RoleId == 3).FirstOrDefaultAsync()
                     ?? throw new KeyNotFoundException($"Không tìm thấy hướng dẫn viên mã {guideId}.");
 
         var update = Builders<TourDeparture>.Update

@@ -34,7 +34,6 @@ public class MongoDbContext
     public IMongoCollection<Bill> Bills => _database.GetCollection<Bill>("bills");
     public IMongoCollection<Review> Reviews => _database.GetCollection<Review>("reviews");
     public IMongoCollection<Counter> Counters => _database.GetCollection<Counter>("counters");
-
     public async Task<int> GetNextSequenceAsync(string counterName)
     {
         var filter = Builders<Counter>.Filter.Eq(c => c.Id, counterName);

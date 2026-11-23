@@ -959,65 +959,7 @@ public class AdminManagementService : IAdminManagementService
             .Limit(ps)
             .ToListAsync();
 
-        // 6. Enrich with Booking, Customer, Tour, Bill
-        var bookingIds = items.Select(x => x.BookingId).Distinct().ToList();
-        var bookings = await _context.Bookings.Find(b => bookingIds.Contains(b.Id)).ToListAsync();
-        var bookingMap = bookings.ToDictionary(b => b.Id);
-
-        var custIds = bookings.Select(b => b.CustomerId).Where(id => id > 0).Distinct().ToList();
-        var customers = await _context.Customers.Find(c => custIds.Contains(c.Id)).ToListAsync();
-        var custMap = customers.ToDictionary(c => c.Id);
-
-        var bills = await _context.Bills.Find(bl => bookingIds.Contains(bl.BookingId)).ToListAsync();
-        var billMap = bills.ToDictionary(bl => bl.BookingId);
-
-        var depIds = bookings.Select(b => b.DepartureId).Where(id => id > 0).Distinct().ToList();
-        var departures = await _context.TourDepartures.Find(d => depIds.Contains(d.Id)).ToListAsync();
-        var depMap = departures.ToDictionary(d => d.Id);
-
-        foreach (var pay in items)
-        {
-            if (bookingMap.TryGetValue(pay.BookingId, out var b))
-            {
-                pay.BookingCode = b.BookingCode;
-                pay.TourTitle = b.TourTitle;
-                pay.TourId = b.TourId;
-                pay.BookingStatus = b.Status;
-                pay.TotalAdults = b.TotalAdults;
-                pay.TotalChildren = b.TotalChildren;
-                pay.CustomerId = b.CustomerId;
-
-                if (custMap.TryGetValue(b.CustomerId, out var c))
-                {
-                    pay.CustomerName = c.FullName;
-                    pay.CustomerEmail = c.Email;
-                    pay.CustomerPhone = c.Phone;
-                    pay.CustomerAddress = c.Address;
-                }
-                else
-                {
-                    pay.CustomerName = b.CustomerName ?? "Khách hàng";
-                    pay.CustomerEmail = $"{b.BookingCode.ToLower()}@bookingtour.vn";
-                    pay.CustomerPhone = "Chưa cung cấp";
-                }
-
-                if (depMap.TryGetValue(b.DepartureId, out var dep))
-                {
-                    pay.DepartureDate = dep.DepartureDate;
-                    if (!pay.TourId.HasValue || pay.TourId == 0) pay.TourId = dep.TourId;
-                }
-
-                if (billMap.TryGetValue(b.Id, out var bill))
-                {
-                    pay.BillNumber = bill.BillNumber;
-                }
-                else
-                {
-                    pay.BillNumber = $"INV-{b.Id:D3}";
-                }
-            }
-        }
-
+        await PopulateTransactionDetailsAsync(items);
         return (items, total);
     }
 
@@ -1046,18 +988,48 @@ public class AdminManagementService : IAdminManagementService
     public async Task<Payment?> GetTransactionByIdAsync(int id)
     {
         var payment = await _context.Payments.Find(p => p.Id == id).FirstOrDefaultAsync();
-        if (payment == null) return null;
-
-        var booking = await _context.Bookings.Find(b => b.Id == payment.BookingId).FirstOrDefaultAsync();
-        if (booking != null)
-        {
-            payment.BookingCode = booking.BookingCode;
-            payment.CustomerName = booking.CustomerName;
-            payment.TourTitle = booking.TourTitle;
-            payment.BookingStatus = booking.Status;
-        }
-
+        if (payment is not null) await PopulateTransactionDetailsAsync(new[] { payment });
         return payment;
+    }
+
+    private async Task PopulateTransactionDetailsAsync(IReadOnlyCollection<Payment> payments)
+    {
+        if (payments.Count == 0) return;
+
+        var bookingIds = payments.Select(p => p.BookingId).Distinct().ToList();
+        var bookings = await _context.Bookings.Find(b => bookingIds.Contains(b.Id)).ToListAsync();
+        var bookingMap = bookings.ToDictionary(b => b.Id);
+        var bills = await _context.Bills.Find(b => bookingIds.Contains(b.BookingId)).ToListAsync();
+        var billMap = bills.ToLookup(b => b.BookingId);
+        var customers = bookings.Select(b => b.CustomerId).Distinct().ToList();
+        var customerMap = (await _context.Customers.Find(c => customers.Contains(c.Id)).ToListAsync()).ToDictionary(c => c.Id);
+        var departures = bookings.Select(b => b.DepartureId).Distinct().ToList();
+        var departureMap = (await _context.TourDepartures.Find(d => departures.Contains(d.Id)).ToListAsync()).ToDictionary(d => d.Id);
+
+        foreach (var payment in payments)
+        {
+            if (!bookingMap.TryGetValue(payment.BookingId, out var booking)) continue;
+
+            payment.BookingCode = booking.BookingCode;
+            payment.TourTitle = booking.TourTitle;
+            payment.TourId = booking.TourId;
+            payment.CustomerId = booking.CustomerId;
+            payment.BookingStatus = booking.Status;
+            payment.AwaitingPaymentConfirmation = booking.PaymentOption is not null && booking.Status == "pending";
+            payment.BillNumber = billMap[booking.Id].FirstOrDefault()?.BillNumber ?? $"INV-{booking.Id:D3}";
+            payment.TotalAdults = booking.TotalAdults;
+            payment.TotalChildren = booking.TotalChildren;
+            customerMap.TryGetValue(booking.CustomerId, out var customer);
+            payment.CustomerName = booking.CustomerName ?? customer?.FullName ?? "Khách hàng";
+            payment.CustomerEmail = customer?.Email ?? $"{booking.BookingCode?.ToLower()}@bookingtour.vn";
+            payment.CustomerPhone = customer?.Phone ?? "Chưa cung cấp";
+            payment.CustomerAddress = customer?.Address;
+            if (departureMap.TryGetValue(booking.DepartureId, out var departure))
+            {
+                payment.DepartureDate = departure.DepartureDate;
+                if (!payment.TourId.HasValue || payment.TourId == 0) payment.TourId = departure.TourId;
+            }
+        }
     }
     #endregion
 

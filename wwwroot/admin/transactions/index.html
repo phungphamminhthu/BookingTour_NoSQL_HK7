@@ -140,7 +140,7 @@
             </button>
 
             <a
-                href="#"
+                id="btnRefreshTransactions" href="#"
                 class="inline-flex items-center gap-2 rounded-xl bg-blue-950 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-900"
             >
                 <span class="material-symbols-outlined text-lg">refresh</span>
@@ -148,6 +148,15 @@
             </a>
         </div>
     </header>
+
+    <!-- SECTION THANH TOÁN CHỜ XÁC NHẬN -->
+    <section class="mb-8 rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-amber-500">pending_actions</span>
+            <h2 class="text-base font-bold text-blue-950">Thanh toán chờ xác nhận</h2>
+        </div>
+        <div id="pendingPayments" class="space-y-2 text-sm text-slate-700" aria-live="polite">Đang tải…</div>
+    </section>
 
     
     <div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">

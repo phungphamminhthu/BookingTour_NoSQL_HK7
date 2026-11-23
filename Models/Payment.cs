@@ -77,5 +77,8 @@ public class Payment : BaseEntity
     [BsonIgnore]
     [JsonPropertyName("total_children")]
     public int TotalChildren { get; set; }
-}
 
+    [BsonIgnore]
+    [JsonPropertyName("awaiting_payment_confirmation")]
+    public bool AwaitingPaymentConfirmation { get; set; }
+}

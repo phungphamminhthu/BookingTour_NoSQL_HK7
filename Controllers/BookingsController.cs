@@ -41,7 +41,50 @@ public class BookingsController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
+    [HttpGet("bank-transfer-instructions")]
+    public IActionResult GetBankTransferInstructions([FromServices] IConfiguration configuration)
+    {
+        var bankName = configuration["BankTransfer:BankName"];
+        var accountNumber = configuration["BankTransfer:AccountNumber"];
+        var accountHolder = configuration["BankTransfer:AccountHolder"];
+        if (new[] { bankName, accountNumber, accountHolder }.Any(string.IsNullOrWhiteSpace))
+            return Ok(ApiResponse<object>.Ok(null!, "Chưa cấu hình tài khoản nhận chuyển khoản."));
+        return Ok(ApiResponse<object>.Ok(new { bankName, accountNumber, accountHolder }));
+    }
+
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpGet("pending-bank-transfers", Name = "PendingBankTransfers")]
+    [HttpGet("pending-payments")]
+    public async Task<IActionResult> PendingPayments()
+    {
+        return Ok(ApiResponse<List<object>>.Ok(await _bookingService.GetPendingPaymentsAsync(Request.Path.Value?.EndsWith("/pending-bank-transfers", StringComparison.OrdinalIgnoreCase) == true)));
+    }
+
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpPost("{id:int}/confirm-bank-transfer")]
+    [HttpPost("{id:int}/confirm-payment")]
+    public async Task<IActionResult> ConfirmPayment(int id)
+    {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var employeeId) || employeeId <= 0)
+            return Unauthorized();
+        try
+        {
+            await _bookingService.ConfirmPendingPaymentAsync(id, employeeId,
+                Request.Path.Value?.EndsWith("/confirm-bank-transfer", StringComparison.OrdinalIgnoreCase) == true);
+            return Ok(ApiResponse<bool>.Ok(true, "Đã xác nhận nhận tiền."));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ApiResponse<object>.Fail(ex.Message));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ApiResponse<object>.Fail(ex.Message));
+        }
+    }
+
+    [Authorize(Roles = "Customer")]
     [HttpPost("checkout")]
     [HttpPost("/payments/checkout/{id:int}")]
     public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)
@@ -68,13 +111,14 @@ public class BookingsController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpGet("{id:int}")]
     [HttpGet("/my-tours/{id:int}")]
     public async Task<IActionResult> GetBookingDetail(int id)
     {
         var customerId = GetCurrentCustomerId();
-        var booking = await _bookingService.GetBookingByIdAsync(id, customerId > 0 ? customerId : null);
+        if (customerId <= 0) return Unauthorized();
+        var booking = await _bookingService.GetBookingByIdAsync(id, customerId);
 
         if (booking == null)
         {
@@ -84,7 +128,7 @@ public class BookingsController : ControllerBase
         return Ok(ApiResponse<Booking>.Ok(booking, "Lấy thông tin vé đặt tour thành công."));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpGet("my-tours")]
     [HttpGet("/my-tours")]
     [HttpGet("/customer/booking")]
@@ -100,7 +144,7 @@ public class BookingsController : ControllerBase
         return Ok(ApiResponse<List<Booking>>.Ok(list, "Lấy danh sách tour đã đặt thành công."));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpPost("{id:int}/review")]
     [HttpPost("/my-tours/{id:int}/review")]
     public async Task<IActionResult> SubmitReview(int id, [FromBody] ReviewCreateRequest request)
@@ -127,7 +171,7 @@ public class BookingsController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpGet("/api/customer/payment-history")]
     [HttpGet("/customer/payment-history")]
     public async Task<IActionResult> GetPaymentHistory()
@@ -142,7 +186,7 @@ public class BookingsController : ControllerBase
         return Ok(ApiResponse<List<object>>.Ok(history, "Lấy lịch sử thanh toán thành công."));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpGet("/api/customer/profile")]
     [HttpGet("/customer/profile")]
     public async Task<IActionResult> GetProfile()
@@ -180,7 +224,7 @@ public class BookingsController : ControllerBase
         }));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpPost("/api/customer/profile/update")]
     [HttpPut("/api/customer/profile")]
     [HttpPost("/customer/profile/update")]
@@ -208,7 +252,7 @@ public class BookingsController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpPost("/api/customer/password/update")]
     [HttpPost("/customer/password/update")]
     public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
@@ -235,7 +279,7 @@ public class BookingsController : ControllerBase
         }
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customer")]
     [HttpGet("/api/reward-points")]
     [HttpGet("/reward-points")]
     public async Task<IActionResult> GetRewardPoints()

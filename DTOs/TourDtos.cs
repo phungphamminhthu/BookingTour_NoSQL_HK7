@@ -72,8 +72,9 @@ public class TourCreateRequest
     [JsonPropertyName("pickupPoint")]
     public string? PickupPoint { get; set; }
 
+    [Range(0, double.MaxValue)]
     [JsonPropertyName("minPrice")]
-    public decimal MinPrice { get; set; }
+    public decimal? MinPrice { get; set; }
 
     [JsonPropertyName("description")]
     public string? Description { get; set; }
