@@ -526,22 +526,27 @@ public class DbSeeder
 
     private async Task InitializeCountersAsync()
     {
+        var maxBookingId = (await _context.Bookings.Find(_ => true).SortByDescending(b => b.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 20;
+        var maxPaymentId = (await _context.Payments.Find(_ => true).SortByDescending(p => p.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 20;
+        var maxBillId = (await _context.Bills.Find(_ => true).SortByDescending(b => b.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 20;
+        var maxDepId = (await _context.TourDepartures.Find(_ => true).SortByDescending(d => d.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 50;
+
         var counters = new[]
         {
             ("roles", 3),
-            ("tour_categories", 5),
-            ("provinces", 15),
-            ("employees", 10),
-            ("customers", 12),
-            ("tours", 15),
-            ("tour_departures", 30),
-            ("bookings", 10),
-            ("payments", 7),
-            ("bills", 2),
-            ("reviews", 17),
-            ("schedules", 150),
-            ("images", 75),
-            ("passengers", 20)
+            ("tour_categories", 10),
+            ("provinces", 20),
+            ("employees", 20),
+            ("customers", 30),
+            ("tours", 30),
+            ("tour_departures", Math.Max(50, maxDepId)),
+            ("bookings", Math.Max(50, maxBookingId)),
+            ("payments", Math.Max(50, maxPaymentId)),
+            ("bills", Math.Max(50, maxBillId)),
+            ("reviews", 30),
+            ("schedules", 300),
+            ("images", 150),
+            ("passengers", 300)
         };
 
         foreach (var (name, value) in counters)

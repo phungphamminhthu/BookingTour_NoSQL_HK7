@@ -878,11 +878,16 @@
   // -------------------------------------------------------------
   async function renderPendingPayments(onConfirmed) {
     const container = document.getElementById('pendingPayments');
+    if (!container) return;
     try {
       const api = window.BookingTourApi;
       const { data: transfers } = await api.apiRequest('/api/bookings/pending-payments');
+      if (!container.isConnected) return;
       container.replaceChildren();
-      if (!transfers.length) container.textContent = 'Không có đơn chờ xác nhận thanh toán.';
+      if (!transfers || !transfers.length) {
+        container.textContent = 'Không có đơn chờ xác nhận thanh toán.';
+        return;
+      }
       for (const transfer of transfers) {
         const row = document.createElement('div');
         row.className = 'flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 p-3';
@@ -890,7 +895,7 @@
         label.textContent = [transfer.bookingCode, transfer.tourTitle, transfer.paymentOption === "cash" ? "Tiền mặt" : "Chuyển khoản", formatMoney(transfer.totalAmount)].join(' · ');
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'rounded-lg bg-blue-900 px-3 py-2 font-bold text-white disabled:opacity-50';
+        button.className = 'rounded-lg bg-blue-900 px-3 py-2 font-bold text-white disabled:opacity-50 text-xs';
         button.textContent = 'Xác nhận đã nhận tiền';
         button.onclick = async () => {
           if (!confirm('Đã đối chiếu giao dịch ' + transfer.bookingCode + ' với số tiền ' + formatMoney(transfer.totalAmount) + '?')) return;
@@ -898,7 +903,7 @@
           try {
             await api.apiRequest('/api/bookings/' + transfer.id + '/confirm-payment', { method: 'POST' });
             await renderPendingPayments(onConfirmed);
-            await onConfirmed();
+            if (onConfirmed) await onConfirmed();
           } catch (error) {
             alert(error.message);
             button.disabled = false;
@@ -908,7 +913,9 @@
         container.append(row);
       }
     } catch (error) {
-      container.textContent = error.message;
+      if (container && container.isConnected) {
+        container.textContent = error.message;
+      }
     }
   }
 
