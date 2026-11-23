@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý Tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý Danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý Chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý Địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý Khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý Giao Dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý Nhân Viên</span>
     </a>
@@ -99,14 +99,14 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Admin</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Admin Profile"
              class="w-full h-full object-cover"/>
       </div>
@@ -118,7 +118,7 @@
 
     <!-- QUAY LẠI -->
     <div class="max-w-5xl mx-auto mb-6">
-        <a href="#"
+        <a href="index.html"
            class="inline-flex items-center gap-2 bg-white border border-slate-200
                   text-slate-700 hover:bg-slate-50 transition px-5 py-2.5
                   rounded-full font-bold shadow-sm text-sm">
@@ -133,8 +133,8 @@
 
         <!-- HEADER -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-black text-blue-600 tracking-tight">
-                Cập Nhật Hồ Sơ Khách Hàng #
+            <h1 id="editCustomerTitle" class="text-3xl font-black text-blue-900 tracking-tight">
+                Cập Nhật Hồ Sơ Khách Hàng
             </h1>
 
             <p class="text-slate-500 mt-2">
@@ -143,25 +143,13 @@
         </header>
 
         <!-- THÔNG BÁO -->
-            <div class="hidden bg-red-50 border-l-4 border-red-500 text-red-700
-                        p-4 mb-6 rounded-xl">—</div>
-            <div class="hidden bg-red-50 border border-red-200 text-red-700
-                        p-4 mb-6 rounded-xl">
-                <p class="font-bold mb-2">Vui lòng kiểm tra lại thông tin:</p>
-                <ul class="list-disc pl-5 text-sm space-y-1">
-                        
-                    
-                </ul>
-            </div>
-        
+        <div id="editCustomerError" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
+            <span class="material-symbols-outlined mr-2">error</span>
+            <span id="editCustomerErrorText">Vui lòng kiểm tra lại thông tin.</span>
+        </div>
 
         <!-- FORM -->
-        <form action="#"
-              method="POST"
-              class="space-y-6">
-
-            
-            
+        <form id="editCustomerForm" class="space-y-6">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -172,17 +160,14 @@
                     </label>
 
                     <input type="text"
+                           id="edit_fullName"
                            name="full_name"
                            value=""
                            maxlength="100"
                            required
                            class="w-full px-4 py-3 rounded-xl border border-slate-200
-                                  focus:border-amber-500 focus:ring-2 focus:ring-amber-100
+                                  focus:border-blue-900 focus:ring-2 focus:ring-blue-100
                                   outline-none text-sm font-medium">
-
-                    
-                        
-                    
                 </div>
 
                 <!-- SỐ ĐIỆN THOẠI -->
@@ -192,16 +177,13 @@
                     </label>
 
                     <input type="text"
+                           id="edit_phone"
                            name="phone"
                            value=""
                            maxlength="20"
                            class="w-full px-4 py-3 rounded-xl border border-slate-200
-                                  focus:border-amber-500 focus:ring-2 focus:ring-amber-100
+                                  focus:border-blue-900 focus:ring-2 focus:ring-blue-100
                                   outline-none text-sm font-medium">
-
-                    
-                        
-                    
                 </div>
 
             </div>
@@ -213,17 +195,14 @@
                 </label>
 
                 <input type="email"
+                       id="edit_email"
                        name="email"
                        value=""
                        maxlength="100"
                        required
                        class="w-full px-4 py-3 rounded-xl border border-slate-200
-                              focus:border-amber-500 focus:ring-2 focus:ring-amber-100
+                              focus:border-blue-900 focus:ring-2 focus:ring-blue-100
                               outline-none text-sm font-medium">
-
-                
-                    
-                
             </div>
 
             <!-- ĐỊA CHỈ -->
@@ -233,32 +212,30 @@
                 </label>
 
                 <input type="text"
+                       id="edit_address"
                        name="address"
                        value=""
                        maxlength="255"
                        placeholder="Nhập địa chỉ của khách hàng"
                        class="w-full px-4 py-3 rounded-xl border border-slate-200
-                              focus:border-amber-500 focus:ring-2 focus:ring-amber-100
+                              focus:border-blue-900 focus:ring-2 focus:ring-blue-100
                               outline-none text-sm font-medium">
-
-                
-                    
-                
             </div>
 
             <!-- BUTTONS -->
             <div class="flex flex-wrap gap-4 pt-6 border-t border-slate-100">
                 <button type="submit"
+                        id="btnSubmitEditCustomer"
                         class="bg-blue-900 text-white px-8 py-3 rounded-xl
                                font-bold hover:bg-blue-800 transition
                                shadow-sm text-sm flex items-center gap-2">
                     <span class="material-symbols-outlined text-lg">save</span>
-                    Cập nhật thay đổi
+                    <span>Cập nhật thay đổi</span>
                 </button>
 
-                <a href="#"
+                <a href="index.html"
                    class="bg-slate-100 text-slate-700 px-8 py-3 rounded-xl
-                          font-bold hover:bg-slate-200 transition text-sm">
+                          font-bold hover:bg-slate-200 transition text-sm inline-flex items-center">
                     Hủy bỏ
                 </a>
             </div>
@@ -269,8 +246,10 @@
 
 </main>
 
+<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/admin-pages.js?v=2.9.0"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

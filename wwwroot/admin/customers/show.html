@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý Tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý Danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý Chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý Địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý Khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý Giao Dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý Nhân Viên</span>
     </a>
@@ -99,14 +99,14 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Admin</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Admin Profile"
              class="w-full h-full object-cover"/>
       </div>
@@ -118,7 +118,7 @@
 
     <!-- QUAY LẠI -->
     <div class="mb-6">
-        <a href="#"
+        <a href="index.html"
            class="inline-flex items-center gap-2 bg-white border border-slate-200
                   text-slate-700 px-5 py-2.5 rounded-full font-bold
                   hover:bg-slate-50 transition shadow-sm text-sm">
@@ -131,8 +131,8 @@
     <div class="flex flex-col md:flex-row md:items-center
                 justify-between mb-8 gap-4">
         <div>
-            <h1 class="text-3xl font-black text-blue-900 tracking-tight">
-                Hồ Sơ Khách Hàng #
+            <h1 id="showCustomerTitle" class="text-3xl font-black text-blue-900 tracking-tight">
+                Hồ Sơ Khách Hàng
             </h1>
 
             <p class="text-slate-500 font-medium mt-2">
@@ -140,7 +140,7 @@
             </p>
         </div>
 
-        <a href="#"
+        <a id="btnEditCustomerShow" href="edit.html"
            class="bg-amber-500 text-white px-5 py-2.5 rounded-full
                   font-bold hover:bg-amber-600 transition flex items-center
                   shadow-sm text-sm w-fit">
@@ -164,14 +164,14 @@
                         border-slate-100 p-6">
 
                 <div class="flex flex-col items-center text-center">
-                    <div class="w-24 h-24 bg-blue-100 text-blue-900
+                    <div id="showCustomerAvatar" class="w-24 h-24 bg-blue-100 text-blue-900
                                 rounded-full flex items-center justify-center
                                 mb-4 border-4 border-white shadow-md
                                 font-black text-3xl">—</div>
 
-                    <h2 class="text-2xl font-black text-slate-900 mb-1">—</h2>
+                    <h2 id="showCustomerName" class="text-2xl font-black text-slate-900 mb-1">—</h2>
 
-                    <span class="px-3 py-1 rounded-full text-xs font-bold
+                    <span id="showCustomerIdBadge" class="px-3 py-1 rounded-full text-xs font-bold
                                  bg-blue-100 text-blue-700">
                         Khách hàng #
                     </span>
@@ -190,7 +190,9 @@
                         <p class="font-semibold text-slate-800
                                   flex items-center gap-2 text-sm break-all">
                             <span class="material-symbols-outlined
-                                         text-slate-400 text-base">call</span>—</p>
+                                         text-slate-400 text-base">call</span>
+                            <span id="showCustomerPhone">—</span>
+                        </p>
                     </div>
 
                     <!-- EMAIL -->
@@ -203,7 +205,9 @@
                         <p class="font-semibold text-slate-800
                                   flex items-center gap-2 text-sm break-all">
                             <span class="material-symbols-outlined
-                                         text-slate-400 text-base">mail</span>—</p>
+                                         text-slate-400 text-base">mail</span>
+                            <span id="showCustomerEmail">—</span>
+                        </p>
                     </div>
 
                     <!-- ADDRESS -->
@@ -217,7 +221,7 @@
                                   flex items-start gap-2 text-sm">
                             <span class="material-symbols-outlined
                                          text-slate-400 text-base">location_on</span>
-                            <span>—</span>
+                            <span id="showCustomerAddress">—</span>
                         </p>
                     </div>
 
@@ -231,7 +235,9 @@
                         <p class="font-semibold text-slate-700
                                   flex items-center gap-2 text-sm">
                             <span class="material-symbols-outlined
-                                         text-slate-400 text-base">calendar_today</span>—</p>
+                                         text-slate-400 text-base">calendar_today</span>
+                            <span id="showCustomerCreatedAt">—</span>
+                        </p>
                     </div>
 
                 </div>
@@ -250,7 +256,7 @@
                 <div class="flex justify-between items-center
                             border-b border-blue-700/50 pb-4">
                     <span class="text-blue-200 text-sm">Tổng đơn đặt tour</span>
-                    <span class="text-3xl font-black">—</span>
+                    <span id="showCustomerTotalBookings" class="text-3xl font-black">0</span>
                 </div>
 
                 <p class="text-blue-200 text-xs mt-4">
@@ -283,8 +289,7 @@
                     <span class="text-xs font-bold text-slate-600
                                  bg-white px-3 py-1.5 rounded-full
                                  border border-slate-200">
-                        
-                        đơn đặt
+                        <span id="showCustomerBookingsCount">0</span> đơn đặt
                     </span>
                 </div>
 
@@ -300,48 +305,23 @@
                             </tr>
                         </thead>
 
-                        <tbody class="divide-y divide-slate-100 text-sm">
+                        <tbody id="showCustomerBookingsBody" class="divide-y divide-slate-100 text-sm">
+                            <tr>
+                                <td colspan="3" class="py-16 px-6 text-center">
+                                    <span class="material-symbols-outlined
+                                                 text-5xl text-slate-300">
+                                        luggage
+                                    </span>
 
-                            
-                                <tr class="hover:bg-slate-50 transition">
+                                    <p class="font-bold text-slate-600 mt-3">
+                                        Chưa có đơn đặt tour
+                                    </p>
 
-                                    <td class="py-4 px-6">
-                                        <span class="font-extrabold text-blue-900">
-                                            #
-                                        </span>
-                                    </td>
-
-                                    <td class="py-4 px-6 text-slate-600">—</td>
-
-                                    <td class="py-4 px-6">
-                                        <p class="font-semibold text-slate-700">
-                                            Đơn đặt tour #
-                                        </p>
-                                        <p class="text-xs text-slate-400 mt-1">
-                                            Xem thông tin chi tiết trong quản lý đặt tour.
-                                        </p>
-                                    </td>
-
-                                </tr>
-                            
-                                <tr>
-                                    <td colspan="3" class="py-16 px-6 text-center">
-                                        <span class="material-symbols-outlined
-                                                     text-5xl text-slate-300">
-                                            luggage
-                                        </span>
-
-                                        <p class="font-bold text-slate-600 mt-3">
-                                            Chưa có đơn đặt tour
-                                        </p>
-
-                                        <p class="text-sm text-slate-400 mt-1">
-                                            Lịch sử đặt tour của khách hàng sẽ hiển thị tại đây.
-                                        </p>
-                                    </td>
-                                </tr>
-                            
-
+                                    <p class="text-sm text-slate-400 mt-1">
+                                        Lịch sử đặt tour của khách hàng sẽ hiển thị tại đây.
+                                    </p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -354,8 +334,10 @@
 
 </main>
 
+<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/admin-pages.js?v=2.9.0"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

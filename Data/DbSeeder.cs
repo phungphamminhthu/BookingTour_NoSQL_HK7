@@ -383,6 +383,80 @@ public class DbSeeder
             await _context.Bookings.InsertManyAsync(bookings);
             _logger.LogInformation("Seeded {Count} bookings with embedded passengers.", bookings.Count);
         }
+
+        if (await _context.Bookings.CountDocumentsAsync(b => b.DepartureId == 20) == 0)
+        {
+            var now = DateTime.UtcNow;
+            var maxId = (await _context.Bookings.Find(_ => true).SortByDescending(b => b.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 10;
+            var dep20Bookings = new List<Booking>
+            {
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-01", CustomerId = 1, CustomerName = "Nguyễn An", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 0, TotalAmount = 3200000m, Status = "confirmed", CreatedAt = now.AddDays(-6), UpdatedAt = now.AddDays(-6),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 101, FullName = "Nguyễn An", PassengerType = "adult", IdCard = "001200000001", DateOfBirth = new DateTime(1990, 1, 15) },
+                        new() { Id = 102, FullName = "Trần Thị Mai", PassengerType = "adult", IdCard = "001200000002", DateOfBirth = new DateTime(1992, 5, 20) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-02", CustomerId = 2, CustomerName = "Lê Thị Hoa", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 1, TotalChildren = 1, TotalAmount = 2700000m, Status = "confirmed", CreatedAt = now.AddDays(-5), UpdatedAt = now.AddDays(-5),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 103, FullName = "Lê Thị Hoa", PassengerType = "adult", IdCard = "079200000001", DateOfBirth = new DateTime(1988, 3, 12) },
+                        new() { Id = 104, FullName = "Phạm Ngọc Hân", PassengerType = "child", IdCard = null, DateOfBirth = new DateTime(2019, 11, 5) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-03", CustomerId = 3, CustomerName = "Phạm Minh Tuấn", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 1, TotalAmount = 4300000m, Status = "confirmed", CreatedAt = now.AddDays(-4), UpdatedAt = now.AddDays(-4),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 105, FullName = "Phạm Minh Tuấn", PassengerType = "adult", IdCard = "048200000001", DateOfBirth = new DateTime(1993, 8, 19) },
+                        new() { Id = 106, FullName = "Đỗ Thùy Trang", PassengerType = "adult", IdCard = "048200000002", DateOfBirth = new DateTime(1995, 12, 30) },
+                        new() { Id = 107, FullName = "Phạm Minh Khôi", PassengerType = "child", IdCard = null, DateOfBirth = new DateTime(2020, 3, 10) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-04", CustomerId = 4, CustomerName = "Đặng Mỹ Linh", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 1, TotalChildren = 0, TotalAmount = 1600000m, Status = "confirmed", CreatedAt = now.AddDays(-3), UpdatedAt = now.AddDays(-3),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 108, FullName = "Đặng Mỹ Linh", PassengerType = "adult", IdCard = "092200000001", DateOfBirth = new DateTime(1991, 4, 18) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-05", CustomerId = 5, CustomerName = "Bùi Quang Huy", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 0, TotalAmount = 3200000m, Status = "pending", CreatedAt = now.AddDays(-2), UpdatedAt = now.AddDays(-2),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 109, FullName = "Bùi Quang Huy", PassengerType = "adult", IdCard = "031200000001", DateOfBirth = new DateTime(1996, 6, 25) },
+                        new() { Id = 110, FullName = "Nguyễn Thu Hà", PassengerType = "adult", IdCard = "031200000002", DateOfBirth = new DateTime(1997, 10, 15) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-06", CustomerId = 6, CustomerName = "Hoàng Anh Đức", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 1, TotalChildren = 1, TotalAmount = 2700000m, Status = "confirmed", CreatedAt = now.AddDays(-1), UpdatedAt = now.AddDays(-1),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 111, FullName = "Hoàng Anh Đức", PassengerType = "adult", IdCard = "046200000001", DateOfBirth = new DateTime(1992, 10, 14) },
+                        new() { Id = 112, FullName = "Hoàng Bảo Nam", PassengerType = "child", IdCard = null, DateOfBirth = new DateTime(2019, 7, 22) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-07", CustomerId = 7, CustomerName = "Đỗ Kim Liên", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 0, TotalAmount = 3200000m, Status = "confirmed", CreatedAt = now, UpdatedAt = now,
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 113, FullName = "Đỗ Kim Liên", PassengerType = "adult", IdCard = "056200000001", DateOfBirth = new DateTime(1994, 2, 28) },
+                        new() { Id = 114, FullName = "Lê Hải Đăng", PassengerType = "adult", IdCard = "056200000002", DateOfBirth = new DateTime(1991, 11, 12) }
+                    }
+                }
+            };
+            await _context.Bookings.InsertManyAsync(dep20Bookings);
+            _logger.LogInformation("Seeded {Count} bookings for departure 20.", dep20Bookings.Count);
+        }
     }
 
     private async Task SeedPaymentsAsync()

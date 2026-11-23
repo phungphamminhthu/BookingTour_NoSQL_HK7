@@ -28,5 +28,13 @@ public class Customer : BaseEntity
     [BsonElement("birthday")]
     [JsonPropertyName("birthday")]
     public DateTime? Birthday { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("booking_count")]
+    public int BookingCount { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("bookings")]
+    public List<Booking> Bookings { get; set; } = new();
 }
 

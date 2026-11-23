@@ -20,18 +20,52 @@ public class CategoriesController : ControllerBase
 
     [HttpGet]
     [HttpGet("/categories")]
-    public async Task<IActionResult> GetAll()
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] string? search,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5,
+        [FromQuery] bool? all = false)
     {
-        var items = await _service.GetAllCategoriesAsync();
-        return Ok(ApiResponse<List<TourCategory>>.Ok(items, "Lấy danh mục thành công."));
+        if (all == true || pageSize < 0 || pageSize >= 1000)
+        {
+            var allItems = await _service.GetAllCategoriesAsync();
+            return Ok(ApiResponse<List<CategoryResponse>>.Ok(allItems, "Lấy danh mục thành công.", allItems.Count, 1, allItems.Count));
+        }
+
+        var (items, total, classifiedTours) = await _service.GetCategoriesPagedAsync(search, page, pageSize);
+        return Ok(ApiResponse<List<CategoryResponse>>.Ok(items, "Lấy danh mục thành công.", total, page, pageSize));
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id)
     {
         var item = await _service.GetCategoryByIdAsync(id);
         if (item == null) return NotFound(ApiResponse<object>.Fail($"Không tìm thấy danh mục mã {id}."));
-        return Ok(ApiResponse<TourCategory>.Ok(item));
+        return Ok(ApiResponse<CategoryResponse>.Ok(item));
+    }
+
+    [HttpGet("{id:int}/tours")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetToursByCategory(
+        int id,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5)
+    {
+        var category = await _service.GetCategoryByIdAsync(id);
+        if (category == null)
+        {
+            return NotFound(ApiResponse<object>.Fail($"Không tìm thấy danh mục mã {id}."));
+        }
+
+        var (items, total) = await _service.GetToursByCategoryIdPagedAsync(id, page, pageSize);
+        return Ok(ApiResponse<List<CategoryTourItemDto>>.Ok(
+            items,
+            $"Lấy danh sách tour thuộc danh mục '{category.CategoryName}' thành công.",
+            total,
+            page,
+            pageSize));
     }
 
     [HttpPost]
@@ -43,7 +77,11 @@ public class CategoriesController : ControllerBase
         try
         {
             var created = await _service.CreateCategoryAsync(request);
-            return StatusCode(StatusCodes.Status201Created, ApiResponse<TourCategory>.Ok(created, "Thêm danh mục thành công."));
+            return StatusCode(StatusCodes.Status201Created, ApiResponse<CategoryResponse>.Ok(created, "Thêm danh mục thành công."));
+        }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ApiResponse<object>.Fail(ex.Message));
         }
         catch (Exception ex)
         {
@@ -60,11 +98,15 @@ public class CategoriesController : ControllerBase
         try
         {
             var updated = await _service.UpdateCategoryAsync(id, request);
-            return Ok(ApiResponse<TourCategory>.Ok(updated, "Cập nhật danh mục thành công."));
+            return Ok(ApiResponse<CategoryResponse>.Ok(updated, "Cập nhật danh mục thành công."));
         }
         catch (KeyNotFoundException ex)
         {
             return NotFound(ApiResponse<object>.Fail(ex.Message));
+        }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ApiResponse<object>.Fail(ex.Message));
         }
         catch (Exception ex)
         {
@@ -80,6 +122,14 @@ public class CategoriesController : ControllerBase
         {
             var success = await _service.DeleteCategoryAsync(id);
             return Ok(ApiResponse<bool>.Ok(success, "Xóa danh mục thành công."));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ApiResponse<object>.Fail(ex.Message));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ApiResponse<object>.Fail(ex.Message));
         }
         catch (Exception ex)
         {
