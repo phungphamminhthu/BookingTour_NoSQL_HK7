@@ -121,6 +121,8 @@ public class AuthService : IAuthService
 
     public async Task<bool> UpdateCustomerProfileAsync(int customerId, UpdateProfileRequest request)
     {
+        if (request.Birthday?.Date > DateTime.UtcNow.Date)
+            throw new ArgumentException("Ngày sinh không được ở tương lai.");
         var customer = await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
         if (customer == null)
         {
@@ -147,6 +149,8 @@ public class AuthService : IAuthService
 
     public async Task<bool> UpdateCustomerPasswordAsync(int customerId, UpdatePasswordRequest request)
     {
+        if (request.NewPassword != request.NewPasswordConfirmation)
+            throw new ArgumentException("Mật khẩu xác nhận không khớp.");
         var customer = await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
         if (customer == null)
         {
