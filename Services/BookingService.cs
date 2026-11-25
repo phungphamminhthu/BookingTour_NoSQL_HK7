@@ -373,6 +373,10 @@ public class BookingService : IBookingService
                 tour_title = tour?.Title ?? b?.TourTitle,
                 tour_image = tour?.ThumbnailUrl,
                 departure_date = dep?.DepartureDate,
+                return_date = dep?.ReturnDate,
+                customer_name = b?.CustomerName,
+                total_adults = b?.TotalAdults,
+                total_children = b?.TotalChildren,
                 bill_id = bill?.Id,
                 bill_number = bill?.BillNumber,
                 final_amount = bill?.FinalAmount
@@ -380,6 +384,51 @@ public class BookingService : IBookingService
         }
 
         return result;
+    }
+
+    public async Task<object?> GetCustomerInvoiceAsync(int customerId, int bookingId)
+    {
+        var booking = await _context.Bookings.Find(b => b.Id == bookingId && b.CustomerId == customerId).FirstOrDefaultAsync();
+        if (booking == null) return null;
+
+        var bill = await _context.Bills.Find(b => b.BookingId == booking.Id).FirstOrDefaultAsync();
+        if (bill == null) return null;
+
+        var payment = await _context.Payments.Find(p => p.BookingId == booking.Id)
+            .SortByDescending(p => p.CreatedAt).FirstOrDefaultAsync();
+
+        var customer = await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
+        var departure = await _context.TourDepartures.Find(d => d.Id == booking.DepartureId).FirstOrDefaultAsync();
+        var tour = booking.TourId.HasValue ? await _context.Tours.Find(t => t.Id == booking.TourId.Value).FirstOrDefaultAsync() : null;
+
+        return new
+        {
+            bill_id = bill.Id,
+            bill_number = bill.BillNumber,
+            bill_date = bill.CreatedAt,
+            booking_id = booking.Id,
+            booking_code = booking.BookingCode,
+            booking_status = booking.Status,
+            customer_id = customerId,
+            customer_name = customer?.FullName ?? booking.CustomerName,
+            customer_email = customer?.Email,
+            customer_phone = customer?.Phone,
+            customer_address = customer?.Address,
+            tour_id = booking.TourId,
+            tour_title = tour?.Title ?? booking.TourTitle ?? departure?.TourTitle,
+            departure_date = departure?.DepartureDate,
+            return_date = departure?.ReturnDate,
+            pickup_point = tour?.PickupPoint,
+            total_adults = booking.TotalAdults,
+            total_children = booking.TotalChildren,
+            passengers = booking.Passengers,
+            payment_id = payment?.Id,
+            payment_code = payment != null ? $"TXN-{payment.Id:D4}" : null,
+            payment_method = payment?.PaymentMethod ?? booking.PaymentOption ?? "Thẻ quốc tế",
+            payment_date = payment?.CreatedAt ?? bill.CreatedAt,
+            total_amount = booking.TotalAmount,
+            final_amount = bill.FinalAmount
+        };
     }
 
     public async Task<List<object>> GetPendingPaymentsAsync(bool bankOnly)

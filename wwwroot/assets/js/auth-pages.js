@@ -80,6 +80,8 @@
         sessionStorage.removeItem('bookingtour_token');
         for (const target of [localStorage, sessionStorage]) {
           target.removeItem('bookingtour_user'); target.removeItem('bookingtour_role');
+          target.removeItem('bookingtour_api_booking_draft');
+          target.removeItem('booking_passengers_draft');
         }
         const storage = form.get('remember') === '1' ? localStorage : sessionStorage;
         storage.setItem('bookingtour_token', data.token);

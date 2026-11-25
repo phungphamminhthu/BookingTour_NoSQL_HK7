@@ -1038,12 +1038,38 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     let page = 1;
-    const pageSize = 10;
+    const pageSize = 5;
+    let currentTotalPages = 1;
     const previous = document.querySelector('[data-tour-prev]');
     const next = document.querySelector('[data-tour-next]');
+    const numbersContainer = document.querySelector('[data-tour-page-numbers]');
+    const pageBadge = document.querySelector('[data-tour-page-badge]');
+    const pageLabelSpan = document.querySelector('[data-tour-page]');
     let keyword = urlParams.get('keyword') || '';
     let catId = urlParams.get('category_id') || '';
     let provId = urlParams.get('province_id') || '';
+
+    if (pageBadge) {
+      pageBadge.textContent = '';
+      pageBadge.classList.add('hidden');
+    }
+    if (pageLabelSpan) {
+      pageLabelSpan.textContent = '';
+      pageLabelSpan.classList.add('hidden');
+    }
+
+    function getPaginationRange(current, total) {
+      if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+      }
+      if (current <= 4) {
+        return [1, 2, 3, 4, 5, '...', total];
+      }
+      if (current >= total - 3) {
+        return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+      }
+      return [1, '...', current - 1, current, current + 1, '...', total];
+    }
 
     // Populate Category select
     const catSelect = document.querySelector('select[name="category_id"]');
@@ -1082,18 +1108,55 @@
       const filtered = allTours.filter(t =>
         (!catId || String(t.category_id) === catId) &&
         (!provId || String(t.province_id) === provId) &&
-        (!q || [t.title, t.pickup_point, t.province_name].some(value => value?.toLocaleLowerCase('vi').includes(q)))
+        (!q || [t.title, t.pickup_point, t.province_name, t.destination, t.category_name].some(value => value?.toLocaleLowerCase('vi').includes(q)))
       );
 
       const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
-      page = Math.min(page, pages);
+      currentTotalPages = pages;
+      if (page > pages) page = pages;
+      if (page < 1) page = 1;
       const offset = (page - 1) * pageSize;
       const visible = filtered.slice(offset, offset + pageSize);
-      previous.disabled = page <= 1;
-      next.disabled = page >= pages;
-      const pageLabel = page + ' / ' + pages;
-      document.querySelector('[data-tour-page]').textContent = pageLabel;
-      document.querySelector('[data-tour-page-badge]').textContent = 'Trang ' + pageLabel;
+
+      if (previous) previous.disabled = page <= 1;
+      if (next) next.disabled = page >= pages;
+
+      if (numbersContainer) {
+        if (filtered.length === 0) {
+          numbersContainer.innerHTML = '';
+        } else {
+          const pageNumbers = getPaginationRange(page, pages);
+          numbersContainer.innerHTML = pageNumbers.map(p => {
+            if (p === '...') {
+              return `<span class="w-9 h-9 flex items-center justify-center text-slate-400 font-bold text-sm select-none">...</span>`;
+            }
+            if (p === page) {
+              return `<span class="w-9 h-9 flex items-center justify-center rounded-xl border border-blue-900 bg-blue-900 text-white font-bold text-sm shadow-xs select-none">${p}</span>`;
+            }
+            return `<button type="button" class="btn-tour-page-num w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition shadow-xs font-bold text-sm" data-page="${p}">${p}</button>`;
+          }).join('');
+
+          numbersContainer.querySelectorAll('.btn-tour-page-num').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const p = Number(btn.getAttribute('data-page'));
+              if (p && p !== page) {
+                page = p;
+                renderTours();
+              }
+            });
+          });
+        }
+      }
+
+      if (pageBadge) {
+        pageBadge.textContent = '';
+        pageBadge.classList.add('hidden');
+      }
+      if (pageLabelSpan) {
+        pageLabelSpan.textContent = '';
+        pageLabelSpan.classList.add('hidden');
+      }
+
       const headingCountEl = document.querySelector('[data-tour-list-title]');
       if (headingCountEl) headingCountEl.textContent = `Danh sách Tour (${filtered.length})`;
 
@@ -1102,9 +1165,14 @@
         if (filtered.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="7" class="px-8 py-12 text-center text-slate-400">
-                <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">tour</span>
-                <p>Không tìm thấy tour du lịch nào phù hợp với bộ lọc.</p>
+              <td colspan="7" class="px-8 py-16 text-center text-slate-400">
+                <div class="max-w-sm mx-auto flex flex-col items-center">
+                  <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                    <span class="material-symbols-outlined text-3xl">tour</span>
+                  </div>
+                  <p class="font-semibold text-slate-700 text-base">Không tìm thấy tour du lịch nào</p>
+                  <p class="text-xs text-slate-500 mt-1">Vui lòng thử tìm kiếm với từ khóa khác hoặc điều chỉnh lại bộ lọc danh mục, tỉnh thành.</p>
+                </div>
               </td>
             </tr>`;
         } else {
@@ -1181,14 +1249,18 @@
 
       const paginationInfoEl = document.querySelector('[data-tour-list-pagination]');
       if (paginationInfoEl) {
-        paginationInfoEl.textContent = visible.length
-          ? 'Hiển thị ' + (offset + 1) + '–' + (offset + visible.length) + ' trên ' + filtered.length + ' tour'
-          : 'Không có tour';
+        if (filtered.length === 0) {
+          paginationInfoEl.innerHTML = 'Hiển thị <span class="font-bold text-slate-800">0</span> trên tổng số <span class="font-bold text-slate-800">0</span> tour';
+        } else {
+          const start = offset + 1;
+          const end = offset + visible.length;
+          paginationInfoEl.innerHTML = `Hiển thị <span class="font-bold text-blue-900">${start}–${end}</span> trên tổng số <span class="font-bold text-blue-900">${filtered.length}</span> tour`;
+        }
       }
     }
 
-    const filterForm = catSelect?.form;
-    if (filterForm && !filterForm.classList.contains('px-4')) {
+    const filterForm = catSelect?.form || document.querySelector('form');
+    if (filterForm) {
       filterForm.addEventListener('submit', (e) => {
         e.preventDefault();
         page = 1;
@@ -1199,8 +1271,61 @@
       });
     }
 
-    previous.onclick = () => { page--; renderTours(); };
-    next.onclick = () => { page++; renderTours(); };
+    if (keywordInput) {
+      keywordInput.addEventListener('input', () => {
+        page = 1;
+        keyword = (keywordInput.value || '').trim();
+        renderTours();
+      });
+    }
+
+    if (catSelect) {
+      catSelect.addEventListener('change', () => {
+        page = 1;
+        catId = catSelect.value || '';
+        renderTours();
+      });
+    }
+
+    if (provSelect) {
+      provSelect.addEventListener('change', () => {
+        page = 1;
+        provId = provSelect.value || '';
+        renderTours();
+      });
+    }
+
+    const resetBtn = filterForm?.querySelector('a[href="index.html"]') || filterForm?.querySelector('a[title*="bộ lọc"]');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (keywordInput) keywordInput.value = '';
+        if (catSelect) catSelect.value = '';
+        if (provSelect) provSelect.value = '';
+        keyword = '';
+        catId = '';
+        provId = '';
+        page = 1;
+        renderTours();
+      });
+    }
+
+    if (previous) {
+      previous.onclick = () => {
+        if (page > 1) {
+          page--;
+          renderTours();
+        }
+      };
+    }
+    if (next) {
+      next.onclick = () => {
+        if (page < currentTotalPages) {
+          page++;
+          renderTours();
+        }
+      };
+    }
     renderTours();
   }
 

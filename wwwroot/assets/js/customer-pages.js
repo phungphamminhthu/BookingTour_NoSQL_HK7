@@ -94,6 +94,24 @@
     }
   }
 
+  function formatDateTime(dateStr) {
+    if (!dateStr) return '—';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'Asia/Ho_Chi_Minh'
+      });
+    } catch (_) {
+      return dateStr;
+    }
+  }
+
   function renderStatusBadge(status) {
     const s = String(status || '').toLowerCase();
     if (s === 'confirmed' || s === 'success') {
@@ -1556,6 +1574,259 @@
   }
 
   // 12. Lịch Sử Thanh Toán (client/payments/history.html)
+  let currentActiveInvoice = null;
+
+  function renderInvoiceContent(inv) {
+    const container = document.getElementById('invoicePrintContainer');
+    if (!container) return;
+
+    const modalTitle = document.getElementById('modalInvoiceTitle');
+    if (modalTitle) modalTitle.textContent = `Hóa đơn thanh toán #${inv.bill_number}`;
+
+    const passengers = Array.isArray(inv.passengers) ? inv.passengers : [];
+    const passengersHtml = passengers.length > 0 ? `
+      <div class="mt-3 pt-3 border-t border-slate-200 page-break-inside-avoid">
+        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-blue-900">groups</span>
+          Danh sách hành khách tham gia chuyến đi (${passengers.length} khách)
+        </h5>
+        <div class="overflow-x-auto rounded-xl border border-slate-200 text-xs">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-1.5 px-3">STT</th>
+                <th class="py-1.5 px-3">Họ và tên</th>
+                <th class="py-1.5 px-3">Loại khách</th>
+                <th class="py-1.5 px-3">Ngày sinh</th>
+                <th class="py-1.5 px-3">CCCD/Định danh</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${passengers.map((p, idx) => `
+                <tr>
+                  <td class="py-1.5 px-3 font-semibold text-slate-600">${idx + 1}</td>
+                  <td class="py-1.5 px-3 font-bold text-slate-900">${html(p.full_name)}</td>
+                  <td class="py-1.5 px-3 text-slate-700">${p.passenger_type === 'adult' ? 'Người lớn' : 'Trẻ em'}</td>
+                  <td class="py-1.5 px-3 text-slate-600">${p.date_of_birth ? formatDate(p.date_of_birth) : '—'}</td>
+                  <td class="py-1.5 px-3 font-mono text-slate-600">${html(p.id_card || '—')}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : '';
+
+    container.innerHTML = `
+      <!-- Header công ty & Tiêu đề hóa đơn -->
+      <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-3 border-b-2 border-blue-900">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl font-black text-blue-900 italic font-headline tracking-tight">Vietnam Expeditions</span>
+          </div>
+          <p class="text-xs font-bold text-slate-800 mt-0.5">CÔNG TY CỔ PHẦN DU LỊCH VIETNAM EXPEDITIONS</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Địa chỉ: 123 Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh</p>
+          <p class="text-[11px] text-slate-500">Hotline: 1900 6868 | Email: hotro@vietnamexpeditions.vn</p>
+          <p class="text-[11px] text-slate-500">Mã số thuế: 0314567890</p>
+        </div>
+        <div class="sm:text-right shrink-0">
+          <span class="inline-block bg-blue-900 text-white font-headline text-xs font-black uppercase tracking-wider px-3 py-0.5 rounded-full mb-1">
+            Hóa đơn điện tử
+          </span>
+          <p class="text-xs text-slate-500">Ký hiệu: <strong class="text-slate-800 font-mono">VE/26E</strong></p>
+          <p class="text-xs text-slate-500">Số HĐ: <strong class="text-blue-900 font-mono font-black text-base">${html(inv.bill_number)}</strong></p>
+          <p class="text-[11px] text-slate-500">Ngày lập: ${formatDateTime(inv.bill_date || inv.payment_date)}</p>
+        </div>
+      </div>
+
+      <!-- Tiêu đề chính -->
+      <div class="text-center my-3">
+        <h2 class="text-lg md:text-xl font-black text-blue-950 font-headline uppercase tracking-tight">HÓA ĐƠN THANH TOÁN DỊCH VỤ</h2>
+        <p class="text-[11px] text-slate-500 mt-0.5 italic">Bản thể hiện điện tử phục vụ lưu trữ và đối soát giao dịch</p>
+      </div>
+
+      <!-- 2 Cột thông tin: Khách hàng & Giao dịch -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 bg-slate-50 rounded-2xl p-3 sm:p-3.5 border border-slate-200/80 text-xs">
+        <div class="space-y-1">
+          <p class="font-bold text-blue-900 uppercase tracking-wider text-[11px] pb-1 border-b border-slate-200">Thông tin khách hàng</p>
+          <p class="text-slate-700">Họ và tên: <strong class="text-slate-900 text-sm">${html(inv.customer_name || 'Khách hàng')}</strong></p>
+          <p class="text-slate-700">Điện thoại: <strong class="text-slate-900 font-mono">${html(inv.customer_phone || '—')}</strong></p>
+          <p class="text-slate-700">Email nhận vé: <strong class="text-slate-900 font-mono">${html(inv.customer_email || '—')}</strong></p>
+          <p class="text-slate-700">Địa chỉ: <span class="text-slate-800">${html(inv.customer_address || '—')}</span></p>
+        </div>
+        <div class="space-y-1">
+          <p class="font-bold text-blue-900 uppercase tracking-wider text-[11px] pb-1 border-b border-slate-200">Thông tin giao dịch</p>
+          <p class="text-slate-700">Mã đặt tour: <strong class="text-blue-900 font-mono text-sm">${html(inv.booking_code || ('BK' + inv.booking_id))}</strong></p>
+          <p class="text-slate-700">Mã giao dịch: <strong class="text-slate-900 font-mono">${html(inv.payment_code || ('TXN-' + inv.payment_id))}</strong></p>
+          <p class="text-slate-700">Phương thức: <span class="font-semibold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">${html(inv.payment_method || 'Thẻ quốc tế')}</span></p>
+          <p class="text-slate-700">Trạng thái: <span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Đã thanh toán thành công</span></p>
+        </div>
+      </div>
+
+      <!-- Chi tiết dịch vụ du lịch -->
+      <div class="overflow-x-auto rounded-xl border border-slate-200 text-xs my-3 page-break-inside-avoid">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-blue-900 text-white font-bold">
+            <tr>
+              <th class="py-2 px-3 text-center w-12">STT</th>
+              <th class="py-2 px-4">Tên dịch vụ / Tour du lịch</th>
+              <th class="py-2 px-3">Thời gian khởi hành</th>
+              <th class="py-2 px-3 text-center">Số lượng</th>
+              <th class="py-2 px-4 text-right">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="py-2 px-3 text-center font-bold text-slate-500">1</td>
+              <td class="py-2 px-4">
+                <p class="font-bold text-slate-900 text-sm">${html(inv.tour_title || 'Tour du lịch trọn gói')}</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Điểm đón: ${html(inv.pickup_point || 'Theo lịch trình tour')}</p>
+              </td>
+              <td class="py-2 px-3 text-slate-700">
+                <p>Khởi hành: <strong>${formatDate(inv.departure_date)}</strong></p>
+                ${inv.return_date ? `<p class="text-[11px] text-slate-500">Kết thúc: ${formatDate(inv.return_date)}</p>` : ''}
+              </td>
+              <td class="py-2 px-3 text-center font-medium">
+                ${inv.total_adults || 1} người lớn${inv.total_children > 0 ? `<br><span class="text-slate-500">${inv.total_children} trẻ em</span>` : ''}
+              </td>
+              <td class="py-2 px-4 text-right font-black font-mono text-sm text-blue-950">
+                ${formatMoney(inv.final_amount || inv.total_amount)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      ${passengersHtml}
+
+      <!-- Bảng tổng kết tiền thanh toán -->
+      <div class="mt-3 pt-3 border-t-2 border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs page-break-inside-avoid">
+        <div class="text-slate-500 max-w-sm">
+          <p class="font-bold text-slate-700 mb-0.5">Ghi chú & Chính sách:</p>
+          <p class="text-[11px] leading-relaxed">Hóa đơn điện tử có giá trị pháp lý theo quy định của pháp luật. Khách hàng sử dụng hóa đơn này kết hợp mã đặt tour khi làm thủ tục khởi hành.</p>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 w-full sm:w-72 space-y-1.5">
+          <div class="flex justify-between text-slate-600">
+            <span>Tổng giá trị đơn:</span>
+            <span class="font-bold text-slate-800 font-mono">${formatMoney(inv.total_amount || inv.final_amount)}</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Đã thanh toán:</span>
+            <span class="font-bold text-emerald-700 font-mono">${formatMoney(inv.final_amount || inv.total_amount)}</span>
+          </div>
+          <div class="flex justify-between text-slate-600 pt-1 border-t border-slate-200">
+            <span>Còn lại:</span>
+            <span class="font-bold text-slate-500 font-mono">0 đ</span>
+          </div>
+          <div class="pt-1.5 border-t-2 border-blue-900 flex justify-between items-center text-sm font-black text-blue-950">
+            <span>TỔNG CỘNG:</span>
+            <span class="text-base text-secondary font-mono">${formatMoney(inv.final_amount || inv.total_amount)}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chữ ký số & Dấu xác nhận -->
+      <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-dashed border-slate-300 text-center text-xs page-break-inside-avoid">
+        <div>
+          <p class="font-bold uppercase text-slate-700">Khách hàng / Người đặt vé</p>
+          <p class="text-[11px] text-slate-400 italic mt-0.5">(Ký, ghi rõ họ tên)</p>
+          <div class="h-10 flex items-center justify-center mt-1">
+            <span class="font-bold text-slate-800 text-sm font-headline italic">${html(inv.customer_name || '')}</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Đã xác nhận trực tuyến</p>
+        </div>
+        <div>
+          <p class="font-bold uppercase text-slate-700">Đại diện bên bán / Vietnam Expeditions</p>
+          <p class="text-[11px] text-slate-400 italic mt-0.5">(Ký điện tử bởi tổ chức)</p>
+          <div class="h-10 flex items-center justify-center mt-1">
+            <div class="border-2 border-emerald-600 text-emerald-700 bg-emerald-50/80 px-2.5 py-1 rounded-lg text-[10px] font-bold text-left inline-block leading-tight">
+              <span class="material-symbols-outlined text-xs align-middle text-emerald-600">verified</span>
+              ĐÃ KÝ ĐIỆN TỬ BỞI:<br>
+              <strong class="text-[10px] font-headline">VIETNAM EXPEDITIONS CORP</strong><br>
+              <span class="text-[8px] text-slate-500">Ngày: ${formatDateTime(inv.bill_date || inv.payment_date)}</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500">Hệ thống chứng thực số</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function triggerPrintInvoice(invoice) {
+    const originalTitle = document.title;
+    document.title = `HoaDon_${invoice.bill_number}`;
+    window.print();
+    setTimeout(() => {
+      document.title = originalTitle;
+    }, 1000);
+  }
+
+  function initInvoiceDownloadHandlers() {
+    const modal = document.getElementById('customerInvoiceModal');
+    const closeBtn1 = document.getElementById('closeInvoiceModalBtn');
+    const closeBtn2 = document.getElementById('modalCloseInvoiceBtn');
+    const printBtn = document.getElementById('modalPrintInvoiceBtn');
+
+    const closeModal = () => {
+      if (modal) modal.classList.add('hidden');
+      currentActiveInvoice = null;
+    };
+
+    if (closeBtn1) closeBtn1.onclick = closeModal;
+    if (closeBtn2) closeBtn2.onclick = closeModal;
+    if (modal) {
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+    }
+
+    if (printBtn) {
+      printBtn.onclick = () => {
+        if (currentActiveInvoice) {
+          triggerPrintInvoice(currentActiveInvoice);
+        }
+      };
+    }
+
+    document.querySelectorAll('.btn-download-invoice').forEach(btn => {
+      btn.onclick = async () => {
+        const bookingId = btn.getAttribute('data-booking-id');
+        if (!bookingId) {
+          alert('Không tìm thấy thông tin đơn đặt tour.');
+          return;
+        }
+
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span><span>Đang tải...</span>';
+
+        try {
+          const invoice = await get('/api/customer/invoices/' + bookingId);
+          if (!invoice || !invoice.bill_number) {
+            throw new Error('Hóa đơn chưa tồn tại hoặc dữ liệu chưa đủ để xuất hóa đơn.');
+          }
+
+          currentActiveInvoice = invoice;
+          renderInvoiceContent(invoice);
+
+          if (modal) modal.classList.remove('hidden');
+
+          // Tự động kích hoạt hộp thoại in / tải PDF
+          setTimeout(() => {
+            if (currentActiveInvoice === invoice) {
+              triggerPrintInvoice(invoice);
+            }
+          }, 350);
+        } catch (err) {
+          alert(err.message || 'Không thể lấy thông tin hóa đơn. Vui lòng thử lại sau.');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalHtml;
+        }
+      };
+    });
+  }
+
   async function handlePaymentsHistory() {
     if (!requireCustomer()) return;
     const txns = await get('/api/customer/payment-history');
@@ -1564,19 +1835,55 @@
       formatMoney(txns.reduce((sum, payment) => sum + Number(payment.amount), 0));
     document.getElementById('txnEmptySection').classList.toggle('hidden', txns.length !== 0);
     document.getElementById('txnTableSection').classList.toggle('hidden', txns.length === 0);
-    document.getElementById('paymentHistoryBody').innerHTML = txns.map(t => `
-      <tr class="hover:bg-slate-50 transition">
-        <td class="px-6 py-4 font-mono font-bold text-blue-900">${html(t.payment_id)}</td>
-        <td class="px-6 py-4">${html(t.tour_title || t.booking_code || '—')}</td>
-        <td class="px-6 py-4 whitespace-nowrap">${formatDate(t.payment_date)}</td>
-        <td class="px-6 py-4 font-bold text-green-700 whitespace-nowrap">${formatMoney(t.amount)}</td>
-        <td class="px-6 py-4">${html(t.payment_method || '—')}</td>
-        <td class="px-6 py-4">${renderPaymentBadge('paid')}</td>
-        <td class="px-6 py-4 text-right">${id(t.booking_id) ?
-          '<a class="font-bold text-primary" href="../my_tours/show.html?id=' + t.booking_id + '">' +
-            html(t.bill_number || 'Xem vé') + '</a>' : '—'}</td>
-      </tr>
-    `).join('');
+
+    const tbody = document.getElementById('paymentHistoryBody');
+    tbody.innerHTML = txns.map(t => {
+      const hasValidInvoice = Boolean(t.bill_number && t.bill_number.trim() && (t.booking_status === 'confirmed' || t.booking_status === 'completed' || Number(t.amount) > 0));
+      const billCode = t.bill_number ? html(t.bill_number) : '';
+
+      const actionHtml = hasValidInvoice ? `
+        <div class="flex items-center justify-end gap-2.5">
+          <a href="../my_tours/show.html?id=${t.booking_id}"
+             class="inline-flex items-center font-mono text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg border border-blue-200 transition"
+             title="Xem vé chuyến đi (${html(t.booking_code || '')})">
+            ${billCode}
+          </a>
+          <button type="button"
+                  class="btn-download-invoice inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white transition-all text-xs font-bold shadow-sm active:scale-95 cursor-pointer"
+                  data-booking-id="${t.booking_id}"
+                  data-bill-number="${billCode}"
+                  title="Tải hóa đơn điện tử (PDF)">
+            <span class="material-symbols-outlined text-sm">download</span>
+            <span>Tải hóa đơn</span>
+          </button>
+        </div>
+      ` : `
+        <div class="flex items-center justify-end gap-2.5">
+          <span class="text-xs text-slate-400 italic font-mono">${billCode || 'Chưa có hóa đơn'}</span>
+          <button type="button"
+                  disabled
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 text-xs font-medium cursor-not-allowed opacity-60"
+                  title="Giao dịch chưa thanh toán hoặc chưa có hóa đơn">
+            <span class="material-symbols-outlined text-sm">download</span>
+            <span>Tải hóa đơn</span>
+          </button>
+        </div>
+      `;
+
+      return `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="px-6 py-4 font-mono font-bold text-blue-900">${html(t.payment_id)}</td>
+          <td class="px-6 py-4 font-medium text-slate-900">${html(t.tour_title || t.booking_code || '—')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-slate-600">${formatDate(t.payment_date)}</td>
+          <td class="px-6 py-4 font-bold text-green-700 whitespace-nowrap">${formatMoney(t.amount)}</td>
+          <td class="px-6 py-4 text-slate-700">${html(t.payment_method || '—')}</td>
+          <td class="px-6 py-4">${renderPaymentBadge(t.booking_status === 'cancelled' ? 'cancelled' : 'paid')}</td>
+          <td class="px-6 py-4 text-right">${actionHtml}</td>
+        </tr>
+      `;
+    }).join('');
+
+    initInvoiceDownloadHandlers();
   }
 
   

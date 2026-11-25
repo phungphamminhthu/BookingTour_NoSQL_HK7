@@ -192,6 +192,26 @@ public class BookingsController : ControllerBase
     }
 
     [Authorize(Roles = "Customer")]
+    [HttpGet("/api/customer/invoices/{bookingId:int}")]
+    [HttpGet("invoices/{bookingId:int}")]
+    public async Task<IActionResult> GetInvoice(int bookingId)
+    {
+        var customerId = GetCurrentCustomerId();
+        if (customerId <= 0)
+        {
+            return Unauthorized(ApiResponse<object>.Fail("Vui lòng đăng nhập để xem hóa đơn."));
+        }
+
+        var invoice = await _bookingService.GetCustomerInvoiceAsync(customerId, bookingId);
+        if (invoice == null)
+        {
+            return NotFound(ApiResponse<object>.Fail("Không tìm thấy hóa đơn thanh toán hợp lệ hoặc bạn không có quyền truy cập."));
+        }
+
+        return Ok(ApiResponse<object>.Ok(invoice, "Lấy thông tin hóa đơn thành công."));
+    }
+
+    [Authorize(Roles = "Customer")]
     [HttpGet("/api/customer/profile")]
     [HttpGet("/customer/profile")]
     public async Task<IActionResult> GetProfile()

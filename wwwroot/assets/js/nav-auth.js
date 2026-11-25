@@ -123,10 +123,12 @@
         localStorage.removeItem('bookingtour_token');
         localStorage.removeItem('bookingtour_user');
         localStorage.removeItem('bookingtour_role');
+        localStorage.removeItem('bookingtour_api_booking_draft');
         sessionStorage.removeItem('bookingtour_token');
         sessionStorage.removeItem('bookingtour_user');
         sessionStorage.removeItem('bookingtour_role');
         sessionStorage.removeItem('booking_passengers_draft');
+        sessionStorage.removeItem('bookingtour_api_booking_draft');
 
         if (window.BookingTourDB && typeof window.BookingTourDB.setCurrentUser === 'function') {
           window.BookingTourDB.setCurrentUser(null);
