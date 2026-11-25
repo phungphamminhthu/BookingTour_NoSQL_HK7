@@ -150,68 +150,88 @@
     </div>
 
     <!-- STATS CARDS -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 border-l-4 border-l-blue-900">
-        <div class="flex items-center justify-between mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <!-- Card 1: Đang mở bán -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Đang mở bán</span>
-          <span class="material-symbols-outlined text-blue-900 text-2xl">flight_takeoff</span>
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">flight_takeoff</span>
+          </div>
         </div>
-        <h3 id="statDeparturesOpen" class="text-3xl font-black text-blue-900">—</h3>
-        <p class="text-xs text-slate-500 mt-2">Chuyến đi đang nhận khách</p>
+        <div>
+          <h3 id="statDeparturesOpen" class="text-3xl font-black text-blue-950 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-slate-500 font-medium">Chuyến đi đang nhận khách</p>
+        </div>
       </div>
 
-      <a data-unassigned-departures href="#"
-        class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 block hover:bg-orange-50/50 transition cursor-pointer border-l-4 border-l-orange-500">
-        <div class="flex items-center justify-between mb-4">
+      <!-- Card 2: Chưa gán HDV -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Chưa gán HDV</span>
-          <span class="material-symbols-outlined text-orange-600 text-2xl">person_add</span>
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">person_add</span>
+          </div>
         </div>
-        <h3 id="statDeparturesNoGuide" class="text-3xl font-black text-orange-600">—</h3>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Cần phân công người dẫn đoàn</p>
+        <div>
+          <h3 id="statDeparturesNoGuide" class="text-3xl font-black text-amber-600 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-amber-600/80 font-medium">Cần phân công người dẫn đoàn</p>
+        </div>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 border-l-4 border-l-emerald-600">
-        <div class="flex items-center justify-between mb-4">
+      <!-- Card 3: Khởi hành hôm nay -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Khởi hành hôm nay</span>
-          <span class="material-symbols-outlined text-emerald-600 text-2xl">today</span>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">calendar_today</span>
+          </div>
         </div>
-        <h3 id="statDeparturesToday" class="text-3xl font-black text-emerald-600">—</h3>
-        <p class="text-xs text-slate-500 mt-2">Đoàn khởi hành trong ngày</p>
+        <div>
+          <h3 id="statDeparturesToday" class="text-3xl font-black text-emerald-600 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-slate-500 font-medium">Đoàn khởi hành trong ngày</p>
+        </div>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 border-l-4 border-l-purple-600">
-        <div class="flex items-center justify-between mb-4">
+      <!-- Card 4: Tổng số chuyến -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng số chuyến</span>
-          <span class="material-symbols-outlined text-purple-600 text-2xl">calendar_month</span>
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-900 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">calendar_month</span>
+          </div>
         </div>
-        <h3 id="statDeparturesTotal" class="text-3xl font-black text-purple-600">—</h3>
-        <p class="text-xs text-slate-500 mt-2">Tổng số chuyến trong hệ thống</p>
+        <div>
+          <h3 id="statDeparturesTotal" class="text-3xl font-black text-indigo-950 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-slate-500 font-medium">Tổng số chuyến trong hệ thống</p>
+        </div>
       </div>
     </div>
 
     <!-- SEARCH & FILTER FORM -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6">
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6">
       <form id="departureSearchForm" action="#" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
         <div class="flex-1 w-full">
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Tên Tour, Mã Chuyến hoặc HDV</label>
+          <label for="departureKeywordInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tên Tour, Mã Chuyến hoặc HDV</label>
           <div class="relative">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
             <input type="text" id="departureKeywordInput" name="keyword" value="" placeholder="Ví dụ: Hạ Long, Sapa, hoặc mã ID..."
-                  class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm"/>
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm transition"/>
           </div>
         </div>
 
-        <div class="w-full md:w-56">
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Ngày khởi hành</label>
+        <div class="w-full md:w-60">
+          <label for="departureDateInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Ngày khởi hành</label>
           <input type="date" id="departureDateInput" name="date" value=""
-                class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm"/>
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm transition font-medium text-slate-700"/>
         </div>
 
-        <div class="flex gap-2 w-full md:w-auto">
-          <button type="submit" class="flex-1 md:flex-none bg-blue-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-800 transition text-sm">
-            Lọc kết quả
+        <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
+          <button type="submit" class="flex-1 md:flex-none bg-blue-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-800 transition text-sm flex items-center justify-center gap-2 shadow-sm">
+            <span class="material-symbols-outlined text-base">filter_list</span>
+            <span>Lọc kết quả</span>
           </button>
-          <button type="button" id="btnResetDepartureFilter" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-100 transition flex items-center justify-center text-sm" title="Đặt lại bộ lọc">
+          <button type="button" id="btnResetDepartureFilter" class="px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-100 transition flex items-center justify-center text-sm shadow-sm" title="Đặt lại bộ lọc">
             <span class="material-symbols-outlined text-lg">restart_alt</span>
           </button>
         </div>
@@ -219,17 +239,17 @@
     </div>
 
     <!-- STATUS FILTER TABS -->
-    <div id="departureStatusTabs" class="flex flex-wrap gap-2 mb-6">
-      <button type="button" data-status="all" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-blue-900 text-white shadow-sm">
+    <div id="departureStatusTabs" class="flex flex-wrap items-center gap-2 mb-6">
+      <button type="button" data-status="all" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-blue-900 text-white shadow-sm flex items-center gap-1.5">
         Tất cả
       </button>
-      <button type="button" data-status="open" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200">
+      <button type="button" data-status="open" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
         Đang bán
       </button>
-      <button type="button" data-status="full" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200">
+      <button type="button" data-status="full" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
         Đã đầy
       </button>
-      <button type="button" data-status="cancelled" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200">
+      <button type="button" data-status="cancelled" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
         Đã hủy
       </button>
     </div>

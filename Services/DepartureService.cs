@@ -84,18 +84,49 @@ public class DepartureService : IDepartureService
         return (items, totalCount);
     }
 
+    private static readonly TimeZoneInfo VietnamTimeZone = GetVietnamTimeZone();
+
+    private static TimeZoneInfo GetVietnamTimeZone()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh");
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                return TimeZoneInfo.CreateCustomTimeZone("Vietnam Standard Time", TimeSpan.FromHours(7), "Vietnam Standard Time", "Vietnam Standard Time");
+            }
+        }
+    }
+
+    private static (DateTime StartUtc, DateTime EndUtc) GetVietnamTodayUtcRange()
+    {
+        var nowUtc = DateTime.UtcNow;
+        var nowVn = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, VietnamTimeZone);
+        var startVn = new DateTime(nowVn.Year, nowVn.Month, nowVn.Day, 0, 0, 0, DateTimeKind.Unspecified);
+        var endVn = startVn.AddDays(1);
+        var startUtc = TimeZoneInfo.ConvertTimeToUtc(startVn, VietnamTimeZone);
+        var endUtc = TimeZoneInfo.ConvertTimeToUtc(endVn, VietnamTimeZone);
+        return (startUtc, endUtc);
+    }
+
     public async Task<DepartureStatsDto> GetStatsAsync()
     {
         var all = await _context.TourDepartures.Find(_ => true).ToListAsync();
-        var today = DateTime.UtcNow.Date;
-        var tomorrow = today.AddDays(1);
+        var (todayStartUtc, todayEndUtc) = GetVietnamTodayUtcRange();
 
         return new DepartureStatsDto
         {
             TotalCount = all.Count,
             OpenCount = all.Count(d => (d.Status == "open" || string.IsNullOrWhiteSpace(d.Status)) && d.AvailableSeats > 0),
             UnassignedCount = all.Count(d => !d.GuideId.HasValue || d.GuideId.Value <= 0 || string.IsNullOrWhiteSpace(d.GuideName) || d.GuideName == "Chưa phân công"),
-            TodayCount = all.Count(d => d.DepartureDate >= today && d.DepartureDate < tomorrow),
+            TodayCount = all.Count(d => d.DepartureDate >= todayStartUtc && d.DepartureDate < todayEndUtc),
             FullCount = all.Count(d => d.Status == "sold_out" || d.Status == "full" || d.AvailableSeats <= 0),
             CancelledCount = all.Count(d => d.Status == "cancelled")
         };
@@ -367,7 +398,6 @@ public class DepartureService : IDepartureService
             }
             if (d.GuideId.HasValue && guideMap.TryGetValue(d.GuideId.Value, out var guide))
             {
-                d.Guide = guide;
                 d.GuideName = guide.FullName;
             }
         }

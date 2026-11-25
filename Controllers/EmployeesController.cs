@@ -4,6 +4,8 @@ using Backend_DotNet.Models;
 using Backend_DotNet.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Backend_DotNet.Controllers;
 
@@ -21,11 +23,19 @@ public class EmployeesController : ControllerBase
 
     [HttpGet]
     [HttpGet("/employees")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] int? roleId,
+        [FromQuery, Range(1, int.MaxValue)] int page = 1, [FromQuery, Range(1, 100)] int pageSize = 10)
     {
-        var items = await _service.GetAllEmployeesAsync();
-        return Ok(ApiResponse<List<Employee>>.Ok(items, "Lấy danh sách nhân viên thành công."));
+        var (items, total) = await _service.QueryEmployeesAsync(search, roleId, page, pageSize);
+        return Ok(ApiResponse<List<Employee>>.Ok(items, "Lấy danh sách nhân viên thành công.", total, page, pageSize));
     }
+
+    [HttpGet("roles")]
+    public async Task<IActionResult> Roles() => Ok(ApiResponse<object>.Ok(await _service.GetRolesAsync()));
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id) => Ok(ApiResponse<bool>.Ok(
+        await _service.DeleteEmployeeAsync(id, int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)), "Đã xóa nhân viên."));
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)

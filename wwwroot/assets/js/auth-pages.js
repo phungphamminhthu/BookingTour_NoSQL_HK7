@@ -78,55 +78,15 @@
         localStorage.removeItem('bookingtour_logged_out');
         localStorage.removeItem('bookingtour_token');
         sessionStorage.removeItem('bookingtour_token');
+        for (const target of [localStorage, sessionStorage]) {
+          target.removeItem('bookingtour_user'); target.removeItem('bookingtour_role');
+        }
         const storage = form.get('remember') === '1' ? localStorage : sessionStorage;
         storage.setItem('bookingtour_token', data.token);
         storage.setItem('bookingtour_user', JSON.stringify(data.user || {}));
         storage.setItem('bookingtour_role', data.role || '');
         redirectByRole(data);
       } catch (error) {
-        // Fallback demo authentication for offline / Live Server mode when backend is unreachable
-        const isOffline = error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.message?.includes('HTTP 404');
-        if (isOffline) {
-          const userLower = usernameOrEmail.toLowerCase();
-          sessionStorage.removeItem('bookingtour_logged_out');
-        localStorage.removeItem('bookingtour_logged_out');
-          const storage = form.get('remember') === '1' ? localStorage : sessionStorage;
-          if (userLower.includes('admin')) {
-            const data = {
-              token: 'demo-jwt-admin-token',
-              role: 'admin',
-              user: { fullName: 'Trần Quản Trị', email: usernameOrEmail, roleName: 'Admin' }
-            };
-            storage.setItem('bookingtour_token', data.token);
-            storage.setItem('bookingtour_user', JSON.stringify(data.user));
-            storage.setItem('bookingtour_role', data.role);
-            redirectByRole(data);
-            return;
-          } else if (userLower.includes('sale')) {
-            const data = {
-              token: 'demo-jwt-sale-token',
-              role: 'sale',
-              user: { fullName: 'Lê Thị Thảo (Sale)', email: usernameOrEmail, roleName: 'Sale' }
-            };
-            storage.setItem('bookingtour_token', data.token);
-            storage.setItem('bookingtour_user', JSON.stringify(data.user));
-            storage.setItem('bookingtour_role', data.role);
-            redirectByRole(data);
-            return;
-          } else {
-            const data = {
-              token: 'demo-jwt-customer-token',
-              role: 'customer',
-              userType: 'customer',
-              user: { fullName: 'Nguyễn Văn An', email: usernameOrEmail, phone: '0901234001', roleName: 'Customer' }
-            };
-            storage.setItem('bookingtour_token', data.token);
-            storage.setItem('bookingtour_user', JSON.stringify(data.user));
-            storage.setItem('bookingtour_role', data.role);
-            redirectByRole(data);
-            return;
-          }
-        }
         showMessage(loginForm, error.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
       } finally {
         setBusy(loginForm, false);
@@ -160,19 +120,6 @@
         });
         window.location.href = '/client/auth/login.html?registered=1';
       } catch (error) {
-        const isOffline = error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.message?.includes('HTTP 404');
-        if (isOffline) {
-          if (window.BookingTourDB) {
-            window.BookingTourDB.createCustomer({
-              full_name: fullName,
-              email,
-              phone,
-              address: address || 'Việt Nam'
-            });
-          }
-          window.location.href = '/client/auth/login.html?registered=1';
-          return;
-        }
         showMessage(registerForm, error.message || 'Đăng ký thất bại. Vui lòng thử lại.');
       } finally {
         setBusy(registerForm, false);

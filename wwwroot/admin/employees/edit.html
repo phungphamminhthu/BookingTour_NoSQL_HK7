@@ -99,6 +99,7 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
+
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
         <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
@@ -113,12 +114,11 @@
     </div>
   </header>
 
-
 <div class="p-6 md:p-8">
 
     <!-- NÚT QUAY LẠI: NẰM NGOÀI KHUNG -->
     <div class="max-w-5xl mx-auto mb-6">
-        <a href="#"
+        <a href="/admin/employees/index.html"
            class="inline-flex items-center gap-2 bg-white border border-slate-200
                   text-slate-700 hover:bg-slate-50 transition px-5 py-2.5
                   rounded-full font-bold shadow-sm text-sm">
@@ -127,11 +127,11 @@
         </a>
     </div>
 
-    <div class="max-w-5xl mx-auto bg-white rounded-2xlshadow-sm border border-slate-200 p-6 md:p-10">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-10">
         <!-- HEADER -->
         <header class="text-center mb-8">
             <div>
-                <h2 class="text-3xl font-black text-blue-900 tracking-tight">
+                <h2 id="editEmployeeTitle" class="text-3xl font-black text-blue-900 tracking-tight">
                     Chỉnh Sửa Nhân Viên #
                 </h2>
                 <p class="text-slate-500 mt-2">
@@ -222,6 +222,9 @@
                             maxlength="50"
                             autocomplete="username"
                             class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        <p class="text-slate-400 text-xs mt-1">
+                            Tên đăng nhập không thể thay đổi khi cập nhật.
+                        </p>
                         
                             
                         
@@ -290,7 +293,7 @@
                         Cập nhật nhân viên
                     </button>
 
-                    <a href="#"
+                    <a href="/admin/employees/index.html"
                     class="bg-slate-100 hover:bg-slate-200 transition text-slate-700 px-8 py-3 rounded-xl font-bold text-sm">
                         Hủy bỏ
                     </a>
@@ -304,8 +307,8 @@
 </main>
 
 <script src="../../assets/js/api-client.js"></script>
-<script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/part2-common.js"></script>
+<script src="../../assets/js/employee-pages.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
 <script src="../../assets/js/admin-router.js"></script>
 </body>

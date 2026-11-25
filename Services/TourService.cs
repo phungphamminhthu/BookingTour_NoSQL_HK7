@@ -2,6 +2,7 @@ using Backend_DotNet.Data;
 using Backend_DotNet.DTOs;
 using Backend_DotNet.Models;
 using MongoDB.Driver;
+using System.Text.RegularExpressions;
 
 namespace Backend_DotNet.Services;
 
@@ -22,7 +23,7 @@ public class TourService : ITourService
     {
         var tours = await _context.Tours.Find(_ => true)
             .SortByDescending(t => t.Id)
-            .Limit(limit)
+            .Limit(Math.Clamp(limit, 1, 20))
             .ToListAsync();
 
         await PopulateTourRelationsAsync(tours);
@@ -34,10 +35,12 @@ public class TourService : ITourService
         var builder = Builders<Tour>.Filter;
         var filter = builder.Empty;
 
-        var keyword = p.TuKhoa ?? p.Destination;
-        if (!string.IsNullOrWhiteSpace(keyword))
+        if (p.GiaTu.HasValue && p.GiaDen.HasValue && p.GiaTu > p.GiaDen)
+            throw new ArgumentException("Giá từ phải nhỏ hơn hoặc bằng giá đến.");
+
+        foreach (var keyword in new[] { p.TuKhoa, p.Destination }.Where(value => !string.IsNullOrWhiteSpace(value)))
         {
-            var k = keyword.Trim();
+            var k = Regex.Escape(keyword!.Trim()); // Tìm chuỗi người dùng nhập, không chạy regex tùy ý.
             var textFilter = builder.Or(
                 builder.Regex(t => t.Title, new MongoDB.Bson.BsonRegularExpression(k, "i")),
                 builder.Regex(t => t.Description, new MongoDB.Bson.BsonRegularExpression(k, "i")),
@@ -50,6 +53,8 @@ public class TourService : ITourService
         {
             filter &= builder.Eq(t => t.CategoryId, p.DanhMucId.Value);
         }
+        if (p.CategoryIds.Count > 0)
+            filter &= builder.In(t => t.CategoryId, p.CategoryIds);
 
         if (p.TinhId.HasValue && p.TinhId.Value > 0)
         {
@@ -59,13 +64,14 @@ public class TourService : ITourService
         if (!string.IsNullOrWhiteSpace(p.VungMien))
         {
             // Find provinces in that region
-            var provinceIds = await _context.Provinces.Find(pr => pr.Region == p.VungMien).Project(pr => pr.Id).ToListAsync();
+            var region = p.VungMien.Trim().Replace("Miền ", "", StringComparison.OrdinalIgnoreCase);
+            var provinceIds = await _context.Provinces.Find(pr => pr.Region == region).Project(pr => pr.Id).ToListAsync();
             filter &= builder.In(t => t.ProvinceId, provinceIds);
         }
 
         if (!string.IsNullOrWhiteSpace(p.DiemKhoiHanh))
         {
-            filter &= builder.Regex(t => t.PickupPoint, new MongoDB.Bson.BsonRegularExpression(p.DiemKhoiHanh.Trim(), "i"));
+            filter &= builder.Regex(t => t.PickupPoint, new MongoDB.Bson.BsonRegularExpression(Regex.Escape(p.DiemKhoiHanh.Trim()), "i"));
         }
 
         if (p.GiaTu.HasValue && p.GiaTu.Value > 0)
@@ -86,7 +92,7 @@ public class TourService : ITourService
         if (p.NgayBatDau.HasValue)
         {
             var validTourIds = await _context.TourDepartures
-                .Find(d => d.DepartureDate >= p.NgayBatDau.Value)
+                .Find(d => d.DepartureDate >= p.NgayBatDau.Value && d.Status == "open" && d.AvailableSeats > 0)
                 .Project(d => d.TourId)
                 .ToListAsync();
             filter &= builder.In(t => t.Id, validTourIds.Distinct());
@@ -99,10 +105,10 @@ public class TourService : ITourService
         switch (p.SapXep?.ToLower())
         {
             case "asc":
-                query = query.SortBy(t => t.MinPrice);
+                query = query.SortBy(t => t.MinPrice).ThenBy(t => t.Id);
                 break;
             case "desc":
-                query = query.SortByDescending(t => t.MinPrice);
+                query = query.SortByDescending(t => t.MinPrice).ThenBy(t => t.Id);
                 break;
             default:
                 query = query.SortByDescending(t => t.Id);
@@ -139,7 +145,6 @@ public class TourService : ITourService
             {
                 if (d.GuideId.HasValue && guideMap.TryGetValue(d.GuideId.Value, out var g))
                 {
-                    d.Guide = g;
                     d.GuideName = g.FullName;
                 }
             }
@@ -158,7 +163,6 @@ public class TourService : ITourService
             {
                 if (custMap.TryGetValue(r.CustomerId, out var c))
                 {
-                    r.Customer = c;
                     r.CustomerName = c.FullName;
                 }
             }

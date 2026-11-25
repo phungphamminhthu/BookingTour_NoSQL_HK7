@@ -375,15 +375,10 @@
     } else if (p.includes('/transactions/index.html')) {
       if (!window.BookingTourAdminPages) await loadScript('/assets/js/admin-pages.js?v=2.2.0');
       window.BookingTourAdminPages?.handleTransactionsIndex?.();
-    } else if (p.includes('/employees/index.html')) {
-      if (!window.BookingTourAdminPages) await loadScript('/assets/js/admin-pages.js?v=2.2.0');
-      window.BookingTourAdminPages?.handleEmployeesIndex?.();
-    } else if (p.includes('/employees/create.html')) {
-      if (!window.BookingTourAdminPages) await loadScript('/assets/js/admin-pages.js?v=2.2.0');
-      window.BookingTourAdminPages?.handleEmployeesCreate?.();
-    } else if (p.includes('/employees/edit.html')) {
-      if (!window.BookingTourAdminPages) await loadScript('/assets/js/admin-pages.js?v=2.2.0');
-      window.BookingTourAdminPages?.handleEmployeesEdit?.();
+    } else if (p.includes('/employees')) {
+      if (!window.Part2) await loadScript('/assets/js/part2-common.js');
+      if (!window.Part2EmployeePages) await loadScript('/assets/js/employee-pages.js');
+      window.Part2EmployeePages?.start?.();
     } else {
       // Default: Dashboard
       if (!window.BookingTourDashboard) {

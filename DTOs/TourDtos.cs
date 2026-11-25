@@ -1,48 +1,59 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_DotNet.DTOs;
 
 public class TourQueryParameters
 {
-    [JsonPropertyName("q")]
+    [FromQuery(Name = "q")]
     public string? TuKhoa { get; set; }
 
-    [JsonPropertyName("destination")]
+    [FromQuery(Name = "destination")]
     public string? Destination { get; set; }
 
-    [JsonPropertyName("category_id")]
+    [FromQuery(Name = "category_id")]
     public int? DanhMucId { get; set; }
 
-    [JsonPropertyName("province_id")]
+    [FromQuery(Name = "province_id")]
     public int? TinhId { get; set; }
 
-    [JsonPropertyName("region")]
+    [FromQuery(Name = "region")]
     public string? VungMien { get; set; }
 
-    [JsonPropertyName("startDate")]
+    [FromQuery(Name = "startDate")]
     public DateTime? NgayBatDau { get; set; }
 
-    [JsonPropertyName("pickupPoint")]
+    [FromQuery(Name = "pickupPoint")]
     public string? DiemKhoiHanh { get; set; }
 
-    [JsonPropertyName("gia_tu")]
+    [FromQuery(Name = "gia_tu")]
+    [Range(0, double.MaxValue)]
     public decimal? GiaTu { get; set; }
 
-    [JsonPropertyName("gia_den")]
+    [FromQuery(Name = "gia_den")]
+    [Range(0, double.MaxValue)]
     public decimal? GiaDen { get; set; }
 
-    [JsonPropertyName("so_ngay")]
+    [FromQuery(Name = "so_ngay")]
+    [Range(1, 365)]
     public int? SoNgay { get; set; }
 
-    [JsonPropertyName("sort")]
+    [FromQuery(Name = "sort")]
+    [RegularExpression("^(featured|asc|desc)$")]
     public string? SapXep { get; set; } = "featured"; // featured, asc, desc
 
-    [JsonPropertyName("page")]
+    [FromQuery(Name = "page")]
+    [Range(1, int.MaxValue)]
     public int Page { get; set; } = 1;
 
-    [JsonPropertyName("pageSize")]
+    [FromQuery(Name = "pageSize")]
+    [Range(1, 100)]
     public int PageSize { get; set; } = 9;
+
+    // Checkbox trên giao diện gửi nhiều category_id[] cùng lúc.
+    [FromQuery(Name = "category_id[]")]
+    public List<int> CategoryIds { get; set; } = new();
 }
 
 public class TourCreateRequest

@@ -99,6 +99,7 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
+
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
         <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
@@ -146,7 +147,7 @@
         <span class="material-symbols-outlined text-blue-900 text-2xl">badge</span>
         <span class="text-[10px] font-extrabold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full uppercase">Toàn công ty</span>
       </div>
-      <p class="text-3xl font-black text-blue-900">—</p>
+      <p class="text-3xl font-black text-blue-900" data-employee-stat="">—</p>
       <p class="text-xs text-slate-500 mt-1">Nhân viên đang làm việc</p>
     </div>
 
@@ -155,7 +156,7 @@
         <span class="material-symbols-outlined text-purple-600 text-2xl">admin_panel_settings</span>
         <span class="text-[10px] font-extrabold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full uppercase">Quản trị</span>
       </div>
-      <p class="text-3xl font-black text-purple-600">—</p>
+      <p class="text-3xl font-black text-purple-600" data-employee-stat="">—</p>
       <p class="text-xs text-slate-500 mt-1">Quản trị viên hệ thống</p>
     </div>
 
@@ -164,7 +165,7 @@
         <span class="material-symbols-outlined text-emerald-600 text-2xl">sell</span>
         <span class="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full uppercase">Kinh doanh</span>
       </div>
-      <p class="text-3xl font-black text-emerald-600">—</p>
+      <p class="text-3xl font-black text-emerald-600" data-employee-stat="">—</p>
       <p class="text-xs text-slate-500 mt-1">Tư vấn viên & CSKH</p>
     </div>
 
@@ -173,7 +174,7 @@
         <span class="material-symbols-outlined text-amber-500 text-2xl">explore</span>
         <span class="text-[10px] font-extrabold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full uppercase">Hướng dẫn viên</span>
       </div>
-      <p class="text-3xl font-black text-amber-500">—</p>
+      <p class="text-3xl font-black text-amber-500" data-employee-stat="">—</p>
       <p class="text-xs text-slate-500 mt-1">Điều hành & Dẫn đoàn tour</p>
     </div>
   </div>
@@ -231,96 +232,16 @@
 
   
   <!-- Employee List -->
-  <div class="space-y-4">
-       
-          
-
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-
-              <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-full bg-blue-900 text-white flex items-center justify-center font-black text-lg shrink-0">—</div>
-
-                  <div class="min-w-0">
-                      <h3 class="text-base font-extrabold text-blue-950">—</h3>
-
-                      <p class="text-xs text-slate-500 mt-1 break-all">
-                          Mã NV: <span class="font-bold text-slate-700">#</span>
-                          · 
-                      </p>
-
-                      <p class="text-xs text-slate-600 font-semibold mt-1 flex items-center gap-1">
-                          <span class="material-symbols-outlined text-xs text-slate-400">call</span>—</p>
-
-                      <p class="text-xs text-slate-500 mt-1">
-                          Username: 
-                      </p>
-                  </div>
-              </div>
-
-              <div>
-                  <span class="inline-flex px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-purple-100 text-purple-700">—</span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                  <a
-                      href="#"
-                      class="p-2 text-slate-600 hover:text-blue-900 hover:bg-slate-100 rounded-lg transition"
-                      title="Sửa thông tin"
-                  >
-                      <span class="material-symbols-outlined text-lg">edit</span>
-                  </a>
-              </div>
-          </div>
-      
-          <div class="bg-white p-10 rounded-2xl border border-slate-100 text-center">
-              <span class="material-symbols-outlined text-4xl text-slate-300">person_search</span>
-              <p class="mt-2 font-bold text-slate-700">Không tìm thấy nhân viên</p>
-              <p class="text-sm text-slate-500 mt-1">
-                  Thử thay đổi từ khóa hoặc bộ lọc vai trò.
-              </p>
-          </div>
-      
-  </div>
+  <div class="space-y-4" id="employeeList">Đang tải nhân viên...</div>
 
   
   
   <!-- Pagination -->
   <div class="mt-8 flex flex-col sm:flex-row items-center justify-between border-t border-slate-200 pt-6 gap-4">
 
-      <p class="text-xs text-slate-500 font-medium">
-          Hiển thị
-          <span class="font-bold text-slate-800">
-              –
-          </span>
-          trên tổng số
-          <span class="font-bold text-slate-800">—</span>
-          nhân viên
-      </p>
+      <p class="text-xs text-slate-500 font-medium" id="employeeTotal">Đang tải...</p>
 
-      <div class="flex items-center gap-1">
-              <span class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-300 cursor-not-allowed">
-                  <span class="material-symbols-outlined text-lg">chevron_left</span>
-              </span>
-          
-              <a href=""
-                class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition">
-                  <span class="material-symbols-outlined text-lg">chevron_left</span>
-              </a>
-                  <span class="w-9 h-9 rounded-lg bg-blue-900 text-white flex items-center justify-center font-bold text-xs">—</span>
-              
-                  <a href=""
-                    class="w-9 h-9 rounded-lg border border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-blue-900 flex items-center justify-center font-bold text-xs transition">—</a>
-              <a href=""
-                class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition">
-                  <span class="material-symbols-outlined text-lg">chevron_right</span>
-              </a>
-          
-              <span class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-300 cursor-not-allowed">
-                  <span class="material-symbols-outlined text-lg">chevron_right</span>
-              </span>
-          
-
-      </div>
+      <div class="flex items-center gap-1" id="employeePagination"></div>
   </div>
 
 </div>
@@ -328,8 +249,8 @@
 </main>
 
 <script src="../../assets/js/api-client.js"></script>
-<script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/part2-common.js"></script>
+<script src="../../assets/js/employee-pages.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
 <script src="../../assets/js/admin-router.js"></script>
 </body>

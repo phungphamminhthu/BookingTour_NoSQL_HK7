@@ -269,6 +269,7 @@ public class BookingService : IBookingService
         booking.Destination = tour?.ProvinceName;
         booking.PaymentMethod = payment?.PaymentMethod;
         booking.BillNumber = bill?.BillNumber;
+        booking.CanReview = (booking.Status == "confirmed" || booking.Status == "completed") && departure?.ReturnDate < DateTime.UtcNow;
 
         return booking;
     }
@@ -301,6 +302,7 @@ public class BookingService : IBookingService
                 b.DepartureDate = dep.DepartureDate;
                 b.ReturnDate = dep.ReturnDate;
                 b.TourTitle ??= dep.TourTitle;
+                b.CanReview = (b.Status == "confirmed" || b.Status == "completed") && dep.ReturnDate < DateTime.UtcNow;
             }
             if (b.TourId.HasValue && tourMap.TryGetValue(b.TourId.Value, out var tour))
             {
@@ -422,12 +424,19 @@ public class BookingService : IBookingService
             throw new ArgumentException("Đơn đặt tour không liên kết với tour du lịch hợp lệ.");
         }
 
+        var departure = await _context.TourDepartures.Find(d => d.Id == booking.DepartureId).FirstOrDefaultAsync();
+        if ((booking.Status != "confirmed" && booking.Status != "completed") || departure == null || departure.ReturnDate >= DateTime.UtcNow)
+            throw new ArgumentException("Chỉ được đánh giá sau khi kết thúc chuyến đi không bị hủy.");
+        if (await _context.Reviews.Find(r => r.BookingId == bookingId).AnyAsync())
+            throw new ArgumentException("Bạn đã đánh giá đơn đặt tour này. Vui lòng sửa đánh giá hiện có.");
+
         var customer = await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
         var nextId = await _context.GetNextSequenceAsync("reviews");
         var now = DateTime.UtcNow;
 
         var review = new Review
         {
+            BookingId = bookingId,
             Id = nextId,
             TourId = booking.TourId.Value,
             CustomerId = customerId,
@@ -438,8 +447,52 @@ public class BookingService : IBookingService
             UpdatedAt = now
         };
 
-        await _context.Reviews.InsertOneAsync(review);
+        try { await _context.Reviews.InsertOneAsync(review); }
+        catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        { throw new ArgumentException("Đơn đặt tour này đã có đánh giá."); }
         return review;
+    }
+
+    public Task<List<Review>> GetCustomerReviewsAsync(int customerId) =>
+        _context.Reviews.Find(r => r.CustomerId == customerId).SortByDescending(r => r.CreatedAt).ToListAsync();
+
+    public async Task<bool> CancelBookingAsync(int customerId, int bookingId)
+    {
+        var booking = await _context.Bookings.Find(b => b.Id == bookingId && b.CustomerId == customerId).FirstOrDefaultAsync()
+            ?? throw new KeyNotFoundException("Không tìm thấy đơn đặt tour của bạn.");
+        var departure = await _context.TourDepartures.Find(d => d.Id == booking.DepartureId).FirstOrDefaultAsync();
+        if (departure == null || departure.DepartureDate <= DateTime.UtcNow)
+            throw new ArgumentException("Không thể hủy chuyến đã khởi hành.");
+
+        // Điều kiện trạng thái bảo đảm bấm hủy lặp không hoàn ghế nhiều lần.
+        var previous = await _context.Bookings.FindOneAndUpdateAsync(
+            b => b.Id == bookingId && b.CustomerId == customerId && (b.Status == "confirmed" || b.Status == "pending"),
+            Builders<Booking>.Update.Set(b => b.Status, "cancelled").Set(b => b.UpdatedAt, DateTime.UtcNow));
+        if (previous == null) throw new ArgumentException("Đơn không còn ở trạng thái có thể hủy.");
+        await _context.TourDepartures.UpdateOneAsync(d => d.Id == departure.Id,
+            Builders<TourDeparture>.Update.Inc(d => d.AvailableSeats, previous.TotalAdults + previous.TotalChildren)
+                .Set(d => d.UpdatedAt, DateTime.UtcNow));
+        await _context.TourDepartures.UpdateOneAsync(d => d.Id == departure.Id && d.Status == "full" && d.AvailableSeats > 0,
+            Builders<TourDeparture>.Update.Set(d => d.Status, "open"));
+        return true;
+    }
+
+    public async Task<Review> UpdateReviewAsync(int customerId, int reviewId, ReviewCreateRequest request)
+    {
+        // Kèm customerId trong bộ lọc để không sửa được đánh giá của người khác.
+        var update = Builders<Review>.Update.Set(r => r.Rating, request.Rating)
+            .Set(r => r.Comment, request.Comment.Trim()).Set(r => r.UpdatedAt, DateTime.UtcNow);
+        return await _context.Reviews.FindOneAndUpdateAsync(
+            r => r.Id == reviewId && r.CustomerId == customerId, update,
+            new FindOneAndUpdateOptions<Review> { ReturnDocument = ReturnDocument.After })
+            ?? throw new KeyNotFoundException("Không tìm thấy đánh giá của bạn.");
+    }
+
+    public async Task<bool> DeleteReviewAsync(int customerId, int reviewId)
+    {
+        var result = await _context.Reviews.DeleteOneAsync(r => r.Id == reviewId && r.CustomerId == customerId);
+        if (result.DeletedCount == 0) throw new KeyNotFoundException("Không tìm thấy đánh giá của bạn.");
+        return true;
     }
 }
 

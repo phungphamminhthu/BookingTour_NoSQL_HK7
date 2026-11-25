@@ -5,6 +5,10 @@ namespace Backend_DotNet.Models;
 
 public class Review : BaseEntity
 {
+    [BsonElement("booking_id")]
+    [JsonPropertyName("booking_id")]
+    public int? BookingId { get; set; }
+
     [BsonElement("tour_id")]
     [JsonPropertyName("tour_id")]
     public int TourId { get; set; }

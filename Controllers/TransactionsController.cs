@@ -4,6 +4,7 @@ using Backend_DotNet.Models;
 using Backend_DotNet.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Backend_DotNet.Controllers;
 
@@ -13,10 +14,12 @@ namespace Backend_DotNet.Controllers;
 public class TransactionsController : ControllerBase
 {
     private readonly IAdminManagementService _service;
+    private readonly IBookingService _bookingService;
 
-    public TransactionsController(IAdminManagementService service)
+    public TransactionsController(IAdminManagementService service, IBookingService bookingService)
     {
         _service = service;
+        _bookingService = bookingService;
     }
 
     [HttpGet]
@@ -55,6 +58,32 @@ public class TransactionsController : ControllerBase
         var detail = await _service.GetTransactionDetailAsync(id);
         if (detail == null) return NotFound(ApiResponse<object>.Fail($"Không tìm thấy thông tin giao dịch mã '{id}'."));
         return Ok(ApiResponse<TransactionDetailDto>.Ok(detail, "Lấy thông tin chi tiết giao dịch thành công."));
+    }
+
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpPost("{id}/confirm-payment")]
+    public async Task<IActionResult> ConfirmPayment(string id)
+    {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var employeeId) || employeeId <= 0)
+            return Unauthorized();
+
+        var detail = await _service.GetTransactionDetailAsync(id);
+        if (detail == null || !detail.BookingId.HasValue)
+            return NotFound(ApiResponse<object>.Fail($"Không tìm thấy giao dịch hoặc đơn đặt tour tương ứng với '{id}'."));
+
+        try
+        {
+            await _bookingService.ConfirmPendingPaymentAsync(detail.BookingId.Value, employeeId, false);
+            return Ok(ApiResponse<bool>.Ok(true, "Đã xác nhận thanh toán thành công."));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ApiResponse<object>.Fail(ex.Message));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ApiResponse<object>.Fail(ex.Message));
+        }
     }
 }
 

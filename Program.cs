@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +72,26 @@ builder.Services.AddAuthentication(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            // Vai trò đổi hoặc nhân viên bị xóa thì JWT cũ không còn được sử dụng.
+            var user = context.Principal!;
+            if (!int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var id))
+            { context.Fail("Danh tính không hợp lệ."); return; }
+            var db = context.HttpContext.RequestServices.GetRequiredService<MongoDbContext>();
+            if (user.FindFirstValue("user_type") == "customer")
+            {
+                if (!user.IsInRole("Customer") || !await db.Customers.Find(c => c.Id == id).AnyAsync()) context.Fail("Tài khoản không tồn tại.");
+            }
+            else
+            {
+                var employee = await db.Employees.Find(e => e.Id == id).FirstOrDefaultAsync();
+                if (employee == null || !user.IsInRole(employee.RoleName ?? "")) context.Fail("Tài khoản hoặc vai trò đã thay đổi.");
+            }
+        }
+    };
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,

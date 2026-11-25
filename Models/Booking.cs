@@ -78,5 +78,9 @@ public class Booking : BaseEntity
     [BsonIgnore]
     [JsonPropertyName("bill_number")]
     public string? BillNumber { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("can_review")]
+    public bool CanReview { get; set; }
 }
 

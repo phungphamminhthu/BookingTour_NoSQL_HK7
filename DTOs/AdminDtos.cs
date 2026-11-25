@@ -181,7 +181,7 @@ public class EmployeeCreateRequest
     public string Username { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
-    [MinLength(6, ErrorMessage = "Mật khẩu tối thiểu 6 ký tự.")]
+    [MinLength(8, ErrorMessage = "Mật khẩu tối thiểu 8 ký tự.")]
     [JsonPropertyName("password")]
     public string Password { get; set; } = string.Empty;
 
@@ -223,6 +223,7 @@ public class EmployeeUpdateRequest
     public int RoleId { get; set; }
 
     [JsonPropertyName("password")]
+    [MinLength(8, ErrorMessage = "Mật khẩu tối thiểu 8 ký tự.")]
     public string? Password { get; set; }
 }
 
@@ -250,6 +251,7 @@ public class CustomerCreateRequest
     public DateTime? Birthday { get; set; }
 
     [JsonPropertyName("password")]
+    [MinLength(8, ErrorMessage = "Mật khẩu tối thiểu 8 ký tự.")]
     public string? Password { get; set; }
 }
 
@@ -417,6 +419,9 @@ public class TransactionDetailDto
 
     [JsonPropertyName("bill_date")]
     public DateTime? BillDate { get; set; }
+
+    [JsonPropertyName("awaiting_payment_confirmation")]
+    public bool AwaitingPaymentConfirmation { get; set; }
 }
 
 public class DashboardStatsResponse

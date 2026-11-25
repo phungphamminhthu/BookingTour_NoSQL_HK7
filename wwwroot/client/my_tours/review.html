@@ -92,6 +92,7 @@
             word-wrap: normal;
             direction: ltr;
             -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
             -webkit-font-smoothing: antialiased;
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
@@ -169,7 +170,7 @@
     <main class="flex-1 md:ml-72 min-h-screen p-6 lg:p-10">
 <div class="max-w-6xl mx-auto space-y-6">
   <div class="text-xs text-slate-400">
-    <a href="#" class="hover:text-primary flex items-center gap-1 transition-colors">
+    <a id="reviewBackTourLink" href="javascript:void(0)" class="hover:text-primary flex items-center gap-1 transition-colors">
       <span class="material-symbols-outlined text-xs">arrow_back</span> Quay lại chi tiết chuyến đi
     </a>
   </div>
@@ -258,19 +259,19 @@
   </div>
   <!-- Mobile Bottom Navigation (Platform Pivot Rule) -->
   <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 flex justify-around items-center h-20 px-4 z-50">
-    <a href="#" class="flex flex-col items-center gap-1 #">
+    <a href="../home.html" class="flex flex-col items-center gap-1">
       <span class="material-symbols-outlined" data-icon="home">home</span>
       <span class="text-[10px] font-bold">Trang chủ</span>
     </a>
-    <a href="../my_tours/index.html" class="flex flex-col items-center gap-1 #">
-      <span class="material-symbols-outlined" data-icon="travel_explore" style="#">travel_explore</span>
+    <a href="../my_tours/index.html" class="flex flex-col items-center gap-1 text-primary">
+      <span class="material-symbols-outlined" data-icon="travel_explore">travel_explore</span>
       <span class="text-[10px] font-bold">Chuyến đi</span>
     </a>
-    <a href="../reward_point.html" class="flex flex-col items-center gap-1 #">
+    <a href="../reward_point.html" class="flex flex-col items-center gap-1">
       <span class="material-symbols-outlined" data-icon="card_giftcard">card_giftcard</span>
       <span class="text-[10px] font-bold">Điểm thưởng</span>
     </a>
-    <a href="../profile/show.html" class="flex flex-col items-center gap-1 #">
+    <a href="../profile/show.html" class="flex flex-col items-center gap-1">
       <span class="material-symbols-outlined" data-icon="person">person</span>
       <span class="text-[10px] font-bold">Hồ sơ</span>
     </a>
@@ -315,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/nav-auth.js"></script>
-<script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/customer-pages.js"></script>
+<script src="../../assets/js/part2-common.js"></script>
+<script src="../../assets/js/client-part2.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
 </body></html>

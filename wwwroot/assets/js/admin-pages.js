@@ -28,7 +28,8 @@
       return d.toLocaleDateString('vi-VN', {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric'
+        year: 'numeric',
+        timeZone: 'Asia/Ho_Chi_Minh'
       });
     } catch (_) {
       return dateStr;
@@ -45,12 +46,34 @@
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'Asia/Ho_Chi_Minh'
       });
     } catch (_) {
       return dateStr;
     }
   }
+
+  function toVietnamDateInput(dateStr) {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '';
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(d);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  window.BookingTourUtils = window.BookingTourUtils || {};
+  window.BookingTourUtils.formatDate = formatDate;
+  window.BookingTourUtils.formatDateTime = formatDateTime;
+  window.BookingTourUtils.toVietnamDateInput = toVietnamDateInput;
 
   function renderStatusBadge(status) {
     const s = String(status || '').toLowerCase();
@@ -885,36 +908,82 @@
       if (!container.isConnected) return;
       container.replaceChildren();
       if (!transfers || !transfers.length) {
-        container.textContent = 'Không có đơn chờ xác nhận thanh toán.';
+        container.innerHTML = `
+          <div class="flex items-center gap-2 text-slate-500 text-xs py-2">
+            <span class="material-symbols-outlined text-emerald-600 text-base">check_circle</span>
+            <span>Hiện không có đơn nào đang chờ xác nhận thanh toán.</span>
+          </div>`;
         return;
       }
       for (const transfer of transfers) {
         const row = document.createElement('div');
-        row.className = 'flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 p-3';
-        const label = document.createElement('span');
-        label.textContent = [transfer.bookingCode, transfer.tourTitle, transfer.paymentOption === "cash" ? "Tiền mặt" : "Chuyển khoản", formatMoney(transfer.totalAmount)].join(' · ');
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'rounded-lg bg-blue-900 px-3 py-2 font-bold text-white disabled:opacity-50 text-xs';
-        button.textContent = 'Xác nhận đã nhận tiền';
-        button.onclick = async () => {
-          if (!confirm('Đã đối chiếu giao dịch ' + transfer.bookingCode + ' với số tiền ' + formatMoney(transfer.totalAmount) + '?')) return;
-          button.disabled = true;
-          try {
-            await api.apiRequest('/api/bookings/' + transfer.id + '/confirm-payment', { method: 'POST' });
-            await renderPendingPayments(onConfirmed);
-            if (onConfirmed) await onConfirmed();
-          } catch (error) {
-            alert(error.message);
-            button.disabled = false;
+        row.className = 'flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200/80 bg-amber-50/40 p-4 transition hover:bg-amber-50/70 shadow-sm';
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'flex items-center gap-3 min-w-0';
+        const isCash = transfer.paymentOption === 'cash';
+        infoDiv.innerHTML = `
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+            <span class="material-symbols-outlined text-xl">payments</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono font-extrabold text-blue-950 text-sm">${escapeTourHtml(transfer.bookingCode)}</span>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${isCash ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">
+                ${isCash ? 'Tiền mặt' : 'Chuyển khoản ngân hàng'}
+              </span>
+            </div>
+            <p class="text-xs text-slate-600 mt-0.5 line-clamp-1">${escapeTourHtml(transfer.tourTitle || 'Tour du lịch')}</p>
+            <p class="text-xs text-slate-400 mt-0.5">Đặt lúc: ${formatDateTime(transfer.createdAt)}</p>
+          </div>
+        `;
+
+        const actionDiv = document.createElement('div');
+        actionDiv.className = 'flex items-center gap-3 shrink-0';
+
+        const amountEl = document.createElement('span');
+        amountEl.className = 'text-base font-black text-blue-950 font-mono';
+        amountEl.textContent = formatMoney(transfer.totalAmount);
+
+        const btnDetail = document.createElement('button');
+        btnDetail.type = 'button';
+        btnDetail.className = 'px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-xs flex items-center gap-1 transition shadow-sm';
+        btnDetail.innerHTML = '<span class="material-symbols-outlined text-sm">visibility</span> Chi tiết';
+        btnDetail.onclick = () => {
+          if (typeof window.BookingTourAdminPages?.showTransactionDetail === 'function') {
+            window.BookingTourAdminPages.showTransactionDetail(transfer.bookingCode || transfer.id);
+          } else {
+            const btn = document.querySelector(`.btn-show-txn[data-id="${transfer.id}"]`);
+            if (btn) btn.click();
+            else alert(`Chi tiết đơn ${transfer.bookingCode} - ${transfer.tourTitle} - ${formatMoney(transfer.totalAmount)}`);
           }
         };
-        row.append(label, button);
+
+        const btnConfirm = document.createElement('button');
+        btnConfirm.type = 'button';
+        btnConfirm.className = 'px-4 py-2 bg-blue-900 hover:bg-blue-800 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 transition shadow-sm disabled:opacity-50';
+        btnConfirm.innerHTML = '<span class="material-symbols-outlined text-sm">check_circle</span> Xác nhận đã nhận tiền';
+        btnConfirm.onclick = async () => {
+          if (!confirm(`Đã đối chiếu và xác nhận nhận đủ ${formatMoney(transfer.totalAmount)} cho đơn đặt tour ${transfer.bookingCode}?`)) return;
+          btnConfirm.disabled = true;
+          try {
+            await api.apiRequest('/api/bookings/' + transfer.id + '/confirm-payment', { method: 'POST' });
+            alert('Đã xác nhận thanh toán thành công!');
+            await renderPendingPayments(onConfirmed);
+            if (typeof onConfirmed === 'function') await onConfirmed();
+          } catch (error) {
+            alert(error.message || 'Lỗi khi xác nhận thanh toán.');
+            btnConfirm.disabled = false;
+          }
+        };
+
+        actionDiv.append(amountEl, btnDetail, btnConfirm);
+        row.append(infoDiv, actionDiv);
         container.append(row);
       }
     } catch (error) {
       if (container && container.isConnected) {
-        container.textContent = error.message;
+        container.innerHTML = `<p class="text-rose-500 text-xs">${escapeTourHtml(error.message || 'Lỗi khi tải danh sách chờ thanh toán.')}</p>`;
       }
     }
   }
@@ -1162,8 +1231,10 @@
       const coverUrl = form.querySelector('p.break-all');
       if (coverUrl) coverUrl.textContent = tour.thumbnail_url || 'Chưa có ảnh';
     }
-    const cancel = form.querySelector('a[href="#"]');
-    if (cancel) cancel.href = id ? 'show.html?id=' + id : 'index.html';
+    const cancel = form.querySelector('a');
+    if (cancel) cancel.href = id ? '/admin/tours/show.html?id=' + id : '/admin/tours/index.html';
+    const viewDetail = document.querySelector('a[data-tour-view-detail]');
+    if (viewDetail && id) viewDetail.href = '/admin/tours/show.html?id=' + id;
     const button = form.querySelector('button[type="submit"]');
     button.disabled = false;
     form.addEventListener('submit', async event => {
@@ -1230,8 +1301,10 @@
       tour.pickup_point, formatMoney(tour.min_price)].forEach((text, index) => {
       if (stats[index]) stats[index].textContent = text || '—';
     });
-    root.querySelector('[data-tour-edit]').href = 'edit.html?id=' + id;
-    root.querySelector('[data-tour-list]').href = 'index.html';
+    const tourEditLink = root.querySelector('[data-tour-edit]');
+    if (tourEditLink) tourEditLink.href = '/admin/tours/edit.html?id=' + id;
+    const tourListLink = root.querySelector('[data-tour-list]');
+    if (tourListLink) tourListLink.href = '/admin/tours/index.html';
     const scheduleSection = root.querySelector('#schedules');
     const scheduleList = scheduleSection.querySelector('[data-tour-schedules]');
     const editForm = document.getElementById('editScheduleForm');
@@ -1906,14 +1979,14 @@
         hideModalError();
         modal.classList.remove('hidden');
 
-        // Set default dates: departure tomorrow, return 3 days later
+        // Set default dates: departure tomorrow, return 3 days later (Vietnam timezone)
         if (startDateInput && !startDateInput.value) {
           const tmr = new Date(Date.now() + 86400000);
-          startDateInput.value = tmr.toISOString().split('T')[0];
+          startDateInput.value = toVietnamDateInput(tmr);
         }
         if (endDateInput && !endDateInput.value) {
           const ret = new Date(Date.now() + 86400000 * 4);
-          endDateInput.value = ret.toISOString().split('T')[0];
+          endDateInput.value = toVietnamDateInput(ret);
         }
 
         loadTourAndGuideOptions();
@@ -2207,14 +2280,42 @@
         }).join('');
     }
 
-    // Populate Dates (YYYY-MM-DD)
+    // Populate Dates (YYYY-MM-DD) using Vietnam calendar dates
     const startDate = departure.departure_date || departure.start_date;
     const endDate = departure.return_date || departure.end_date;
-    if (depDateInput && startDate) {
-      depDateInput.value = startDate.split('T')[0];
+
+    const initialDepDateStr = toVietnamDateInput(startDate);
+    const initialRetDateStr = toVietnamDateInput(endDate);
+
+    if (depDateInput && initialDepDateStr) {
+      depDateInput.value = initialDepDateStr;
     }
-    if (retDateInput && endDate) {
-      retDateInput.value = endDate.split('T')[0];
+    if (retDateInput && initialRetDateStr) {
+      retDateInput.value = initialRetDateStr;
+      retDateInput.min = initialDepDateStr;
+    }
+
+    // Maintain tour duration when departure date is adjusted
+    let tourDurationDays = 0;
+    if (initialDepDateStr && initialRetDateStr) {
+      const d1 = new Date(initialDepDateStr);
+      const d2 = new Date(initialRetDateStr);
+      tourDurationDays = Math.round((d2 - d1) / 86400000);
+    }
+    if (tourDurationDays <= 0 && departure.tour?.duration_days) {
+      tourDurationDays = Math.max(0, departure.tour.duration_days - 1);
+    }
+
+    if (depDateInput && retDateInput) {
+      depDateInput.addEventListener('change', () => {
+        if (!depDateInput.value) return;
+        retDateInput.min = depDateInput.value;
+        if (tourDurationDays >= 0) {
+          const newDep = new Date(depDateInput.value);
+          const newRet = new Date(newDep.getTime() + tourDurationDays * 86400000);
+          retDateInput.value = toVietnamDateInput(newRet);
+        }
+      });
     }
 
     // Populate Seats & Prices
@@ -2278,10 +2379,14 @@
         }
 
         try {
+          // If admin did not edit the dates, preserve original date strings to prevent accidental shift
+          const finalDepDate = (depDateVal === initialDepDateStr) ? startDate : depDateVal;
+          const finalRetDate = (retDateVal === initialRetDateStr) ? endDate : retDateVal;
+
           const updatePayload = {
             tour_id: selectedTourId,
-            departure_date: depDateVal,
-            return_date: retDateVal,
+            departure_date: finalDepDate,
+            return_date: finalRetDate,
             max_seats: maxSeatsVal,
             available_seats: updatedAvailSeats,
             adult_price: adultPriceVal,
@@ -3920,15 +4025,7 @@
         if (inputPhone) inputPhone.value = c.phone || '';
         if (inputAddress) inputAddress.value = c.address || '';
         if (inputBirthday) {
-          if (c.birthday) {
-            try {
-              inputBirthday.value = new Date(c.birthday).toISOString().split('T')[0];
-            } catch (_) {
-              inputBirthday.value = '';
-            }
-          } else {
-            inputBirthday.value = '';
-          }
+          inputBirthday.value = toVietnamDateInput(c.birthday);
         }
 
         if (btnSubmitEditModal) {
@@ -4352,25 +4449,11 @@
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
         fetchAndRender();
-        fetchStats();
       });
     }
 
-    const refreshAll = () => {
-      fetchStats();
-      fetchAndRender();
-      renderPendingPayments(fetchAndRender);
-    };
-
-    document.getElementById('btnRefreshTransactions')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      refreshAll();
-    });
-
     // Initial load
-    fetchStats();
     fetchAndRender();
-    renderPendingPayments(fetchAndRender);
   }
 
   function handleCustomersCreate() {
@@ -4475,10 +4558,8 @@
           if (emailInput) emailInput.value = c.email || '';
           if (phoneInput) phoneInput.value = c.phone || '';
           if (addressInput) addressInput.value = c.address || '';
-          if (birthdayInput && c.birthday) {
-            try {
-              birthdayInput.value = new Date(c.birthday).toISOString().split('T')[0];
-            } catch (_) {}
+          if (birthdayInput) {
+            birthdayInput.value = toVietnamDateInput(c.birthday);
           }
 
           const titleEl = document.getElementById('editCustomerTitle');
@@ -4692,7 +4773,7 @@
           if (statTodayTxnsEl) statTodayTxnsEl.textContent = String(data.today_transactions ?? 0);
           if (statTodaySubtextEl) {
             const today = new Date();
-            statTodaySubtextEl.textContent = `Hôm nay, ngày ${today.toLocaleDateString('vi-VN')}`;
+            statTodaySubtextEl.textContent = `Hôm nay, ngày ${formatDate(today)}`;
           }
           if (statMonthAmountEl) statMonthAmountEl.textContent = formatMoney(data.month_amount ?? 0);
           if (statMonthSubtextEl) {
@@ -4706,6 +4787,7 @@
     }
 
     async function showTransactionDetail(id) {
+      window.BookingTourAdminPages.showTransactionDetail = showTransactionDetail;
       const modal = document.getElementById('txnDetailModal');
       const modalCode = document.getElementById('modalTxnCode');
       const modalContent = document.getElementById('modalTxnContent');
@@ -4733,6 +4815,15 @@
         let statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Đã thanh toán thành công</span>';
         if (t.status === 'pending') statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">Chờ xác nhận thanh toán</span>';
         if (t.status === 'refunded' || t.status === 'cancelled') statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">Đã hoàn tiền / Đã hủy</span>';
+
+        const totalAmountVal = Number(t.total_booking_amount || t.amount || 0);
+        const isPaid = (t.status === 'confirmed' || t.status === 'success');
+        const paidAmountVal = isPaid ? Number(t.paid_amount || t.amount || totalAmountVal) : Number(t.paid_amount || 0);
+        const remainingAmountVal = t.remaining_amount != null ? Number(t.remaining_amount) : (totalAmountVal > paidAmountVal ? totalAmountVal - paidAmountVal : 0);
+        const billStatusText = t.bill_status || (isPaid ? 'Đã phát hành' : 'Chưa phát hành');
+        const billDateText = t.bill_date ? formatDateTime(t.bill_date) : (isPaid ? formatDateTime(t.created_at) : '—');
+        const isEligibleForConfirm = (t.status === 'pending' || t.awaiting_payment_confirmation || (remainingAmountVal > 0 && (t.status === 'pending' || t.booking_status === 'pending')));
+        const canConfirmBookingId = t.booking_id || (t.id && !isNaN(Number(t.id)) ? t.id : null);
 
         modalContent.innerHTML = `
           <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
@@ -4775,6 +4866,12 @@
                 <span class="material-symbols-outlined text-xs text-slate-400">calendar_today</span>
                 Khởi hành: <strong class="text-slate-800">${formatDate(t.departure_date)}</strong>
               </p>
+              ${t.return_date ? `
+                <p class="text-xs text-slate-600 mt-1 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs text-slate-400">event_repeat</span>
+                  Kết thúc: <strong class="text-slate-800">${formatDate(t.return_date)}</strong>
+                </p>
+              ` : ''}
               <p class="text-xs text-slate-600 mt-1 flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs text-slate-400">group</span>
                 Số khách: <strong>${t.total_adults || 1} người lớn${t.total_children > 0 ? `, ${t.total_children} trẻ em` : ''}</strong>
@@ -4783,24 +4880,86 @@
           </div>
 
           <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100 space-y-2 text-sm">
-            <div class="flex justify-between items-center text-xs text-slate-600">
-              <span>Phương thức thanh toán:</span>
-              <span class="font-bold text-blue-950 px-2 py-0.5 bg-white rounded border border-blue-100">${escapeHtml(t.payment_method || 'Thẻ quốc tế')}</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600">
+              <div>
+                <span>Phương thức thanh toán:</span>
+                <span class="font-bold text-blue-950 px-2 py-0.5 bg-white rounded border border-blue-100 ml-1">${escapeHtml(t.payment_method || 'Thẻ quốc tế')}</span>
+              </div>
+              <div>
+                <span>Thời gian giao dịch:</span>
+                <span class="font-medium text-slate-800 ml-1">${formatDateTime(t.created_at || t.payment_date)}</span>
+              </div>
             </div>
-            <div class="flex justify-between items-center text-xs text-slate-600">
-              <span>Thời gian ghi nhận giao dịch:</span>
-              <span class="font-medium text-slate-800">${formatDateTime(t.created_at || t.payment_date)}</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 pt-1 border-t border-blue-100/60">
+              <div>
+                <span>Hóa đơn:</span>
+                <span class="font-mono font-bold text-slate-800 ml-1">${escapeHtml(t.bill_number || 'Chưa phát hành')}</span>
+              </div>
+              <div>
+                <span>Trạng thái hóa đơn:</span>
+                <span class="font-semibold ml-1 ${billStatusText === 'Đã phát hành' ? 'text-emerald-700' : 'text-amber-700'}">${escapeHtml(billStatusText)}</span>
+              </div>
             </div>
-            <div class="flex justify-between items-center text-xs text-slate-600">
-              <span>Trạng thái đơn hàng:</span>
-              <span class="font-semibold text-emerald-700">${t.status === 'confirmed' || t.status === 'success' ? 'Đã đối soát thành công' : (t.status === 'pending' ? 'Chờ ngân hàng xử lý' : 'Đã hoàn tiền / Đã hủy')}</span>
+            <div class="text-xs text-slate-600">
+              <span>Ngày lập hóa đơn:</span>
+              <span class="font-medium text-slate-800 ml-1">${billDateText}</span>
             </div>
-            <div class="pt-2 border-t border-blue-200/60 flex justify-between items-center">
-              <span class="font-bold text-slate-800">Tổng số tiền giao dịch:</span>
-              <span class="text-xl font-black text-blue-950">${formatMoney(t.amount)}</span>
+
+            <div class="pt-3 border-t border-blue-200/60 space-y-1.5">
+              <div class="flex justify-between items-center text-xs text-slate-600">
+                <span>Tổng giá trị booking:</span>
+                <span class="font-bold text-slate-800 font-mono">${formatMoney(totalAmountVal)}</span>
+              </div>
+              <div class="flex justify-between items-center text-xs text-slate-600">
+                <span>Số tiền đã thanh toán:</span>
+                <span class="font-bold text-emerald-700 font-mono">${formatMoney(paidAmountVal)}</span>
+              </div>
+              <div class="flex justify-between items-center text-xs text-slate-600">
+                <span>Số tiền còn lại:</span>
+                <span class="font-bold ${remainingAmountVal > 0 ? 'text-rose-600' : 'text-slate-500'} font-mono">${formatMoney(remainingAmountVal)}</span>
+              </div>
+              <div class="pt-2 border-t border-blue-200 flex justify-between items-center">
+                <span class="font-bold text-slate-800 text-sm">Tổng số tiền giao dịch:</span>
+                <span class="text-xl font-black text-blue-950 font-mono">${formatMoney(t.amount || totalAmountVal)}</span>
+              </div>
             </div>
           </div>
+
+          ${isEligibleForConfirm && canConfirmBookingId ? `
+            <div class="mt-4 pt-4 border-t border-slate-200 bg-amber-50 rounded-xl p-4 border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-base text-amber-600">pending_actions</span>
+                  Giao dịch đang chờ xác nhận thanh toán
+                </p>
+                <p class="text-xs text-amber-700 mt-0.5">Xác nhận sau khi đã đối chiếu tài khoản ngân hàng hoặc thu tiền mặt.</p>
+              </div>
+              <button type="button" id="btnModalConfirmPayment" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-sm transition shrink-0">
+                <span class="material-symbols-outlined text-base">check_circle</span>
+                Xác nhận đã thanh toán
+              </button>
+            </div>
+          ` : ''}
         `;
+
+        const modalConfirmBtn = modalContent.querySelector('#btnModalConfirmPayment');
+        if (modalConfirmBtn && canConfirmBookingId) {
+          modalConfirmBtn.onclick = async () => {
+            const bookingCode = t.booking_code || ('BK' + canConfirmBookingId);
+            const amountStr = formatMoney(totalAmountVal);
+            if (!confirm(`Đã đối chiếu và xác nhận nhận đủ ${amountStr} cho đơn đặt tour ${bookingCode}?`)) return;
+            modalConfirmBtn.disabled = true;
+            try {
+              await window.BookingTourApi.apiRequest(`/api/bookings/${canConfirmBookingId}/confirm-payment`, { method: 'POST' });
+              alert('Đã xác nhận thanh toán thành công!');
+              modal.classList.add('hidden');
+              if (typeof refreshAll === 'function') refreshAll();
+            } catch (err) {
+              alert(err.message || 'Lỗi khi xác nhận thanh toán.');
+              modalConfirmBtn.disabled = false;
+            }
+          };
+        }
       } catch (err) {
         modalContent.innerHTML = `
           <div class="py-8 text-center text-rose-500">
@@ -4968,9 +5127,16 @@
                 </td>
 
                 <td class="no-print px-6 py-4 text-center whitespace-nowrap">
-                  <button type="button" class="btn-show-txn inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-blue-50 hover:text-blue-900" data-id="${t.id}" title="Xem chi tiết giao dịch">
-                    <span class="material-symbols-outlined text-xl">visibility</span>
-                  </button>
+                  <div class="flex items-center justify-center gap-1">
+                    <button type="button" class="btn-show-txn inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-blue-50 hover:text-blue-900" data-id="${t.id}" title="Xem chi tiết giao dịch">
+                      <span class="material-symbols-outlined text-xl">visibility</span>
+                    </button>
+                    ${s === 'pending' && t.booking_id ? `
+                      <button type="button" class="btn-quick-confirm-txn inline-flex h-9 w-9 items-center justify-center rounded-lg text-emerald-600 transition hover:bg-emerald-50 hover:text-emerald-800" data-booking-id="${t.booking_id}" data-code="${escapeHtml(bookingCode)}" data-amount="${t.amount}" title="Xác nhận đã nhận tiền">
+                        <span class="material-symbols-outlined text-xl">check_circle</span>
+                      </button>
+                    ` : ''}
+                  </div>
                 </td>
               </tr>
             `;
@@ -4981,6 +5147,25 @@
             btn.addEventListener('click', () => {
               const id = btn.getAttribute('data-id');
               if (id) showTransactionDetail(id);
+            });
+          });
+
+          // Wire quick confirm buttons
+          tbody.querySelectorAll('.btn-quick-confirm-txn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              const bookingId = btn.getAttribute('data-booking-id');
+              const code = btn.getAttribute('data-code');
+              const amount = Number(btn.getAttribute('data-amount')) || 0;
+              if (!confirm(`Xác nhận đã nhận đủ số tiền ${formatMoney(amount)} cho đơn đặt tour ${code}?`)) return;
+              btn.disabled = true;
+              try {
+                await window.BookingTourApi.apiRequest(`/api/bookings/${bookingId}/confirm-payment`, { method: 'POST' });
+                alert('Đã xác nhận thanh toán thành công!');
+                refreshAll();
+              } catch (err) {
+                alert(err.message || 'Lỗi khi xác nhận thanh toán.');
+                btn.disabled = false;
+              }
             });
           });
         }
@@ -5108,17 +5293,26 @@
 
     document.getElementById('btnResetTxnFilter')?.addEventListener('click', resetFilter);
 
+    const refreshAll = () => {
+      fetchStats();
+      fetchAndRender();
+      renderPendingPayments(fetchAndRender);
+    };
+
     const retryBtn = document.getElementById('btnRetryTxn');
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
-        fetchAndRender();
-        fetchStats();
+        refreshAll();
       });
     }
 
+    document.getElementById('btnRefreshTransactions')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      refreshAll();
+    });
+
     // Initial load
-    fetchStats();
-    fetchAndRender();
+    refreshAll();
   }
 
   // -------------------------------------------------------------

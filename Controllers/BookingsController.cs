@@ -117,7 +117,7 @@ public class BookingsController : ControllerBase
     public async Task<IActionResult> GetBookingDetail(int id)
     {
         var customerId = GetCurrentCustomerId();
-        if (customerId <= 0) return Unauthorized();
+        if (customerId <= 0) return Forbid();
         var booking = await _bookingService.GetBookingByIdAsync(id, customerId);
 
         if (booking == null)
@@ -143,6 +143,11 @@ public class BookingsController : ControllerBase
         var list = await _bookingService.GetCustomerBookingsAsync(customerId);
         return Ok(ApiResponse<List<Booking>>.Ok(list, "Lấy danh sách tour đã đặt thành công."));
     }
+
+    [Authorize(Roles = "Customer")]
+    [HttpPost("{id:int}/cancel")]
+    public async Task<IActionResult> Cancel(int id) => Ok(ApiResponse<bool>.Ok(
+        await _bookingService.CancelBookingAsync(GetCurrentCustomerId(), id), "Đã hủy đặt tour."));
 
     [Authorize(Roles = "Customer")]
     [HttpPost("{id:int}/review")]
@@ -300,6 +305,7 @@ public class BookingsController : ControllerBase
 
     private int GetCurrentCustomerId()
     {
+        if (!User.IsInRole("Customer") || User.FindFirstValue("user_type") != "customer") return 0;
         var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return int.TryParse(idClaim, out var id) ? id : 0;
     }

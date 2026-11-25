@@ -29,7 +29,8 @@
       return d.toLocaleDateString('vi-VN', {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric'
+        year: 'numeric',
+        timeZone: 'Asia/Ho_Chi_Minh'
       });
     } catch (_) {
       return dateStr;
@@ -46,7 +47,8 @@
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'Asia/Ho_Chi_Minh'
       });
     } catch (_) {
       return dateStr;
@@ -270,13 +272,19 @@
     if (!contentEl) return;
 
     const statusBadge = renderStatusBadge(d.status);
-    const formattedTotal = formatMoney(d.total_booking_amount || d.amount);
-    const formattedPaid = formatMoney(d.paid_amount || d.amount);
-    const formattedRemaining = formatMoney(d.remaining_amount || 0);
+    const totalVal = Number(d.total_booking_amount ?? d.amount ?? 0);
+    const paidVal = Number(d.paid_amount ?? (d.status === 'confirmed' ? (d.amount ?? totalVal) : 0));
+    const remainingVal = (d.remaining_amount !== undefined && d.remaining_amount !== null)
+      ? Number(d.remaining_amount)
+      : Math.max(0, totalVal - paidVal);
+
+    const formattedTotal = formatMoney(totalVal);
+    const formattedPaid = formatMoney(paidVal);
+    const formattedRemaining = formatMoney(remainingVal);
 
     const departureStr = d.departure_date ? formatDate(d.departure_date) : 'Chưa xếp ngày';
     const returnStr = d.return_date ? formatDate(d.return_date) : '—';
-    const paymentDateStr = d.payment_date ? formatDateTime(d.payment_date) : (d.created_at ? formatDateTime(d.created_at) : '—');
+    const paymentDateStr = d.payment_date ? formatDateTime(d.payment_date) : (d.status === 'confirmed' && d.created_at ? formatDateTime(d.created_at) : 'Chưa thanh toán');
     const guestDetail = `${d.total_adults || 0} người lớn${(d.total_children || 0) > 0 ? `, ${d.total_children} trẻ em` : ''} (Tổng: ${d.total_guests || d.total_adults || 1} khách)`;
 
     contentEl.innerHTML = `
@@ -388,11 +396,11 @@
           </div>
           <div class="flex justify-between items-center text-slate-600">
             <span>Số tiền đã thanh toán:</span>
-            <span class="font-bold text-green-700 text-base">${formattedPaid}</span>
+            <span class="font-bold ${paidVal > 0 ? 'text-green-700' : 'text-slate-500'} text-base">${formattedPaid}</span>
           </div>
           <div class="flex justify-between items-center text-slate-600">
             <span>Số tiền còn lại:</span>
-            <span class="font-bold text-sm ${d.remaining_amount > 0 ? 'text-amber-600' : 'text-slate-500'}">${formattedRemaining}</span>
+            <span class="font-bold text-sm ${remainingVal > 0 ? 'text-amber-600' : 'text-slate-500'}">${formattedRemaining}</span>
           </div>
         </div>
       </div>
@@ -406,7 +414,7 @@
           </div>
           <div>
             <p class="font-bold text-slate-900">Hóa đơn: <span class="font-mono text-blue-900">${d.bill_number}</span></p>
-            <p class="text-slate-500 mt-0.5">Ngày lập: ${d.bill_date ? formatDate(d.bill_date) : '—'}</p>
+            <p class="text-slate-500 mt-0.5">Ngày lập: ${d.bill_date ? formatDate(d.bill_date) : (d.bill_status === 'Chưa phát hành' ? 'Chưa phát hành' : '—')}</p>
           </div>
         </div>
         <div class="sm:text-right">
@@ -456,7 +464,8 @@
     const tour = booking ? db.getTourById(booking.tour_id) : null;
 
     const totalAmount = Number(booking?.total_amount || payment?.amount || 0);
-    const paidAmount = payment ? Number(payment.amount || totalAmount) : ((booking?.booking_status || booking?.status) === 'confirmed' ? totalAmount : 0);
+    const isConfirmed = (booking?.booking_status || booking?.status) === 'confirmed';
+    const paidAmount = payment ? Number(payment.amount ?? (isConfirmed ? totalAmount : 0)) : (isConfirmed ? totalAmount : 0);
     const status = booking?.booking_status || booking?.status || (payment ? 'confirmed' : 'pending');
 
     return {
@@ -464,7 +473,7 @@
       transaction_code: payment?.transaction_code || `TXN-${booking?.booking_code || '0001'}`,
       payment_id: payment?.id,
       payment_method: payment?.payment_method || (status === 'confirmed' ? 'Thanh toán trực tuyến' : 'Chờ cổng thanh toán'),
-      payment_date: payment?.created_at || booking?.created_at,
+      payment_date: isConfirmed ? (payment?.created_at || booking?.created_at) : null,
       created_at: payment?.created_at || booking?.created_at || new Date().toISOString(),
       amount: paidAmount > 0 ? paidAmount : totalAmount,
       status: status,
@@ -489,11 +498,11 @@
       paid_amount: paidAmount,
       remaining_amount: totalAmount > paidAmount ? totalAmount - paidAmount : 0,
 
-      bill_id: 1,
+      bill_id: isConfirmed ? (booking?.id || 1) : null,
       bill_number: `INV-${booking?.id || 1}`,
       bill_amount: totalAmount,
       bill_status: status === 'confirmed' ? 'Đã phát hành' : 'Chưa phát hành',
-      bill_date: payment?.created_at || booking?.created_at
+      bill_date: isConfirmed ? (payment?.created_at || booking?.created_at) : null
     };
   }
 

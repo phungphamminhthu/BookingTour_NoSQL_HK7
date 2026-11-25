@@ -13,5 +13,9 @@ public interface IBookingService
     Task<List<object>> GetPendingPaymentsAsync(bool bankOnly);
     Task ConfirmPendingPaymentAsync(int bookingId, int employeeId, bool bankOnly);
     Task<Review> SubmitReviewAsync(int customerId, int bookingId, ReviewCreateRequest request);
+    Task<List<Review>> GetCustomerReviewsAsync(int customerId);
+    Task<Review> UpdateReviewAsync(int customerId, int reviewId, ReviewCreateRequest request);
+    Task<bool> DeleteReviewAsync(int customerId, int reviewId);
+    Task<bool> CancelBookingAsync(int customerId, int bookingId);
 }
 

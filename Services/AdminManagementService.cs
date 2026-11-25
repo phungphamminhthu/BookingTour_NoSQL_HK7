@@ -21,16 +21,18 @@ public class AdminManagementService : IAdminManagementService
     public async Task<List<CategoryResponse>> GetAllCategoriesAsync()
     {
         var categories = await _context.TourCategories.Find(_ => true).SortBy(c => c.Id).ToListAsync();
+        var counts = await _context.Tours.Aggregate().Group(t => t.CategoryId,
+            group => new { Id = group.Key, Count = group.Count() }).ToListAsync();
+        var countMap = counts.ToDictionary(x => x.Id, x => x.Count);
         var items = new List<CategoryResponse>();
         foreach (var c in categories)
         {
-            var count = (int)await _context.Tours.CountDocumentsAsync(t => t.CategoryId == c.Id);
             items.Add(new CategoryResponse
             {
                 Id = c.Id,
                 CategoryName = c.CategoryName,
                 Description = c.Description,
-                ToursCount = count,
+                ToursCount = countMap.GetValueOrDefault(c.Id),
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt
             });
@@ -241,9 +243,12 @@ public class AdminManagementService : IAdminManagementService
     public async Task<List<Province>> GetAllProvincesAsync()
     {
         var provinces = await _context.Provinces.Find(_ => true).SortBy(p => p.Id).ToListAsync();
+        var counts = await _context.Tours.Aggregate().Group(t => t.ProvinceId,
+            group => new { Id = group.Key, Count = group.Count() }).ToListAsync();
+        var countMap = counts.ToDictionary(x => x.Id, x => x.Count);
         foreach (var p in provinces)
         {
-            p.ToursCount = (int)await _context.Tours.CountDocumentsAsync(t => t.ProvinceId == p.Id);
+            p.ToursCount = countMap.GetValueOrDefault(p.Id);
         }
         return provinces;
     }
@@ -548,7 +553,8 @@ public class AdminManagementService : IAdminManagementService
             throw new ArgumentException("Email nhân viên đã được sử dụng.");
         }
 
-        var role = await _context.Roles.Find(r => r.Id == request.RoleId).FirstOrDefaultAsync();
+        var role = await _context.Roles.Find(r => r.Id == request.RoleId).FirstOrDefaultAsync()
+            ?? throw new ArgumentException("Vai trò không tồn tại.");
         var nextId = await _context.GetNextSequenceAsync("employees");
         var now = DateTime.UtcNow;
 
@@ -561,7 +567,7 @@ public class AdminManagementService : IAdminManagementService
             Email = request.Email.Trim(),
             Phone = request.Phone.Trim(),
             RoleId = request.RoleId,
-            RoleName = role?.RoleName ?? (request.RoleId == 1 ? "Admin" : request.RoleId == 2 ? "Sale" : "Guide"),
+            RoleName = role.RoleName,
             CreatedAt = now,
             UpdatedAt = now
         };
@@ -581,13 +587,17 @@ public class AdminManagementService : IAdminManagementService
             throw new ArgumentException("Email này đã được sử dụng bởi nhân viên khác.");
         }
 
-        var role = await _context.Roles.Find(r => r.Id == request.RoleId).FirstOrDefaultAsync();
+        var role = await _context.Roles.Find(r => r.Id == request.RoleId).FirstOrDefaultAsync()
+            ?? throw new ArgumentException("Vai trò không tồn tại.");
+        if (employee.RoleName == "Admin" && role.RoleName != "Admin" &&
+            await _context.Employees.CountDocumentsAsync(e => e.RoleName == "Admin") <= 1)
+            throw new ArgumentException("Không thể đổi vai trò của quản trị viên cuối cùng.");
 
         employee.FullName = request.FullName.Trim();
         employee.Email = request.Email.Trim();
         employee.Phone = request.Phone.Trim();
         employee.RoleId = request.RoleId;
-        employee.RoleName = role?.RoleName ?? employee.RoleName;
+        employee.RoleName = role.RoleName;
         employee.UpdatedAt = DateTime.UtcNow;
 
         if (!string.IsNullOrWhiteSpace(request.Password))
@@ -597,6 +607,37 @@ public class AdminManagementService : IAdminManagementService
 
         await _context.Employees.ReplaceOneAsync(e => e.Id == id, employee);
         return employee;
+    }
+
+    public Task<List<Role>> GetRolesAsync() => _context.Roles.Find(_ => true).SortBy(r => r.Id).ToListAsync();
+
+    public async Task<(List<Employee> Items, long Total)> QueryEmployeesAsync(string? search, int? roleId, int page, int pageSize)
+    {
+        var builder = Builders<Employee>.Filter;
+        var filter = builder.Empty;
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var regex = new MongoDB.Bson.BsonRegularExpression(System.Text.RegularExpressions.Regex.Escape(search.Trim()), "i");
+            filter &= builder.Or(builder.Regex(e => e.FullName, regex), builder.Regex(e => e.Username, regex), builder.Regex(e => e.Email, regex));
+        }
+        if (roleId.HasValue) filter &= builder.Eq(e => e.RoleId, roleId.Value);
+        var total = await _context.Employees.CountDocumentsAsync(filter);
+        var items = await _context.Employees.Find(filter).SortBy(e => e.Id)
+            .Skip((page - 1) * pageSize).Limit(pageSize).ToListAsync();
+        return (items, total);
+    }
+
+    public async Task<bool> DeleteEmployeeAsync(int id, int currentEmployeeId)
+    {
+        if (id == currentEmployeeId) throw new ArgumentException("Không thể xóa tài khoản đang đăng nhập.");
+        var employee = await GetEmployeeByIdAsync(id) ?? throw new KeyNotFoundException("Không tìm thấy nhân viên.");
+        if (employee.RoleName == "Admin" && await _context.Employees.CountDocumentsAsync(e => e.RoleName == "Admin") <= 1)
+            throw new ArgumentException("Không thể xóa quản trị viên cuối cùng.");
+        if (await _context.TourDepartures.Find(d => d.GuideId == id).AnyAsync() ||
+            await _context.Bills.Find(b => b.EmployeeId == id).AnyAsync() ||
+            await _context.Tours.Find(t => t.CreatedBy == id).AnyAsync())
+            throw new ArgumentException("Nhân viên đang liên kết với tour, chuyến đi hoặc hóa đơn; không thể xóa.");
+        return (await _context.Employees.DeleteOneAsync(e => e.Id == id)).DeletedCount > 0;
     }
     #endregion
 
@@ -1336,8 +1377,9 @@ public class AdminManagementService : IAdminManagementService
             BillId = bill?.Id,
             BillNumber = billNumber,
             BillAmount = bill?.FinalAmount ?? totalBookingAmount,
-            BillStatus = status == "confirmed" || paidAmount >= totalBookingAmount ? "Đã phát hành" : "Chưa phát hành",
-            BillDate = bill?.CreatedAt ?? payment?.CreatedAt
+            BillStatus = bill != null ? "Đã phát hành" : (status == "confirmed" && paidAmount >= totalBookingAmount ? "Đã phát hành" : "Chưa phát hành"),
+            BillDate = bill?.CreatedAt,
+            AwaitingPaymentConfirmation = (booking?.Status == "pending" && booking?.PaymentOption != null) || (status == "pending" && paidAmount < totalBookingAmount)
         };
     }
     #endregion
