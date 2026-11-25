@@ -38,6 +38,8 @@ public class BookingService : IBookingService
         }
 
         var totalPassengers = request.TotalAdults + request.TotalChildren;
+        if (departure.Status != "open" || departure.DepartureDate <= DateTime.UtcNow)
+            throw new ArgumentException("Chuyến đi đã khởi hành hoặc không còn mở bán.");
         if (totalPassengers > departure.AvailableSeats)
         {
             throw new ArgumentException("Số lượng chỗ còn lại của chuyến đi không đủ để đáp ứng.");
@@ -84,13 +86,21 @@ public class BookingService : IBookingService
         }
 
         var today = VietnamToday();
-        foreach (var passenger in request.Passengers)
+        foreach (var p in request.Passengers)
         {
-            if (passenger.DateOfBirth is not { } birthDate) continue;
-            var isAdult = string.Equals(passenger.PassengerType, "adult", StringComparison.OrdinalIgnoreCase);
-            if (birthDate.Date > today || (birthDate.Date <= today.AddYears(-12)) != isAdult)
+            if (p.DateOfBirth.HasValue)
             {
-                throw new ArgumentException($"Ngày sinh của hành khách {passenger.FullName} không phù hợp với loại vé.");
+                if (p.DateOfBirth.Value.Date > today) throw new ArgumentException("Ngày sinh không hợp lệ.");
+                var age = today.Year - p.DateOfBirth.Value.Year;
+                if (p.DateOfBirth.Value.Date > today.AddYears(-age)) age--;
+                if (string.Equals(p.PassengerType, "adult", StringComparison.OrdinalIgnoreCase) && age < 12)
+                {
+                    throw new ArgumentException($"Hành khách {p.FullName}: Người lớn phải từ 12 tuổi trở lên.");
+                }
+                if (string.Equals(p.PassengerType, "child", StringComparison.OrdinalIgnoreCase) && age >= 12)
+                {
+                    throw new ArgumentException($"Hành khách {p.FullName}: Trẻ em phải dưới 12 tuổi.");
+                }
             }
         }
 

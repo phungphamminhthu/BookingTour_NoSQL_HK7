@@ -20,7 +20,8 @@ public class AdminManagementService : IAdminManagementService
     #region Categories
     public async Task<List<CategoryResponse>> GetAllCategoriesAsync()
     {
-        var categories = await _context.TourCategories.Find(_ => true).SortBy(c => c.Id).ToListAsync();
+        var categories = await _context.TourCategories.Find(_ => true).SortBy(c => c.CategoryName).ToListAsync();
+        // MongoDB gom nhóm một lần, thay vì gửi thêm một truy vấn cho mỗi danh mục.
         var counts = await _context.Tours.Aggregate().Group(t => t.CategoryId,
             group => new { Id = group.Key, Count = group.Count() }).ToListAsync();
         var countMap = counts.ToDictionary(x => x.Id, x => x.Count);
@@ -242,7 +243,7 @@ public class AdminManagementService : IAdminManagementService
     #region Provinces
     public async Task<List<Province>> GetAllProvincesAsync()
     {
-        var provinces = await _context.Provinces.Find(_ => true).SortBy(p => p.Id).ToListAsync();
+        var provinces = await _context.Provinces.Find(_ => true).SortBy(p => p.ProvinceName).ToListAsync();
         var counts = await _context.Tours.Aggregate().Group(t => t.ProvinceId,
             group => new { Id = group.Key, Count = group.Count() }).ToListAsync();
         var countMap = counts.ToDictionary(x => x.Id, x => x.Count);

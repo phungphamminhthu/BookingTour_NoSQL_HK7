@@ -464,7 +464,6 @@
       backBtn.href = tourLink(tour.id);
       backBtn.onclick = null;
     }
-
     text('#reviewTourTitle', tour.title);
     text('#reviewTourCategory', tour.category_name);
     text('#reviewTourDest', tour.province_name);

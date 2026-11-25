@@ -28,4 +28,3 @@ public class ReviewsController : ControllerBase
     public async Task<IActionResult> Delete(int id) =>
         Ok(ApiResponse<bool>.Ok(await _service.DeleteReviewAsync(CustomerId, id), "Đã xóa đánh giá."));
 }
-
