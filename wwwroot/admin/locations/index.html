@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -99,14 +99,14 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Ảnh đại diện quản trị viên"
              class="w-full h-full object-cover"/>
       </div>
@@ -128,42 +128,40 @@
       <p class="text-slate-500 mt-1">Cập nhật mạng lưới các tỉnh thành, danh thắng quốc gia và trung tâm du lịch</p>
     </div>
 
-    <a href="#"
-       class="flex items-center gap-2 bg-blue-900 text-white px-6 py-3 rounded-xl font-bold shadow-sm hover:bg-blue-800 transition text-sm w-fit">
+    <button type="button" id="btnOpenCreateProvinceModal"
+       class="flex items-center gap-2 bg-blue-900 text-white px-6 py-3 rounded-xl font-bold shadow-sm hover:bg-blue-800 transition text-sm w-fit cursor-pointer">
       <span class="material-symbols-outlined text-lg">add_location_alt</span>
       Thêm tỉnh thành mới
-    </a>
+    </button>
   </header>
 
   <!-- ALERTS -->
-  <div class="hidden mb-6 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-xl shadow-sm flex items-center justify-between">
+  <div id="locationAlertSuccess" class="hidden mb-6 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded-xl shadow-sm flex items-center justify-between">
     <div class="flex items-center gap-2 font-medium">
       <span class="material-symbols-outlined text-emerald-600">check_circle</span>
-      <span>—</span>
+      <span id="locationAlertSuccessText">Thành công!</span>
     </div>
+    <button type="button" onclick="document.getElementById('locationAlertSuccess').classList.add('hidden')" class="text-emerald-700 hover:text-emerald-900">
+      <span class="material-symbols-outlined text-sm">close</span>
+    </button>
   </div>
-  <div class="hidden mb-6 bg-rose-50 border-l-4 border-rose-500 text-rose-800 p-4 rounded-xl shadow-sm flex items-center justify-between">
+  <div id="locationAlertError" class="hidden mb-6 bg-rose-50 border-l-4 border-rose-500 text-rose-800 p-4 rounded-xl shadow-sm flex items-center justify-between">
     <div class="flex items-center gap-2 font-medium">
       <span class="material-symbols-outlined text-rose-600">error</span>
-      <span>—</span>
+      <span id="locationAlertErrorText">Có lỗi xảy ra!</span>
     </div>
+    <button type="button" onclick="document.getElementById('locationAlertError').classList.add('hidden')" class="text-rose-700 hover:text-rose-900">
+      <span class="material-symbols-outlined text-sm">close</span>
+    </button>
   </div>
-  <div class="hidden mb-6 bg-rose-50 border-l-4 border-rose-500 text-rose-800 p-4 rounded-xl shadow-sm">
-    <div class="font-bold mb-1">Vui lòng kiểm tra lại:</div>
-    <ul class="list-disc list-inside text-sm">
-        
-      
-    </ul>
-  </div>
-  
 
   <!-- STATS -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between border-l-4 border-l-blue-900">
       <div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tỉnh / Thành phố</p>
-        <p class="text-3xl font-black text-blue-900 mt-1">—</p>
-        <p class="text-[11px] text-slate-400 mt-0.5">Bắc:  • Trung:  • Nam: </p>
+        <p id="statTotalProvinces" class="text-3xl font-black text-blue-900 mt-1">—</p>
+        <p id="statRegionBreakdown" class="text-[11px] text-slate-400 mt-0.5">Bắc: — • Trung: — • Nam: —</p>
       </div>
       <div class="w-12 h-12 bg-blue-50 text-blue-900 rounded-full flex items-center justify-center">
         <span class="material-symbols-outlined text-2xl">map</span>
@@ -173,7 +171,7 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between border-l-4 border-l-emerald-600">
       <div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng số Tour</p>
-        <p class="text-3xl font-black text-emerald-600 mt-1">—</p>
+        <p id="statTotalTours" class="text-3xl font-black text-emerald-600 mt-1">—</p>
         <p class="text-[11px] text-slate-400 mt-0.5">Đang được quản lý trên hệ thống</p>
       </div>
       <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
@@ -184,7 +182,7 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between border-l-4 border-l-purple-600">
       <div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Địa bàn khai thác</p>
-        <p class="text-3xl font-black text-purple-600 mt-1">—</p>
+        <p id="statActiveProvinces" class="text-3xl font-black text-purple-600 mt-1">—</p>
         <p class="text-[11px] text-slate-400 mt-0.5">Tỉnh thành đang có tour khai thác</p>
       </div>
       <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center">
@@ -195,7 +193,7 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between border-l-4 border-l-amber-500">
       <div>
         <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Điểm đón khách</p>
-        <p class="text-3xl font-black text-amber-500 mt-1">—</p>
+        <p id="statPickupPoints" class="text-3xl font-black text-amber-500 mt-1">—</p>
         <p class="text-[11px] text-slate-400 mt-0.5">Điểm đón / sân bay xuất phát</p>
       </div>
       <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center">
@@ -205,35 +203,34 @@
   </div>
 
   <!-- SEARCH & FILTER -->
-  <form method="GET" action="#" class="bg-white rounded-2xl p-4 flex flex-wrap gap-4 items-center mb-8 shadow-sm border border-slate-100">
+  <form id="locationFilterForm" class="bg-white rounded-2xl p-4 flex flex-wrap gap-4 items-center mb-8 shadow-sm border border-slate-100">
     <div class="flex-1 min-w-[280px] relative">
       <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
       <input type="text"
+             id="filterKeyword"
              name="keyword"
-             value="#"
              placeholder="Tìm kiếm tỉnh thành, điểm tham quan, danh thắng..."
              class="w-full pl-10 pr-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white"/>
     </div>
 
-    <select name="region"
+    <select id="filterRegion" name="region"
             class="px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 min-w-[160px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-900">
       <option value="">Tất cả vùng miền</option>
-      <option value="Bắc" #>Miền Bắc</option>
-      <option value="Trung" #>Miền Trung</option>
-      <option value="Nam" #>Miền Nam</option>
+      <option value="Bắc">Miền Bắc</option>
+      <option value="Trung">Miền Trung</option>
+      <option value="Nam">Miền Nam</option>
     </select>
 
     <button type="submit"
-            class="px-6 py-2.5 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition text-sm flex items-center gap-1.5">
+            class="px-6 py-2.5 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition text-sm flex items-center gap-1.5 shadow-sm">
       <span class="material-symbols-outlined text-base">search</span>
       Tìm kiếm
     </button>
 
-      <a href="index.html"
-         class="px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition text-sm">
-        Xóa lọc
-      </a>
-    
+    <button type="button" id="btnResetFilter"
+       class="px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition text-sm">
+      Xóa lọc
+    </button>
   </form>
 
   <!-- PROVINCE SECTION -->
@@ -241,127 +238,45 @@
     <div class="flex items-center justify-between mb-6">
       <h3 class="text-xl font-extrabold text-blue-950 flex items-center gap-2">
         <span class="material-symbols-outlined text-blue-900">apartment</span>
-        Tỉnh&thành phố
+        Tỉnh &amp; Thành phố
       </h3>
-      <span class="text-xs font-bold text-slate-500">Hiển thị  /  tỉnh thành</span>
+      <span id="provinceSummaryCount" class="text-xs font-bold text-slate-500">Đang tải danh sách...</span>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      
-      
-      <div class="bg-slate-50 rounded-2xl p-5 hover:bg-blue-50/50 hover:border-blue-200 transition-all border border-slate-100 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <h4 class="font-black text-blue-950 text-base truncate">—</h4>
-            <div class="flex items-center gap-1">
-              <button type="button"
-                      onclick="openEditProvinceModal(, '', '', '', '')"
-                      class="p-1 text-slate-400 hover:text-blue-900 transition rounded-lg hover:bg-white"
-                      title="Chỉnh sửa">
-                <span class="material-symbols-outlined text-[18px]">edit</span>
-              </button>
-              <form action="#" method="POST"
-                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa tỉnh thành \'\'?');"
-                    class="inline">
-                
-                
-                <button type="submit"
-                        class="p-1 text-slate-400 hover:text-rose-600 transition rounded-lg hover:bg-white"
-                        title="Xóa tỉnh thành">
-                  <span class="material-symbols-outlined text-[18px]">delete</span>
-                </button>
-              </form>
-            </div>
-          </div>
-            <p class="text-xs text-slate-500 line-clamp-2 mb-2" title="">—</p>
-          
-          <p class="text-xs text-slate-500 mt-1">Miền  • <strong> Tour</strong></p>
-        </div>
-
-        <div class="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between">
-          <span class="text-[10px] font-bold uppercase tracking-wider  px-2.5 py-0.5 rounded-full">
-            Miền 
-          </span>
-          <a href="#" class="text-xs font-bold text-blue-900 hover:underline inline-flex items-center gap-0.5">
-            Xem Tour <span class="text-[10px]">→</span>
-          </a>
-        </div>
-      </div>
-      
-      <div class="col-span-full py-12 text-center text-slate-400">
-        <span class="material-symbols-outlined text-4xl block mb-2">location_off</span>
-        <p class="font-medium text-sm">Không tìm thấy tỉnh thành nào phù hợp với bộ lọc.</p>
-      </div>
-      
+    <!-- Trạng thái Loading -->
+    <div id="provinceLoading" class="py-12 flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined text-3xl animate-spin text-blue-900 mb-2">sync</span>
+      <p class="text-xs font-semibold">Đang tải danh sách tỉnh thành...</p>
     </div>
 
-    
-    
+    <!-- Trạng thái Empty -->
+    <div id="provinceEmpty" class="hidden py-12 px-6 text-center">
+      <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">location_off</span>
+      <h4 class="text-sm font-bold text-slate-700 mb-1">Không tìm thấy tỉnh thành nào phù hợp</h4>
+      <p class="text-xs text-slate-400">Thử thay đổi từ khóa hoặc bộ lọc vùng miền để tìm kiếm lại.</p>
+    </div>
+
+    <!-- Trạng thái Error -->
+    <div id="provinceError" class="hidden py-8 px-6 text-center">
+      <span class="material-symbols-outlined text-3xl text-rose-500 mb-2">error</span>
+      <p id="provinceErrorText" class="text-xs font-semibold text-rose-600 mb-2">Không thể tải danh sách tỉnh thành.</p>
+      <button type="button" id="btnRetryProvinceList" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-blue-900 font-bold text-xs rounded-lg transition">Thử lại</button>
+    </div>
+
+    <!-- Danh sách Grid các tỉnh thành -->
+    <div id="provinceGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Cards rendered dynamically -->
+    </div>
+
     <!-- PHÂN TRANG -->
-    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-slate-100
-                px-6 py-5 flex flex-col sm:flex-row
-                items-center justify-between gap-4">
-
-        <!-- Thông tin số lượng -->
-        <div class="text-xs text-slate-500">
-            Hiển thị
-            <span class="font-bold text-blue-900">
-                –
-            </span>
-            trên tổng số
-            <span class="font-bold text-blue-900">—</span>
-            tỉnh thành
-        </div>
-            <div class="flex items-center gap-1.5">
-
-                <!-- Trang trước -->
-                    <span class="w-9 h-9 flex items-center justify-center
-                                border border-slate-200 rounded-lg text-slate-300">
-                        <span class="material-symbols-outlined text-lg">
-                            chevron_left
-                        </span>
-                    </span>
-                
-                    <a href=""
-                      class="w-9 h-9 flex items-center justify-center
-                              border border-slate-200 rounded-lg text-slate-600
-                              hover:bg-blue-50 hover:text-blue-900">
-                        <span class="material-symbols-outlined text-lg">
-                            chevron_left
-                        </span>
-                    </a>
-                
-
-                <!-- Các số trang -->
-                    <a href=""
-                      class="w-9 h-9 flex items-center justify-center rounded-lg
-                              text-xs font-bold transition
-                              ">—</a>
-                
-
-                <!-- Trang sau -->
-                    <a href=""
-                      class="w-9 h-9 flex items-center justify-center
-                              border border-slate-200 rounded-lg text-slate-600
-                              hover:bg-blue-50 hover:text-blue-900">
-                        <span class="material-symbols-outlined text-lg">
-                            chevron_right
-                        </span>
-                    </a>
-                
-                    <span class="w-9 h-9 flex items-center justify-center
-                                border border-slate-200 rounded-lg text-slate-300">
-                        <span class="material-symbols-outlined text-lg">
-                            chevron_right
-                        </span>
-                    </span>
-                
-
-            </div>
-        
+    <div id="provincePagination" class="hidden mt-8 bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div id="provincePaginationSummary" class="text-xs text-slate-500">
+        Hiển thị <span class="font-bold text-blue-900">1–5</span> trên tổng số <span class="font-bold text-blue-900">15</span> tỉnh thành
+      </div>
+      <div id="provincePaginationButtons" class="flex items-center gap-1.5">
+        <!-- Nút phân trang: < 1 2 3 > -->
+      </div>
     </div>
-
-
   </section>
 
   <!-- ATTRACTIONS / ROUTE TOURS TABLE -->
@@ -370,14 +285,27 @@
       <div>
         <h3 class="text-xl font-extrabold text-blue-950 flex items-center gap-2">
           <span class="material-symbols-outlined text-blue-900">landscape</span>
-          Danh Sách Điểm Tham Quan & Tuyến Điểm
+          Danh Sách Tuyến Điểm &amp; Tour Khai Thác
         </h3>
-        <p class="text-xs text-slate-400 mt-0.5">Tổng hợp các tuyến tour, điểm tham quan và lượt khách thực tế theo địa bàn</p>
+        <p class="text-xs text-slate-400 mt-0.5">Tổng hợp các tuyến tour và phân loại theo địa bàn thực tế từ MongoDB</p>
       </div>
-      <span class="text-xs font-bold text-slate-500"> tuyến điểm</span>
+      <span id="locationToursCountBadge" class="text-xs font-bold text-slate-500">— tuyến điểm</span>
     </div>
 
-    <div class="overflow-x-auto">
+    <!-- Trạng thái Loading Tuyến điểm -->
+    <div id="locationToursLoading" class="hidden py-10 flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined text-3xl animate-spin text-blue-900 mb-2">sync</span>
+      <p class="text-xs font-semibold">Đang tải danh sách tuyến điểm &amp; tour khai thác...</p>
+    </div>
+
+    <!-- Trạng thái Lỗi Tuyến điểm -->
+    <div id="locationToursError" class="hidden py-8 px-6 text-center">
+      <span class="material-symbols-outlined text-3xl text-rose-500 mb-2">error</span>
+      <p id="locationToursErrorText" class="text-xs font-semibold text-rose-600 mb-2">Không thể tải danh sách tour.</p>
+      <button type="button" id="btnRetryLocationTours" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-blue-900 font-bold text-xs rounded-lg transition">Thử lại</button>
+    </div>
+
+    <div id="locationToursTableWrapper" class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider bg-slate-50/50">
@@ -388,57 +316,87 @@
             <th class="py-3.5 px-4 font-bold text-right">Lượt khách đã đặt</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 text-sm">
-          
-          
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-4 px-4 font-bold text-blue-950">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg  flex items-center justify-center font-bold text-xs shrink-0">—</div>
-                <div>
-                  <a href="#" class="hover:text-blue-700 hover:underline line-clamp-1">—</a>
-                  <p class="text-[11px] font-normal text-slate-400">
-                    NĐ • Đón: 
-                  </p>
-                </div>
-              </div>
-            </td>
-            <td class="py-4 px-4 text-slate-700 font-medium">
-              <span>—</span>
-              <span class="text-xs text-slate-400 block font-normal">Miền </span>
-            </td>
-            <td class="py-4 px-4">
-              <span class="bg-blue-50 text-blue-900 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap">—</span>
-            </td>
-            <td class="py-4 px-4 text-center">
-              
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 whitespace-nowrap inline-flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                  Đang mở bán ( chuyến)
-                </span>
-              
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">
-                  Chưa có lịch mở bán
-                </span>
-              
-            </td>
-            <td class="py-4 px-4 text-right font-bold text-slate-800">
-              <div> lượt khách</div>
-              <span class="text-[11px] text-slate-400 font-normal">( đơn đặt)</span>
-            </td>
-          </tr>
-          
-          <tr>
-            <td colspan="5" class="py-8 text-center text-slate-400">
-              Không có tuyến điểm nào phù hợp với bộ lọc.
-            </td>
-          </tr>
-          
+        <tbody id="locationToursTableBody" class="divide-y divide-slate-100 text-sm">
+          <!-- Rows rendered dynamically -->
         </tbody>
       </table>
     </div>
+
+    <!-- PHÂN TRANG TUYẾN ĐIỂM & TOUR KHAI THÁC -->
+    <div id="locationToursPagination" class="hidden mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div id="locationToursPaginationSummary" class="text-xs text-slate-500">
+        Hiển thị <span class="font-bold text-blue-900">1–5</span> trên tổng số <span class="font-bold text-blue-900">0</span> tuyến điểm
+      </div>
+      <div id="locationToursPaginationButtons" class="flex items-center gap-1.5">
+        <!-- Nút phân trang: < 1 2 3 > -->
+      </div>
+    </div>
   </section>
 
+</div>
+
+<!-- MODAL THÊM TỈNH THÀNH MỚI -->
+<div id="createProvinceModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+  <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-150">
+    <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-lg font-black text-blue-950 flex items-center gap-2">
+        <span class="material-symbols-outlined text-blue-900">add_location_alt</span>
+        Thêm Tỉnh / Thành Phố Mới
+      </h3>
+      <button type="button" id="btnCloseCreateProvince" class="text-slate-400 hover:text-slate-600 transition">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div id="createProvinceError" class="hidden mx-6 mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
+      <span class="material-symbols-outlined text-base text-rose-600">error</span>
+      <span id="createProvinceErrorText">Vui lòng kiểm tra lại thông tin.</span>
+    </div>
+
+    <form id="createProvinceForm" class="p-6 space-y-4">
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Tên tỉnh / thành phố <span class="text-red-500">*</span></label>
+        <input type="text" name="provinceName" id="create_province_name" required placeholder="Ví dụ: Cần Thơ, Ninh Bình, Đà Nẵng..."
+               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-900"/>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Phân vùng miền <span class="text-red-500">*</span></label>
+        <select name="region" id="create_region" required
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white">
+          <option value="">-- Chọn vùng miền --</option>
+          <option value="Bắc">Miền Bắc</option>
+          <option value="Trung">Miền Trung</option>
+          <option value="Nam">Miền Nam</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Mô tả đặc trưng du lịch</label>
+        <textarea name="description" id="create_description" rows="3" placeholder="Mô tả danh lam thắng cảnh, đặc trưng du lịch, văn hóa ẩm thực..."
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-900"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Hình ảnh đại diện (URL)</label>
+        <input type="url" name="imageUrl" id="create_image_url" placeholder="https://..."
+               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-900"/>
+        <p class="text-[11px] text-slate-400 mt-1">Dán liên kết ảnh phong cảnh của tỉnh thành (JPG, PNG, WebP)</p>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+        <button type="button" id="btnCancelCreateProvince"
+                class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition">
+          Hủy bỏ
+        </button>
+        <button type="submit" id="btnSubmitCreateProvince"
+                class="px-5 py-2.5 rounded-xl bg-blue-900 text-white font-bold text-sm hover:bg-blue-800 shadow-sm flex items-center gap-2 transition">
+          <span class="material-symbols-outlined text-sm">save</span>
+          <span>Lưu tỉnh thành</span>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- MODAL CẬP NHẬT TỈNH THÀNH -->
@@ -449,14 +407,18 @@
         <span class="material-symbols-outlined text-blue-900">edit_location</span>
         Cập Nhật Tỉnh / Thành Phố
       </h3>
-      <button type="button" onclick="closeEditProvinceModal()" class="text-slate-400 hover:text-slate-600">
+      <button type="button" id="btnCloseEditProvince" class="text-slate-400 hover:text-slate-600 transition">
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
 
-    <form id="editProvinceForm" method="POST" action="" class="p-6 space-y-4">
-      
-      
+    <div id="editProvinceError" class="hidden mx-6 mt-4 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl flex items-center gap-2">
+      <span class="material-symbols-outlined text-base text-rose-600">error</span>
+      <span id="editProvinceErrorText">Vui lòng kiểm tra lại thông tin.</span>
+    </div>
+
+    <form id="editProvinceForm" class="p-6 space-y-4">
+      <input type="hidden" id="edit_province_id"/>
 
       <div>
         <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Tên tỉnh / thành phố <span class="text-red-500">*</span></label>
@@ -488,50 +450,26 @@
       </div>
 
       <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-        <button type="button" onclick="closeEditProvinceModal()"
-                class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50">
+        <button type="button" id="btnCancelEditProvince"
+                class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition">
           Hủy bỏ
         </button>
-        <button type="submit"
-                class="px-5 py-2.5 rounded-xl bg-blue-900 text-white font-bold text-sm hover:bg-blue-800 shadow-sm">
-          Lưu thay đổi
+        <button type="submit" id="btnSubmitEditProvince"
+                class="px-5 py-2.5 rounded-xl bg-blue-900 text-white font-bold text-sm hover:bg-blue-800 shadow-sm flex items-center gap-2 transition">
+          <span class="material-symbols-outlined text-sm">save</span>
+          <span>Lưu thay đổi</span>
         </button>
       </div>
     </form>
   </div>
 </div>
 
-<script>
-function openEditProvinceModal(id, name, region, imageUrl = '', description = '') {
-  const modal = document.getElementById('editProvinceModal');
-  const form = document.getElementById('editProvinceForm');
-  const inputName = document.getElementById('edit_province_name');
-  const selectRegion = document.getElementById('edit_region');
-  const inputImage = document.getElementById('edit_image_url');
-  const inputDesc = document.getElementById('edit_description');
-
-  form.action = `/admin/locations/${id}`;
-  inputName.value = name;
-  selectRegion.value = region;
-  if (inputImage) {
-    inputImage.value = imageUrl;
-  }
-  if (inputDesc) {
-    inputDesc.value = description;
-  }
-
-  modal.classList.remove('hidden');
-}
-
-function closeEditProvinceModal() {
-  document.getElementById('editProvinceModal').classList.add('hidden');
-}
-</script>
-
 </main>
 
+<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/admin-pages.js?v=2.8.0"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

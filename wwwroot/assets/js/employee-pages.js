@@ -1,7 +1,8 @@
 // Chỉ trang nhân viên dùng file này; các trang admin khác giữ nguyên script cũ.
 (() => {
-  const { $, text, escape: esc, request, requireUser, notice, failure, bindForm, pagination } = window.Part2;
-  const params = new URLSearchParams(location.search);
+  const { $, text, escape: esc, request, requireUser, notice, failure, pagination } = window.Part2;
+  const getParams = () => new URLSearchParams(window.location.search);
+
   // Chỉ dịch tên hiển thị; giữ nguyên mã vai trò dùng cho phân quyền và API.
   function roleLabel(name) {
     const labels = {
@@ -11,41 +12,88 @@
     };
     return labels[name] || name;
   }
-  async function start() {
-    const buttons = [...document.querySelectorAll('main form [type="submit"]')];
-    buttons.forEach((button) => (button.disabled = true));
-    notice('Đang tải nhân viên...');
-    const current = await requireUser('Admin');
-    if (!current) return;
-    $('#adminLogoutBtn').onclick = () => {
-      for (const storage of [localStorage, sessionStorage]) {
-        for (const key of ['bookingtour_token', 'bookingtour_user', 'bookingtour_role'])
-          storage.removeItem(key);
-      }
-      location.href = '/client/auth/login.html';
-    };
-    const { data: roles } = await request('/api/employees/roles');
-    if (location.pathname.endsWith('/index.html')) await list(current, roles);
-    else await edit(roles);
-    notice('');
-    buttons.forEach((button) => (button.disabled = false));
+
+  let starting = null;
+  let initializedForm = null;
+
+  function start() {
+    // Các lần gọi từ router cùng đợi lần tải đang chạy, không khởi tạo chồng lên nhau.
+    if (starting) return starting.then(() => start());
+    const pageForm = $('main form');
+    if (pageForm && pageForm === initializedForm) return Promise.resolve();
+    starting = loadPage(pageForm);
+    return starting;
   }
+
+  async function loadPage(pageForm) {
+    // Router chỉ thay nội dung trang, nên nạp CSS nhân viên khi mở module lần đầu.
+    if (!document.getElementById('employeeStyles')) {
+      const link = document.createElement('link');
+      link.id = 'employeeStyles';
+      link.rel = 'stylesheet';
+      link.href = '/assets/css/employees.css';
+      document.head.appendChild(link);
+    }
+    try {
+      const buttons = [...document.querySelectorAll('main form [type="submit"]')];
+      buttons.forEach((button) => (button.disabled = true));
+      notice('Đang tải nhân viên...');
+      const current = await requireUser('Admin');
+      if (!current) return;
+
+      const logoutBtn = $('#adminLogoutBtn');
+      if (logoutBtn) {
+        logoutBtn.onclick = () => {
+          for (const storage of [localStorage, sessionStorage]) {
+            for (const key of ['bookingtour_token', 'bookingtour_user', 'bookingtour_role'])
+              storage.removeItem(key);
+          }
+          location.href = '/client/auth/login.html';
+        };
+      }
+
+      const { data: roles } = await request('/api/employees/roles');
+      if (pageForm !== $('main form')) return;
+      const path = location.pathname.toLowerCase();
+      const isIndex =
+        path.endsWith('/index.html') || path.endsWith('/employees') || path.endsWith('/employees/');
+      if (isIndex) await list(current, roles);
+      else await edit(roles);
+      // Giữ dữ liệu đang nhập nếu router gọi lại module trên cùng form.
+      initializedForm = pageForm;
+      notice('');
+      buttons.forEach((button) => (button.disabled = false));
+    } finally {
+      starting = null;
+    }
+  }
+
   async function list(current, roles) {
+    const params = getParams();
     const form = $('main form');
-    form.elements.keyword.value = params.get('search') || '';
-    form.elements.roleId.innerHTML =
-      '<option value="">Tất cả vai trò</option>' +
-      roles.map((r) => `<option value="${r.id}">${esc(roleLabel(r.role_name))}</option>`).join('');
-    form.elements.roleId.value = params.get('roleId') || '';
-    bindForm(form, (fd) => {
-      const query = new URLSearchParams();
-      if (fd.get('keyword')) query.set('search', fd.get('keyword'));
-      if (fd.get('roleId')) query.set('roleId', fd.get('roleId'));
-      location.search = query;
-    });
-    $('main header a').href = 'create.html';
-    const reset = form.querySelector('a');
-    if (reset) reset.href = 'index.html';
+    if (form) {
+      form.elements.keyword.value = params.get('search') || '';
+      form.elements.roleId.innerHTML =
+        '<option value="">Tất cả vai trò</option>' +
+        roles
+          .map((r) => `<option value="${r.id}">${esc(roleLabel(r.role_name))}</option>`)
+          .join('');
+      form.elements.roleId.value = params.get('roleId') || '';
+      form.onsubmit = (ev) => {
+        ev.preventDefault();
+        const fd = new FormData(form);
+        const query = new URLSearchParams();
+        if (fd.get('keyword')) query.set('search', fd.get('keyword'));
+        if (fd.get('roleId')) query.set('roleId', fd.get('roleId'));
+        location.search = query;
+      };
+      const reset = form.querySelector('a');
+      if (reset) reset.href = '/admin/employees/index.html';
+    }
+
+    const createBtn = $('main header a');
+    if (createBtn) createBtn.href = '/admin/employees/create.html';
+
     const result = await request('/api/employees?' + params);
     const stats = await Promise.all([
       request('/api/employees?pageSize=1'),
@@ -53,6 +101,7 @@
     ]);
     const numbers = document.querySelectorAll('[data-employee-stat]');
     numbers.forEach((el, i) => (el.textContent = stats[i]?.total ?? 0));
+
     $('#employeeList').innerHTML =
       result.data
         .map(
@@ -60,13 +109,14 @@
             e,
           ) => `<article class="employee-row bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
       <div class="employee-identity flex items-center gap-4 min-w-0"><div class="w-14 h-14 shrink-0 rounded-full bg-blue-900 text-white flex items-center justify-center font-black">${esc(e.full_name.slice(0, 1))}</div><div class="min-w-0 break-words"><h3 class="font-extrabold text-blue-950">${esc(e.full_name)}</h3><p class="text-xs text-slate-500 mt-1 break-all">#${e.id} · ${esc(e.email)}</p><p class="text-xs mt-1 break-all">${esc(e.phone)} · ${esc(e.username)}</p></div></div>
-      <span class="employee-role text-xs font-bold text-purple-700">${esc(roleLabel(e.role_name))}</span><div class="employee-actions flex gap-4"><a class="text-primary font-bold" href="edit.html?id=${e.id}">Sửa</a><button type="button" class="text-red-600" data-delete="${e.id}" ${e.id === current.id ? 'disabled' : ''}>Xóa</button></div></article>`,
+      <span class="employee-role text-xs font-bold text-purple-700">${esc(roleLabel(e.role_name))}</span><div class="employee-actions flex gap-4"><a class="text-primary font-bold" href="/admin/employees/edit.html?id=${e.id}">Sửa</a><button type="button" class="text-red-600" data-delete="${e.id}" ${e.id === current.id ? 'disabled' : ''}>Xóa</button></div></article>`,
         )
         .join('') || '<p class="p-8 text-center">Không tìm thấy nhân viên.</p>';
     text('#employeeTotal', `Tổng ${result.total} nhân viên phù hợp`);
     pagination($('#employeePagination'), result, params, (next) => {
       location.search = next;
     });
+
     document.querySelectorAll('[data-delete]').forEach(
       (button) =>
         (button.onclick = async () => {
@@ -82,32 +132,68 @@
         }),
     );
   }
+
   async function edit(roles) {
     const form = $('main form');
+    if (!form) return;
+    const params = getParams();
     const id = params.get('id');
     const creating = location.pathname.endsWith('/create.html');
-    if (!creating && !/^\d+$/.test(id || '')) throw new Error('Mã nhân viên không hợp lệ.');
-    form.elements.role_id.innerHTML = roles
-      .map((r) => `<option value="${r.id}">${esc(roleLabel(r.role_name))}</option>`)
-      .join('');
-    if (creating) {
-      form.elements.role_id.insertAdjacentHTML('afterbegin', '<option value="">-- Chọn vai trò --</option>');
-      form.elements.role_id.value = '';
+    if (!creating && !/^\d+$/.test(id || '')) {
+      throw new Error('Mã nhân viên không hợp lệ.');
     }
+
+    if (form.elements.role_id) {
+      form.elements.role_id.innerHTML =
+        '<option value="">-- Chọn vai trò --</option>' +
+        roles
+          .map((r) => `<option value="${r.id}">${esc(roleLabel(r.role_name))}</option>`)
+          .join('');
+    }
+
     if (!creating) {
       const { data: employee } = await request('/api/employees/' + id);
-      for (const key of ['full_name', 'email', 'phone', 'username', 'role_id'])
-        form.elements[key].value = employee[key];
-      form.elements.username.readOnly = true;
-      form.elements.password.required = false;
-      form.elements.password_confirmation.required = false;
+      if (!employee) throw new Error(`Không tìm thấy nhân viên mã ${id}.`);
+
+      for (const key of ['full_name', 'email', 'phone', 'username', 'role_id']) {
+        if (form.elements[key]) form.elements[key].value = employee[key] ?? '';
+      }
+
+      if (form.elements.username) {
+        form.elements.username.readOnly = true;
+        form.elements.username.classList.add(
+          'bg-slate-100',
+          'cursor-not-allowed',
+          'text-slate-500',
+        );
+      }
+
+      if (form.elements.password) {
+        form.elements.password.required = false;
+        form.elements.password.value = '';
+      }
+      if (form.elements.password_confirmation) {
+        form.elements.password_confirmation.required = false;
+        form.elements.password_confirmation.value = '';
+      }
+
+      const titleEl =
+        document.getElementById('editEmployeeTitle') || $('main header h2') || $('h2');
+      if (titleEl) {
+        titleEl.textContent = `Chỉnh Sửa Nhân Viên #${employee.id} - ${employee.full_name}`;
+      }
+      document.title = `Chỉnh sửa Nhân viên #${employee.id} - Vietnam Expeditions`;
     }
+
     setupEmployeeValidation(form, creating, id, roles);
     const cancel = form.querySelector('a');
-    if (cancel) cancel.href = 'index.html';
+    if (cancel) cancel.href = '/admin/employees/index.html';
   }
 
   function setupEmployeeValidation(form, creating, id, roles) {
+    // Trang mở trực tiếp và admin router có thể cùng khởi tạo một form.
+    if (form.dataset.employeeValidationReady === 'true') return;
+    form.dataset.employeeValidationReady = 'true';
     form.noValidate = true; // Dùng thông báo tiếng Việt dưới từng ô thay cho popup mặc định.
     const fields = [
       'full_name',
@@ -130,8 +216,10 @@
       error.hidden = true;
       input.insertAdjacentElement('afterend', error);
       input.setAttribute('aria-describedby', error.id);
-      input.addEventListener('blur', () => {
+      input.addEventListener('blur', (event) => {
         touched.add(name);
+        // Nút submit sẽ kiểm tra toàn form; tránh dời nút giữa lúc người dùng đang nhấn.
+        if (event.relatedTarget?.closest('button, a')) return;
         showErrors(validate(readValues()), touched);
       });
       input.addEventListener('input', () => {
@@ -156,7 +244,8 @@
       else if (values.full_name.length < 2 || values.full_name.length > 100)
         errors.full_name = 'Họ và tên có từ 2 đến 100 ký tự.';
       else if (!/^[\p{L}\p{M}][\p{L}\p{M} .’'-]*$/u.test(values.full_name))
-        errors.full_name = 'Họ và tên chỉ gồm chữ, khoảng trắng, dấu chấm, dấu nháy hoặc gạch ngang.';
+        errors.full_name =
+          'Họ và tên chỉ gồm chữ, khoảng trắng, dấu chấm, dấu nháy hoặc gạch ngang.';
       if (!values.email) errors.email = 'Vui lòng nhập email.';
       else if (values.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))
         errors.email = 'Vui lòng nhập email đầy đủ, ví dụ nhanvien@example.com.';
@@ -168,16 +257,19 @@
         errors.username =
           'Tên đăng nhập có 4–50 ký tự, bắt đầu bằng chữ; chỉ dùng chữ không dấu, số, dấu chấm, gạch dưới hoặc gạch ngang.';
       if (creating || values.password || values.password_confirmation) {
-        if (!values.password.trim()) errors.password = 'Vui lòng nhập mật khẩu, không chỉ gồm khoảng trắng.';
+        if (!values.password.trim())
+          errors.password = 'Vui lòng nhập mật khẩu, không chỉ gồm khoảng trắng.';
         else if (values.password.length < 8 || values.password.length > 64)
           errors.password = 'Mật khẩu có từ 8 đến 64 ký tự.';
         else if (new TextEncoder().encode(values.password).length > 72)
           errors.password = 'Mật khẩu quá dài; vui lòng sử dụng mật khẩu ngắn hơn.';
-        if (!values.password_confirmation) errors.password_confirmation = 'Vui lòng xác nhận mật khẩu.';
+        if (!values.password_confirmation)
+          errors.password_confirmation = 'Vui lòng xác nhận mật khẩu.';
         else if (values.password_confirmation !== values.password)
           errors.password_confirmation = 'Mật khẩu xác nhận không khớp.';
       }
-      if (!roles.some((role) => role.id === values.role_id)) errors.role_id = 'Vui lòng chọn vai trò hợp lệ.';
+      if (!roles.some((role) => role.id === values.role_id))
+        errors.role_id = 'Vui lòng chọn vai trò hợp lệ.';
       return errors;
     }
     function showErrors(errors, names = fields) {
@@ -212,7 +304,7 @@
           method: creating ? 'POST' : 'PUT',
           body: JSON.stringify(body),
         });
-        location.href = 'index.html';
+        location.href = '/admin/employees/index.html';
       } catch (error) {
         // API có thể trả lỗi theo tên thuộc tính C# hoặc tên JSON; quy về tên ô trên form.
         const serverErrors = {};
@@ -233,5 +325,6 @@
       }
     });
   }
+  window.Part2EmployeePages = { start, list, edit };
   start().catch(failure);
 })();

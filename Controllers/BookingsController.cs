@@ -42,6 +42,49 @@ public class BookingsController : ControllerBase
     }
 
     [Authorize(Roles = "Customer")]
+    [HttpGet("bank-transfer-instructions")]
+    public IActionResult GetBankTransferInstructions([FromServices] IConfiguration configuration)
+    {
+        var bankName = configuration["BankTransfer:BankName"];
+        var accountNumber = configuration["BankTransfer:AccountNumber"];
+        var accountHolder = configuration["BankTransfer:AccountHolder"];
+        if (new[] { bankName, accountNumber, accountHolder }.Any(string.IsNullOrWhiteSpace))
+            return Ok(ApiResponse<object>.Ok(null!, "Chưa cấu hình tài khoản nhận chuyển khoản."));
+        return Ok(ApiResponse<object>.Ok(new { bankName, accountNumber, accountHolder }));
+    }
+
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpGet("pending-bank-transfers", Name = "PendingBankTransfers")]
+    [HttpGet("pending-payments")]
+    public async Task<IActionResult> PendingPayments()
+    {
+        return Ok(ApiResponse<List<object>>.Ok(await _bookingService.GetPendingPaymentsAsync(Request.Path.Value?.EndsWith("/pending-bank-transfers", StringComparison.OrdinalIgnoreCase) == true)));
+    }
+
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpPost("{id:int}/confirm-bank-transfer")]
+    [HttpPost("{id:int}/confirm-payment")]
+    public async Task<IActionResult> ConfirmPayment(int id)
+    {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var employeeId) || employeeId <= 0)
+            return Unauthorized();
+        try
+        {
+            await _bookingService.ConfirmPendingPaymentAsync(id, employeeId,
+                Request.Path.Value?.EndsWith("/confirm-bank-transfer", StringComparison.OrdinalIgnoreCase) == true);
+            return Ok(ApiResponse<bool>.Ok(true, "Đã xác nhận nhận tiền."));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ApiResponse<object>.Fail(ex.Message));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ApiResponse<object>.Fail(ex.Message));
+        }
+    }
+
+    [Authorize(Roles = "Customer")]
     [HttpPost("checkout")]
     [HttpPost("/payments/checkout/{id:int}")]
     public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)

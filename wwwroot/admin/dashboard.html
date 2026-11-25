@@ -49,43 +49,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm bg-blue-900 text-white shadow-sm"
-        href="dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-        href="tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-        href="categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-        href="departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-       href="locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-        href="customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-       href="transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm text-slate-600 hover:bg-slate-100 hover:text-blue-900"
-       href="employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -106,7 +106,7 @@
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
         <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
-        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Admin</span>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
       <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100">
@@ -302,10 +302,63 @@
   </div>
 </main>
 
+<!-- Transaction Detail Modal -->
+<div id="transactionDetailModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 transition-all duration-200" aria-modal="true" role="dialog">
+  <div class="relative bg-white rounded-3xl shadow-2xl border border-slate-100 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    
+    <!-- Modal Header -->
+    <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-900 flex items-center justify-center">
+          <span class="material-symbols-outlined text-[22px]">receipt_long</span>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-blue-950 leading-tight">Chi tiết giao dịch</h3>
+          <p id="modalTxnSubtitle" class="text-xs text-slate-500 font-mono mt-0.5">Đang tải...</p>
+        </div>
+      </div>
+      <button id="closeTxnModalBtn" type="button" class="w-9 h-9 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors" title="Đóng modal">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div id="modalTxnBodyContainer" class="p-6 overflow-y-auto space-y-6 flex-1">
+      
+      <!-- Loading State -->
+      <div id="modalTxnLoading" class="py-12 flex flex-col items-center justify-center text-center">
+        <span class="material-symbols-outlined text-4xl text-blue-600 animate-spin mb-3">sync</span>
+        <p class="text-sm font-semibold text-slate-700">Đang tải dữ liệu chi tiết giao dịch...</p>
+        <p class="text-xs text-slate-400 mt-1">Truy xuất thông tin thực tế từ hệ thống MongoDB</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="modalTxnError" class="hidden py-8 px-4 bg-red-50 rounded-2xl border border-red-100 text-center">
+        <span class="material-symbols-outlined text-4xl text-red-500 mb-2">error</span>
+        <h4 class="font-bold text-red-800 text-sm">Không thể tải thông tin giao dịch</h4>
+        <p id="modalTxnErrorMsg" class="text-xs text-red-600 mt-1">Giao dịch không tồn tại hoặc đã xảy ra lỗi máy chủ.</p>
+      </div>
+
+      <!-- Content State (filled dynamically by JavaScript) -->
+      <div id="modalTxnContent" class="hidden space-y-6">
+        <!-- Dynamic Content injected here -->
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/80 flex items-center justify-end gap-3">
+      <button id="closeTxnModalBtnBottom" type="button" class="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-bold hover:bg-slate-100 transition shadow-sm">
+        Đóng
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Scripts -->
 <script src="../assets/js/api-client.js"></script>
 <script src="../assets/js/mock-data.js"></script>
 <script src="../assets/js/admin-dashboard.js"></script>
 <script src="../assets/js/icons-fallback.js"></script>
+<script src="../assets/js/admin-router.js"></script>
 </body>
 </html>

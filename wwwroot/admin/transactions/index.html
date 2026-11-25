@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -99,14 +99,14 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Ảnh đại diện quản trị viên"
              class="w-full h-full object-cover"/>
       </div>
@@ -140,7 +140,7 @@
             </button>
 
             <a
-                href="#"
+                id="btnRefreshTransactions" href="#"
                 class="inline-flex items-center gap-2 rounded-xl bg-blue-950 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-900"
             >
                 <span class="material-symbols-outlined text-lg">refresh</span>
@@ -148,6 +148,15 @@
             </a>
         </div>
     </header>
+
+    <!-- SECTION THANH TOÁN CHỜ XÁC NHẬN -->
+    <section class="mb-8 rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-amber-500">pending_actions</span>
+            <h2 class="text-base font-bold text-blue-950">Thanh toán chờ xác nhận</h2>
+        </div>
+        <div id="pendingPayments" class="space-y-2 text-sm text-slate-700" aria-live="polite">Đang tải…</div>
+    </section>
 
     
     <div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -223,8 +232,7 @@
     
     <form
         id="txnFilterForm"
-        action="#"
-        method="GET"
+        onsubmit="return false;"
         class="no-print mb-6 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
     >
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 items-center">
@@ -334,6 +342,19 @@
             </span>
         </div>
 
+        <!-- Trạng thái Loading -->
+        <div id="txnLoading" class="py-12 flex flex-col items-center justify-center text-slate-400">
+            <span class="material-symbols-outlined text-3xl animate-spin text-blue-900 mb-2">sync</span>
+            <p class="text-xs font-semibold">Đang tải danh sách giao dịch...</p>
+        </div>
+
+        <!-- Trạng thái Lỗi -->
+        <div id="txnError" class="hidden py-8 px-6 text-center">
+            <span class="material-symbols-outlined text-3xl text-rose-500 mb-2">error</span>
+            <p id="txnErrorText" class="text-xs font-semibold text-rose-600 mb-2">Không thể tải danh sách giao dịch.</p>
+            <button type="button" id="btnRetryTxn" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-blue-900 font-bold text-xs rounded-lg transition">Thử lại</button>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full min-w-[1100px] border-collapse text-left">
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
@@ -397,13 +418,6 @@
     </div>
   </div>
 </div>
-
-    <p class="mt-4 text-xs text-slate-400">
-        Lưu ý: Tổng tiền được tính từ các bản ghi thanh toán, không tự động khẳng định tất cả giao dịch đã thanh toán thành công.
-    </p>
-
-</div>
-
 
 <style>
      print {
@@ -552,8 +566,10 @@
 
 </main>
 
+<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/admin-pages.js?v=2.9.0"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

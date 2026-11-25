@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using Backend_DotNet.Data;
 using Backend_DotNet.DTOs;
 using Backend_DotNet.Models;
@@ -16,10 +17,25 @@ public class BookingService : IBookingService
         _logger = logger;
     }
 
+    private static DateTime VietnamToday()
+    {
+        return DateTime.UtcNow.AddHours(7).Date;
+    }
+
+    private static decimal CalculateTotal(TourDeparture departure, DraftBookingRequest request)
+    {
+        return request.TotalAdults * departure.AdultPrice + request.TotalChildren * departure.ChildPrice;
+    }
+
     public async Task<object> ValidateDraftAsync(DraftBookingRequest request)
     {
         var departure = await _context.TourDepartures.Find(d => d.Id == request.DepartureId).FirstOrDefaultAsync()
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {request.DepartureId}.");
+
+        if (departure.Status != "open" || departure.DepartureDate.AddHours(7).Date < VietnamToday())
+        {
+            throw new ArgumentException("Lịch khởi hành không còn mở bán.");
+        }
 
         var totalPassengers = request.TotalAdults + request.TotalChildren;
         if (departure.Status != "open" || departure.DepartureDate <= DateTime.UtcNow)
@@ -29,7 +45,7 @@ public class BookingService : IBookingService
             throw new ArgumentException("Số lượng chỗ còn lại của chuyến đi không đủ để đáp ứng.");
         }
 
-        var totalAmount = (request.TotalAdults * departure.AdultPrice) + (request.TotalChildren * departure.ChildPrice);
+        var totalAmount = CalculateTotal(departure, request);
 
         var tour = await _context.Tours.Find(t => t.Id == departure.TourId).FirstOrDefaultAsync();
 
@@ -53,69 +69,61 @@ public class BookingService : IBookingService
 
     public async Task<Booking> CheckoutAsync(int customerId, CheckoutRequest request)
     {
+        var payLater = request.PaymentMethod is "bank_transfer" or "cash";
+        if (!payLater && request.PaymentMethod != "card")
+            throw new ArgumentException("Phương thức thanh toán không hợp lệ.");
+        if (!payLater && new[] { request.CardNumber, request.CardHolder, request.CardExpiry, request.CardCvv }
+            .Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException("Vui lòng nhập đầy đủ thông tin thẻ.");
+
         var totalPassengers = request.TotalAdults + request.TotalChildren;
-        if (totalPassengers <= 0)
+        if (request.Passengers.Any(p => p is null || string.IsNullOrWhiteSpace(p.FullName)) ||
+            request.Passengers.Count != totalPassengers ||
+            request.Passengers.Count(p => string.Equals(p.PassengerType, "adult", StringComparison.OrdinalIgnoreCase)) != request.TotalAdults ||
+            request.Passengers.Count(p => string.Equals(p.PassengerType, "child", StringComparison.OrdinalIgnoreCase)) != request.TotalChildren)
         {
-            throw new ArgumentException("Số lượng hành khách phải lớn hơn 0.");
+            throw new ArgumentException("Danh sách hành khách không khớp với số lượng vé.");
         }
 
-        // Validate passenger ages
-        if (request.Passengers.Count != totalPassengers ||
-            request.Passengers.Count(p => p.PassengerType == "adult") != request.TotalAdults ||
-            request.Passengers.Count(p => p.PassengerType == "child") != request.TotalChildren)
-            throw new ArgumentException("Danh sách hành khách phải khớp số lượng người lớn và trẻ em.");
+        var today = VietnamToday();
         foreach (var p in request.Passengers)
         {
             if (p.DateOfBirth.HasValue)
             {
-                if (p.DateOfBirth.Value.Date > DateTime.UtcNow.Date) throw new ArgumentException("Ngày sinh không hợp lệ.");
-                var age = DateTime.UtcNow.Year - p.DateOfBirth.Value.Year;
-                if (p.DateOfBirth.Value.Date > DateTime.UtcNow.Date.AddYears(-age)) age--;
-                if (p.PassengerType == "adult" && age < 12)
+                if (p.DateOfBirth.Value.Date > today) throw new ArgumentException("Ngày sinh không hợp lệ.");
+                var age = today.Year - p.DateOfBirth.Value.Year;
+                if (p.DateOfBirth.Value.Date > today.AddYears(-age)) age--;
+                if (string.Equals(p.PassengerType, "adult", StringComparison.OrdinalIgnoreCase) && age < 12)
                 {
                     throw new ArgumentException($"Hành khách {p.FullName}: Người lớn phải từ 12 tuổi trở lên.");
                 }
-                if (p.PassengerType == "child" && age >= 12)
+                if (string.Equals(p.PassengerType, "child", StringComparison.OrdinalIgnoreCase) && age >= 12)
                 {
                     throw new ArgumentException($"Hành khách {p.FullName}: Trẻ em phải dưới 12 tuổi.");
                 }
             }
         }
 
-        // Atomic seat reduction
-        var depFilter = Builders<TourDeparture>.Filter.And(
-            Builders<TourDeparture>.Filter.Eq(d => d.Id, request.DepartureId),
-            Builders<TourDeparture>.Filter.Eq(d => d.Status, "open"),
-            Builders<TourDeparture>.Filter.Gt(d => d.DepartureDate, DateTime.UtcNow),
-            Builders<TourDeparture>.Filter.Gte(d => d.AvailableSeats, totalPassengers)
-        );
-
-        var depUpdate = Builders<TourDeparture>.Update
-            .Inc(d => d.AvailableSeats, -totalPassengers)
-            .Set(d => d.UpdatedAt, DateTime.UtcNow);
-
-        var departure = await _context.TourDepartures.FindOneAndUpdateAsync(depFilter, depUpdate);
-        if (departure == null)
+        var customer = await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync()
+                       ?? throw new ArgumentException("Tài khoản khách hàng không tồn tại.");
+        var departure = await _context.TourDepartures.Find(d => d.Id == request.DepartureId).FirstOrDefaultAsync()
+                        ?? throw new ArgumentException("Không tìm thấy lịch khởi hành.");
+        if (departure.Status != "open" || departure.AvailableSeats < totalPassengers ||
+            departure.DepartureDate < today.AddHours(-7))
         {
-            throw new InvalidOperationException("Rất tiếc, số lượng chỗ còn lại của chuyến đi không đủ hoặc chuyến đi không tồn tại.");
+            throw new ArgumentException("Lịch khởi hành không còn mở bán hoặc không đủ chỗ.");
         }
 
-        // If seats reached 0, update status
-        if (departure.AvailableSeats - totalPassengers <= 0)
+        var tour = await _context.Tours.Find(t => t.Id == departure.TourId).FirstOrDefaultAsync()
+                   ?? throw new ArgumentException("Không tìm thấy tour của lịch khởi hành.");
+        var totalAmount = CalculateTotal(departure, request);
+        if (request.ExpectedTotalAmount is { } expected && expected != totalAmount)
         {
-            await _context.TourDepartures.UpdateOneAsync(
-                d => d.Id == departure.Id,
-                Builders<TourDeparture>.Update.Set(d => d.Status, "full")
-            );
+            throw new ArgumentException("Giá đã thay đổi. Vui lòng tải lại trang để kiểm tra tổng tiền.");
         }
 
-        var customer = await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
-        var tour = await _context.Tours.Find(t => t.Id == departure.TourId).FirstOrDefaultAsync();
-
-        var totalAmount = (request.TotalAdults * departure.AdultPrice) + (request.TotalChildren * departure.ChildPrice);
         var nextBookingId = await _context.GetNextSequenceAsync("bookings");
         var bookingCode = $"BK{nextBookingId:D3}";
-
         var now = DateTime.UtcNow;
 
         var passengers = new List<BookingPassengerEmbedded>();
@@ -126,7 +134,7 @@ public class BookingService : IBookingService
             {
                 Id = pId,
                 FullName = p.FullName.Trim(),
-                PassengerType = p.PassengerType.ToLower(),
+                PassengerType = p.PassengerType.ToLowerInvariant(),
                 IdCard = p.IdCard?.Trim(),
                 DateOfBirth = p.DateOfBirth
             });
@@ -134,28 +142,29 @@ public class BookingService : IBookingService
 
         var booking = new Booking
         {
+            MongoId = ObjectId.GenerateNewId().ToString(),
             Id = nextBookingId,
             BookingCode = bookingCode,
             CustomerId = customerId,
-            CustomerName = customer?.FullName ?? request.UserFullName,
+            CustomerName = customer.FullName,
             DepartureId = departure.Id,
             TourId = departure.TourId,
-            TourTitle = departure.TourTitle ?? tour?.Title,
+            TourTitle = departure.TourTitle ?? tour.Title,
             TotalAdults = request.TotalAdults,
             TotalChildren = request.TotalChildren,
             TotalAmount = totalAmount,
-            Status = "confirmed",
+            Status = payLater ? "pending" : "confirmed",
+            PaymentOption = payLater ? request.PaymentMethod : null,
             Passengers = passengers,
             CreatedAt = now,
             UpdatedAt = now
         };
 
-        await _context.Bookings.InsertOneAsync(booking);
-
         // Record payment
-        var nextPaymentId = await _context.GetNextSequenceAsync("payments");
+        var nextPaymentId = payLater ? 0 : await _context.GetNextSequenceAsync("payments");
         var payment = new Payment
         {
+            MongoId = ObjectId.GenerateNewId().ToString(),
             Id = nextPaymentId,
             BookingId = booking.Id,
             Amount = totalAmount,
@@ -163,12 +172,12 @@ public class BookingService : IBookingService
             CreatedAt = now,
             UpdatedAt = now
         };
-        await _context.Payments.InsertOneAsync(payment);
 
         // Record bill
-        var nextBillId = await _context.GetNextSequenceAsync("bills");
+        var nextBillId = payLater ? 0 : await _context.GetNextSequenceAsync("bills");
         var bill = new Bill
         {
+            MongoId = ObjectId.GenerateNewId().ToString(),
             Id = nextBillId,
             BillNumber = $"INV-{booking.Id:D3}",
             BookingId = booking.Id,
@@ -176,8 +185,71 @@ public class BookingService : IBookingService
             CreatedAt = now,
             UpdatedAt = now
         };
-        await _context.Bills.InsertOneAsync(bill);
+        var departureFilter = Builders<TourDeparture>.Filter.Where(d =>
+            d.Id == departure.Id && d.Status == "open" && d.DepartureDate >= today.AddHours(-7) &&
+            d.AvailableSeats >= totalPassengers && d.AdultPrice == departure.AdultPrice &&
+            d.ChildPrice == departure.ChildPrice && d.TourId == departure.TourId);
+        var updates = Builders<TourDeparture>.Update;
+        var reserve = updates.Inc(d => d.AvailableSeats, -totalPassengers).Set(d => d.UpdatedAt, now);
+        var full = Builders<TourDeparture>.Filter.Where(d => d.Id == departure.Id && d.AvailableSeats == 0 && d.Status == "open");
+        var markFull = updates.Set(d => d.Status, "full");
+        var hello = await _context.Database.RunCommandAsync<BsonDocument>(new BsonDocument("hello", 1));
+        if (hello.Contains("setName") || hello.GetValue("msg", "").AsString == "isdbgrid")
+        {
+            using var session = await _context.Database.Client.StartSessionAsync();
+            await session.WithTransactionAsync(async (transaction, ct) =>
+            {
+                if (await _context.TourDepartures.FindOneAndUpdateAsync(transaction, departureFilter, reserve, cancellationToken: ct) is null)
+                    throw new InvalidOperationException("Lịch khởi hành, giá hoặc số chỗ đã thay đổi. Vui lòng tải lại trang.");
 
+                await _context.TourDepartures.UpdateOneAsync(transaction, full, markFull, cancellationToken: ct);
+                await _context.Bookings.InsertOneAsync(transaction, booking, cancellationToken: ct);
+                if (!payLater)
+                {
+                    await _context.Payments.InsertOneAsync(transaction, payment, cancellationToken: ct);
+                    await _context.Bills.InsertOneAsync(transaction, bill, cancellationToken: ct);
+                }
+                return booking;
+            });
+        }
+        else
+        {
+            // Standalone MongoDB has no multi-document transactions.
+            if (await _context.TourDepartures.FindOneAndUpdateAsync(departureFilter, reserve) is null)
+                throw new InvalidOperationException("Lịch khởi hành, giá hoặc số chỗ đã thay đổi. Vui lòng tải lại trang.");
+
+            try
+            {
+                if (!payLater)
+                {
+                    await _context.Payments.InsertOneAsync(payment);
+                    await _context.Bills.InsertOneAsync(bill);
+                }
+                await _context.TourDepartures.UpdateOneAsync(full, markFull);
+                await _context.Bookings.InsertOneAsync(booking);
+            }
+            catch
+            {
+                // Match the generated MongoDB IDs so old documents can never be removed.
+                await Task.WhenAll(
+                    _context.Bookings.DeleteOneAsync(b => b.MongoId == booking.MongoId),
+                    _context.Payments.DeleteOneAsync(p => p.MongoId == payment.MongoId),
+                    _context.Bills.DeleteOneAsync(b => b.MongoId == bill.MongoId));
+                await _context.TourDepartures.UpdateOneAsync(
+                    d => d.Id == departure.Id,
+                    updates.Inc(d => d.AvailableSeats, totalPassengers));
+                await _context.TourDepartures.UpdateOneAsync(
+                    d => d.Id == departure.Id && d.Status == "full" && d.AvailableSeats > 0,
+                    updates.Set(d => d.Status, "open"));
+                throw;
+            }
+        }
+
+        if (!payLater)
+        {
+            booking.PaymentMethod = payment.PaymentMethod;
+            booking.BillNumber = bill.BillNumber;
+        }
         return booking;
     }
 
@@ -196,16 +268,18 @@ public class BookingService : IBookingService
         var tour = booking.TourId.HasValue
             ? await _context.Tours.Find(t => t.Id == booking.TourId.Value).FirstOrDefaultAsync()
             : null;
-        var payment = await _context.Payments.Find(p => p.BookingId == booking.Id).FirstOrDefaultAsync();
-        var bill = await _context.Bills.Find(b => b.BookingId == booking.Id).FirstOrDefaultAsync();
+        var pendingPayment = booking.PaymentOption is not null && booking.Status == "pending";
+        var payment = pendingPayment ? null : await _context.Payments.Find(p => p.BookingId == booking.Id).FirstOrDefaultAsync();
+        var bill = pendingPayment ? null : await _context.Bills.Find(b => b.BookingId == booking.Id).FirstOrDefaultAsync();
 
         booking.DepartureDate = departure?.DepartureDate;
         booking.ReturnDate = departure?.ReturnDate;
-        booking.TourTitle = tour?.Title ?? departure?.TourTitle;
+        booking.TourTitle = booking.TourTitle ?? tour?.Title ?? departure?.TourTitle;
         booking.TourImage = tour?.ThumbnailUrl ?? departure?.ThumbnailUrl;
         booking.Destination = tour?.ProvinceName;
         booking.PaymentMethod = payment?.PaymentMethod;
         booking.BillNumber = bill?.BillNumber;
+        booking.CanReview = (booking.Status == "confirmed" || booking.Status == "completed") && departure?.ReturnDate < DateTime.UtcNow;
 
         return booking;
     }
@@ -227,19 +301,26 @@ public class BookingService : IBookingService
         var depMap = departures.ToDictionary(d => d.Id);
         var tourMap = tours.ToDictionary(t => t.Id);
 
+        var ids = bookings.Select(b => b.Id).ToList();
+        var payments = await _context.Payments.Find(p => ids.Contains(p.BookingId)).ToListAsync();
+        var paymentMethods = payments.ToLookup(p => p.BookingId, p => p.PaymentMethod);
+
         foreach (var b in bookings)
         {
             if (depMap.TryGetValue(b.DepartureId, out var dep))
             {
                 b.DepartureDate = dep.DepartureDate;
                 b.ReturnDate = dep.ReturnDate;
+                b.TourTitle ??= dep.TourTitle;
                 b.CanReview = (b.Status == "confirmed" || b.Status == "completed") && dep.ReturnDate < DateTime.UtcNow;
             }
             if (b.TourId.HasValue && tourMap.TryGetValue(b.TourId.Value, out var tour))
             {
-                b.TourTitle = tour.Title;
+                b.TourTitle ??= tour.Title;
                 b.TourImage = tour.ThumbnailUrl;
             }
+            if (b.PaymentOption == null || b.Status != "pending")
+                b.PaymentMethod = paymentMethods[b.Id].FirstOrDefault();
         }
 
         return bookings;
@@ -250,7 +331,7 @@ public class BookingService : IBookingService
         var bookings = await _context.Bookings.Find(b => b.CustomerId == customerId).ToListAsync();
         if (!bookings.Any()) return new List<object>();
 
-        var bookingIds = bookings.Select(b => b.Id).ToList();
+        var bookingIds = bookings.Where(b => b.PaymentOption == null || b.Status != "pending").Select(b => b.Id).ToList();
         var bookingMap = bookings.ToDictionary(b => b.Id);
 
         var payments = await _context.Payments.Find(p => bookingIds.Contains(p.BookingId))
@@ -258,7 +339,7 @@ public class BookingService : IBookingService
             .ToListAsync();
 
         var bills = await _context.Bills.Find(b => bookingIds.Contains(b.BookingId)).ToListAsync();
-        var billMap = bills.ToDictionary(b => b.BookingId);
+        var billMap = bills.ToLookup(b => b.BookingId);
 
         var depIds = bookings.Select(b => b.DepartureId).Distinct().ToList();
         var departures = await _context.TourDepartures.Find(d => depIds.Contains(d.Id)).ToListAsync();
@@ -272,7 +353,7 @@ public class BookingService : IBookingService
         foreach (var p in payments)
         {
             bookingMap.TryGetValue(p.BookingId, out var b);
-            billMap.TryGetValue(p.BookingId, out var bill);
+            var bill = billMap[p.BookingId].FirstOrDefault();
             TourDeparture? dep = null;
             if (b != null) depMap.TryGetValue(b.DepartureId, out dep);
             Tour? tour = null;
@@ -299,6 +380,48 @@ public class BookingService : IBookingService
         }
 
         return result;
+    }
+
+    public async Task<List<object>> GetPendingPaymentsAsync(bool bankOnly)
+    {
+        var rows = await _context.Bookings.Find(b => (b.PaymentOption == "bank_transfer" || (!bankOnly && b.PaymentOption == "cash")) && b.Status == "pending")
+            .SortByDescending(b => b.CreatedAt).ToListAsync();
+        return rows.Select(b => (object)new { b.Id, b.BookingCode, b.TourTitle, b.TotalAmount, b.CreatedAt, b.PaymentOption }).ToList();
+    }
+
+    public async Task ConfirmPendingPaymentAsync(int bookingId, int employeeId, bool bankOnly)
+    {
+        var booking = await _context.Bookings.Find(b => b.Id == bookingId && (b.PaymentOption == "bank_transfer" || (!bankOnly && b.PaymentOption == "cash")))
+            .FirstOrDefaultAsync() ?? throw new KeyNotFoundException("Không tìm thấy đơn chờ thanh toán.");
+        if (booking.Status == "confirmed") return;
+        if (booking.Status != "pending") throw new InvalidOperationException("Đơn không còn chờ thanh toán.");
+
+        // The booking's ObjectId is also the unique key in each settlement collection.
+        // Retrying a partial confirmation reuses the same payment and bill.
+        var now = DateTime.UtcNow;
+        var paymentId = await _context.GetNextSequenceAsync("payments");
+        await _context.Payments.UpdateOneAsync(p => p.MongoId == booking.MongoId,
+            Builders<Payment>.Update
+                .SetOnInsert(p => p.Id, paymentId)
+                .SetOnInsert(p => p.BookingId, booking.Id)
+                .SetOnInsert(p => p.Amount, booking.TotalAmount)
+                .SetOnInsert(p => p.PaymentMethod, booking.PaymentOption == "cash" ? "Tiền mặt" : "Chuyển khoản")
+                .SetOnInsert(p => p.CreatedAt, now)
+                .SetOnInsert(p => p.UpdatedAt, now),
+            new UpdateOptions { IsUpsert = true });
+        var billId = await _context.GetNextSequenceAsync("bills");
+        await _context.Bills.UpdateOneAsync(b => b.MongoId == booking.MongoId,
+            Builders<Bill>.Update
+                .SetOnInsert(b => b.Id, billId)
+                .SetOnInsert(b => b.BookingId, booking.Id)
+                .SetOnInsert(b => b.BillNumber, $"INV-{booking.Id:D3}")
+                .SetOnInsert(b => b.FinalAmount, booking.TotalAmount)
+                .SetOnInsert(b => b.EmployeeId, employeeId)
+                .SetOnInsert(b => b.CreatedAt, now)
+                .SetOnInsert(b => b.UpdatedAt, now),
+            new UpdateOptions { IsUpsert = true });
+        await _context.Bookings.UpdateOneAsync(b => b.Id == booking.Id && b.Status == "pending",
+            Builders<Booking>.Update.Set(b => b.Status, "confirmed").Set(b => b.UpdatedAt, now));
     }
 
     public async Task<Review> SubmitReviewAsync(int customerId, int bookingId, ReviewCreateRequest request)

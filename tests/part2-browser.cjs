@@ -19,7 +19,8 @@ let browser, currentPage;
     await page.waitForFunction(
       () => {
         const e = document.querySelector('#part2Message');
-        return e && e.hidden;
+        const area = document.querySelector('#adminContentArea');
+        return e && e.hidden && (!area || area.style.pointerEvents !== 'none');
       },
       {},
       { timeout: 15000 },
@@ -106,13 +107,8 @@ let browser, currentPage;
   await page.waitForFunction(() =>
     document.querySelector('#part2Message')?.textContent.includes('Thanh toán mô phỏng'),
   );
-  for (const [key, value] of Object.entries({
-    card_number: '4111111111111111',
-    card_holder: 'TEST CUSTOMER',
-    card_expiry: '12/30',
-    card_cvv: '123',
-  }))
-    await page.fill('[name="' + key + '"]', value);
+  // Giao diện thanh toán hiện tại giữ chỗ trước, nhân viên xác nhận tiền sau.
+  await page.selectOption('#checkout-payment-method', 'cash');
   await page.click('#submit-btn');
   await page.waitForURL('**/my_tours/show.html?id=*', { waitUntil: 'domcontentloaded' });
   await ready();

@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -102,23 +102,23 @@
 
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Ảnh đại diện quản trị viên"
              class="w-full h-full object-cover"/>
       </div>
     </div>
   </header>
 
-
 <div class="p-6 md:p-8">
 
     <!-- NÚT QUAY LẠI: NẰM NGOÀI KHUNG -->
     <div class="max-w-5xl mx-auto mb-6">
-        <a href="index.html"
+        <a href="/admin/employees/index.html"
            class="inline-flex items-center gap-2 bg-white border border-slate-200
                   text-slate-700 hover:bg-slate-50 transition px-5 py-2.5
                   rounded-full font-bold shadow-sm text-sm">
@@ -127,11 +127,11 @@
         </a>
     </div>
 
-    <div class="max-w-5xl mx-auto bg-white rounded-2xlshadow-sm border border-slate-200 p-6 md:p-10">
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-10">
         <!-- HEADER -->
         <header class="text-center mb-8">
             <div>
-                <h2 class="text-3xl font-black text-blue-900 tracking-tight">
+                <h2 id="editEmployeeTitle" class="text-3xl font-black text-blue-900 tracking-tight">
                     Chỉnh Sửa Nhân Viên #
                 </h2>
                 <p class="text-slate-500 mt-2">
@@ -221,7 +221,10 @@
                             required
                             maxlength="50"
                             autocomplete="username"
-                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium" minlength="4" pattern="[A-Za-z][A-Za-z0-9_.-]{3,49}">
+                            class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm font-medium">
+                        <p class="text-slate-400 text-xs mt-1">
+                            Tên đăng nhập không thể thay đổi khi cập nhật.
+                        </p>
                         
                             
                         
@@ -290,7 +293,7 @@
                         Cập nhật nhân viên
                     </button>
 
-                    <a href="index.html"
+                    <a href="/admin/employees/index.html"
                     class="bg-slate-100 hover:bg-slate-200 transition text-slate-700 px-8 py-3 rounded-xl font-bold text-sm">
                         Hủy bỏ
                     </a>
@@ -307,5 +310,6 @@
 <script src="../../assets/js/part2-common.js"></script>
 <script src="../../assets/js/employee-pages.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

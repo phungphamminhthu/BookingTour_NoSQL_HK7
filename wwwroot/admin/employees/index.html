@@ -37,21 +37,9 @@
     vertical-align: middle;
   }
     body { font-family: 'Public Sans', sans-serif; }
-    /* Các hàng dùng chung độ rộng cột; tên/email dài không đẩy lệch vai trò. */
-    .employee-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 20px 24px;
-    }
-    .employee-identity { grid-column: 1 / -1; }
-    .employee-role { justify-self: start; }
-    .employee-actions { justify-self: end; white-space: nowrap; }
-    @media (min-width: 1024px) {
-      .employee-row { grid-template-columns: minmax(0, 1fr) 128px 96px; }
-      .employee-identity { grid-column: auto; }
-    }
+
   </style>
+<link id="employeeStyles" rel="stylesheet" href="/assets/css/employees.css">
 </head>
 <body class="bg-slate-50 text-slate-900 overflow-x-hidden">
 
@@ -62,43 +50,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -116,11 +104,12 @@
 
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Ảnh đại diện quản trị viên"
              class="w-full h-full object-cover"/>
       </div>
@@ -265,5 +254,6 @@
 <script src="../../assets/js/part2-common.js"></script>
 <script src="../../assets/js/employee-pages.js"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

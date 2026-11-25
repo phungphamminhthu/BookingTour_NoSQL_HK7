@@ -346,36 +346,36 @@ public class DbSeeder
             var now = DateTime.UtcNow;
             var departures = new List<TourDeparture>
             {
-                new() { Id = 1, TourId = 1, TourTitle = "Khám phá Vịnh Hạ Long", DepartureDate = new DateTime(2026, 6, 1), ReturnDate = new DateTime(2026, 6, 2), MaxSeats = 20, AvailableSeats = 15, AdultPrice = 2500000m, ChildPrice = 1500000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 2, TourId = 1, TourTitle = "Khám phá Vịnh Hạ Long", DepartureDate = new DateTime(2026, 6, 15), ReturnDate = new DateTime(2026, 6, 16), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 2500000m, ChildPrice = 1500000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 3, TourId = 2, TourTitle = "Sapa - Thành phố trong sương", DepartureDate = new DateTime(2026, 6, 10), ReturnDate = new DateTime(2026, 6, 12), MaxSeats = 15, AvailableSeats = 10, AdultPrice = 3200000m, ChildPrice = 2100000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 4, TourId = 2, TourTitle = "Sapa - Thành phố trong sương", DepartureDate = new DateTime(2026, 6, 25), ReturnDate = new DateTime(2026, 6, 27), MaxSeats = 15, AvailableSeats = 15, AdultPrice = 3200000m, ChildPrice = 2100000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 5, TourId = 3, TourTitle = "Hà Giang - Mùa hoa tam giác mạch", DepartureDate = new DateTime(2026, 7, 5), ReturnDate = new DateTime(2026, 7, 8), MaxSeats = 12, AvailableSeats = 5, AdultPrice = 4800000m, ChildPrice = 3200000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 6, TourId = 3, TourTitle = "Hà Giang - Mùa hoa tam giác mạch", DepartureDate = new DateTime(2026, 7, 20), ReturnDate = new DateTime(2026, 7, 23), MaxSeats = 12, AvailableSeats = 12, AdultPrice = 4800000m, ChildPrice = 3200000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 7, TourId = 4, TourTitle = "Đà Nẵng - Hội An - Bà Nà Hills", DepartureDate = new DateTime(2026, 7, 1), ReturnDate = new DateTime(2026, 7, 4), MaxSeats = 30, AvailableSeats = 2, AdultPrice = 4500000m, ChildPrice = 3000000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 8, TourId = 4, TourTitle = "Đà Nẵng - Hội An - Bà Nà Hills", DepartureDate = new DateTime(2026, 7, 15), ReturnDate = new DateTime(2026, 7, 18), MaxSeats = 30, AvailableSeats = 25, AdultPrice = 4500000m, ChildPrice = 3000000m, GuideId = 9, GuideName = "Ngô Tiến Dũng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 9, TourId = 5, TourTitle = "Cố đô Huế - Vẻ đẹp trầm mặc", DepartureDate = new DateTime(2026, 6, 12), ReturnDate = new DateTime(2026, 6, 14), MaxSeats = 20, AvailableSeats = 18, AdultPrice = 2900000m, ChildPrice = 1900000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 10, TourId = 5, TourTitle = "Cố đô Huế - Vẻ đẹp trầm mặc", DepartureDate = new DateTime(2026, 6, 26), ReturnDate = new DateTime(2026, 6, 28), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 2900000m, ChildPrice = 1900000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 11, TourId = 6, TourTitle = "Nha Trang - Thiên đường biển đảo", DepartureDate = new DateTime(2026, 8, 1), ReturnDate = new DateTime(2026, 8, 3), MaxSeats = 25, AvailableSeats = 20, AdultPrice = 3500000m, ChildPrice = 2400000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 12, TourId = 6, TourTitle = "Nha Trang - Thiên đường biển đảo", DepartureDate = new DateTime(2026, 8, 10), ReturnDate = new DateTime(2026, 8, 12), MaxSeats = 25, AvailableSeats = 25, AdultPrice = 3500000m, ChildPrice = 2400000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 13, TourId = 7, TourTitle = "Đà Lạt - Xứ sở ngàn hoa", DepartureDate = new DateTime(2026, 6, 20), ReturnDate = new DateTime(2026, 6, 22), MaxSeats = 25, AvailableSeats = 0, AdultPrice = 3800000m, ChildPrice = 2500000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "full", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 14, TourId = 7, TourTitle = "Đà Lạt - Xứ sở ngàn hoa", DepartureDate = new DateTime(2026, 7, 5), ReturnDate = new DateTime(2026, 7, 7), MaxSeats = 25, AvailableSeats = 10, AdultPrice = 3800000m, ChildPrice = 2500000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 15, TourId = 8, TourTitle = "Phú Quốc - Đảo ngọc thiên đường", DepartureDate = new DateTime(2026, 8, 5), ReturnDate = new DateTime(2026, 8, 8), MaxSeats = 20, AvailableSeats = 8, AdultPrice = 5500000m, ChildPrice = 3800000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 16, TourId = 8, TourTitle = "Phú Quốc - Đảo ngọc thiên đường", DepartureDate = new DateTime(2026, 8, 20), ReturnDate = new DateTime(2026, 8, 23), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 5500000m, ChildPrice = 3800000m, GuideId = 9, GuideName = "Ngô Tiến Dũng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 17, TourId = 9, TourTitle = "Miền Tây sông nước - Cần Thơ", DepartureDate = new DateTime(2026, 6, 5), ReturnDate = new DateTime(2026, 6, 6), MaxSeats = 30, AvailableSeats = 12, AdultPrice = 1800000m, ChildPrice = 1200000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 18, TourId = 9, TourTitle = "Miền Tây sông nước - Cần Thơ", DepartureDate = new DateTime(2026, 6, 19), ReturnDate = new DateTime(2026, 6, 20), MaxSeats = 30, AvailableSeats = 30, AdultPrice = 1800000m, ChildPrice = 1200000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 19, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", DepartureDate = new DateTime(2026, 6, 1), ReturnDate = new DateTime(2026, 6, 1), MaxSeats = 40, AvailableSeats = 5, AdultPrice = 900000m, ChildPrice = 600000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", DepartureDate = new DateTime(2026, 6, 7), ReturnDate = new DateTime(2026, 6, 7), MaxSeats = 40, AvailableSeats = 35, AdultPrice = 900000m, ChildPrice = 600000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 21, TourId = 11, TourTitle = "Tràng An - Bái Đính Ninh Bình", DepartureDate = new DateTime(2026, 7, 10), ReturnDate = new DateTime(2026, 7, 11), MaxSeats = 20, AvailableSeats = 15, AdultPrice = 2200000m, ChildPrice = 1400000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 22, TourId = 11, TourTitle = "Tràng An - Bái Đính Ninh Bình", DepartureDate = new DateTime(2026, 7, 24), ReturnDate = new DateTime(2026, 7, 25), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 2200000m, ChildPrice = 1400000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 23, TourId = 12, TourTitle = "Vũng Tàu - Biển xanh gọi mời", DepartureDate = new DateTime(2026, 6, 13), ReturnDate = new DateTime(2026, 6, 14), MaxSeats = 35, AvailableSeats = 30, AdultPrice = 1500000m, ChildPrice = 1000000m, GuideId = 9, GuideName = "Ngô Tiến Dũng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 24, TourId = 12, TourTitle = "Vũng Tàu - Biển xanh gọi mời", DepartureDate = new DateTime(2026, 6, 27), ReturnDate = new DateTime(2026, 6, 28), MaxSeats = 35, AvailableSeats = 35, AdultPrice = 1500000m, ChildPrice = 1000000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 25, TourId = 13, TourTitle = "Hà Nội - 36 phố phường nghìn năm", DepartureDate = new DateTime(2026, 6, 2), ReturnDate = new DateTime(2026, 6, 2), MaxSeats = 15, AvailableSeats = 2, AdultPrice = 750000m, ChildPrice = 500000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 26, TourId = 13, TourTitle = "Hà Nội - 36 phố phường nghìn năm", DepartureDate = new DateTime(2026, 6, 9), ReturnDate = new DateTime(2026, 6, 9), MaxSeats = 15, AvailableSeats = 12, AdultPrice = 750000m, ChildPrice = 500000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 27, TourId = 14, TourTitle = "Khám phá đảo Cù Lao Chàm", DepartureDate = new DateTime(2026, 7, 2), ReturnDate = new DateTime(2026, 7, 2), MaxSeats = 25, AvailableSeats = 10, AdultPrice = 1200000m, ChildPrice = 850000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 28, TourId = 14, TourTitle = "Khám phá đảo Cù Lao Chàm", DepartureDate = new DateTime(2026, 7, 16), ReturnDate = new DateTime(2026, 7, 16), MaxSeats = 25, AvailableSeats = 25, AdultPrice = 1200000m, ChildPrice = 850000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 29, TourId = 15, TourTitle = "Hành trình di sản miền Trung", DepartureDate = new DateTime(2026, 8, 1), ReturnDate = new DateTime(2026, 8, 5), MaxSeats = 15, AvailableSeats = 4, AdultPrice = 7200000m, ChildPrice = 4900000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
-                new() { Id = 30, TourId = 15, TourTitle = "Hành trình di sản miền Trung", DepartureDate = new DateTime(2026, 8, 15), ReturnDate = new DateTime(2026, 8, 19), MaxSeats = 15, AvailableSeats = 15, AdultPrice = 7200000m, ChildPrice = 4900000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now }
+                new() { Id = 1, TourId = 1, TourTitle = "Khám phá Vịnh Hạ Long", DepartureDate = new DateTime(2026, 12, 1), ReturnDate = new DateTime(2026, 12, 2), MaxSeats = 20, AvailableSeats = 15, AdultPrice = 2500000m, ChildPrice = 1500000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 2, TourId = 1, TourTitle = "Khám phá Vịnh Hạ Long", DepartureDate = new DateTime(2026, 12, 15), ReturnDate = new DateTime(2026, 12, 16), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 2500000m, ChildPrice = 1500000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 3, TourId = 2, TourTitle = "Sapa - Thành phố trong sương", DepartureDate = new DateTime(2026, 12, 10), ReturnDate = new DateTime(2026, 12, 12), MaxSeats = 15, AvailableSeats = 10, AdultPrice = 3200000m, ChildPrice = 2100000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 4, TourId = 2, TourTitle = "Sapa - Thành phố trong sương", DepartureDate = new DateTime(2026, 12, 25), ReturnDate = new DateTime(2026, 12, 27), MaxSeats = 15, AvailableSeats = 15, AdultPrice = 3200000m, ChildPrice = 2100000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 5, TourId = 3, TourTitle = "Hà Giang - Mùa hoa tam giác mạch", DepartureDate = new DateTime(2027, 1, 5), ReturnDate = new DateTime(2027, 1, 8), MaxSeats = 12, AvailableSeats = 5, AdultPrice = 4800000m, ChildPrice = 3200000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 6, TourId = 3, TourTitle = "Hà Giang - Mùa hoa tam giác mạch", DepartureDate = new DateTime(2027, 1, 20), ReturnDate = new DateTime(2027, 1, 23), MaxSeats = 12, AvailableSeats = 12, AdultPrice = 4800000m, ChildPrice = 3200000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 7, TourId = 4, TourTitle = "Đà Nẵng - Hội An - Bà Nà Hills", DepartureDate = new DateTime(2027, 1, 1), ReturnDate = new DateTime(2027, 1, 4), MaxSeats = 30, AvailableSeats = 2, AdultPrice = 4500000m, ChildPrice = 3000000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 8, TourId = 4, TourTitle = "Đà Nẵng - Hội An - Bà Nà Hills", DepartureDate = new DateTime(2027, 1, 15), ReturnDate = new DateTime(2027, 1, 18), MaxSeats = 30, AvailableSeats = 25, AdultPrice = 4500000m, ChildPrice = 3000000m, GuideId = 9, GuideName = "Ngô Tiến Dũng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 9, TourId = 5, TourTitle = "Cố đô Huế - Vẻ đẹp trầm mặc", DepartureDate = new DateTime(2026, 12, 12), ReturnDate = new DateTime(2026, 12, 14), MaxSeats = 20, AvailableSeats = 18, AdultPrice = 2900000m, ChildPrice = 1900000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 10, TourId = 5, TourTitle = "Cố đô Huế - Vẻ đẹp trầm mặc", DepartureDate = new DateTime(2026, 12, 26), ReturnDate = new DateTime(2026, 12, 28), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 2900000m, ChildPrice = 1900000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 11, TourId = 6, TourTitle = "Nha Trang - Thiên đường biển đảo", DepartureDate = new DateTime(2027, 1, 2), ReturnDate = new DateTime(2027, 1, 4), MaxSeats = 25, AvailableSeats = 20, AdultPrice = 3500000m, ChildPrice = 2400000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 12, TourId = 6, TourTitle = "Nha Trang - Thiên đường biển đảo", DepartureDate = new DateTime(2027, 1, 10), ReturnDate = new DateTime(2027, 1, 12), MaxSeats = 25, AvailableSeats = 25, AdultPrice = 3500000m, ChildPrice = 2400000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 13, TourId = 7, TourTitle = "Đà Lạt - Xứ sở ngàn hoa", DepartureDate = new DateTime(2026, 12, 20), ReturnDate = new DateTime(2026, 12, 22), MaxSeats = 25, AvailableSeats = 0, AdultPrice = 3800000m, ChildPrice = 2500000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "full", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 14, TourId = 7, TourTitle = "Đà Lạt - Xứ sở ngàn hoa", DepartureDate = new DateTime(2027, 1, 5), ReturnDate = new DateTime(2027, 1, 7), MaxSeats = 25, AvailableSeats = 10, AdultPrice = 3800000m, ChildPrice = 2500000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 15, TourId = 8, TourTitle = "Phú Quốc - Đảo ngọc thiên đường", DepartureDate = new DateTime(2027, 1, 5), ReturnDate = new DateTime(2027, 1, 8), MaxSeats = 20, AvailableSeats = 8, AdultPrice = 5500000m, ChildPrice = 3800000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 16, TourId = 8, TourTitle = "Phú Quốc - Đảo ngọc thiên đường", DepartureDate = new DateTime(2027, 1, 20), ReturnDate = new DateTime(2027, 1, 23), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 5500000m, ChildPrice = 3800000m, GuideId = 9, GuideName = "Ngô Tiến Dũng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 17, TourId = 9, TourTitle = "Miền Tây sông nước - Cần Thơ", DepartureDate = new DateTime(2026, 12, 5), ReturnDate = new DateTime(2026, 12, 6), MaxSeats = 30, AvailableSeats = 12, AdultPrice = 1800000m, ChildPrice = 1200000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 18, TourId = 9, TourTitle = "Miền Tây sông nước - Cần Thơ", DepartureDate = new DateTime(2026, 12, 19), ReturnDate = new DateTime(2026, 12, 20), MaxSeats = 30, AvailableSeats = 30, AdultPrice = 1800000m, ChildPrice = 1200000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 19, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", DepartureDate = new DateTime(2026, 12, 1), ReturnDate = new DateTime(2026, 12, 1), MaxSeats = 40, AvailableSeats = 5, AdultPrice = 900000m, ChildPrice = 600000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", DepartureDate = new DateTime(2026, 12, 7), ReturnDate = new DateTime(2026, 12, 7), MaxSeats = 40, AvailableSeats = 35, AdultPrice = 900000m, ChildPrice = 600000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 21, TourId = 11, TourTitle = "Tràng An - Bái Đính Ninh Bình", DepartureDate = new DateTime(2027, 1, 10), ReturnDate = new DateTime(2027, 1, 11), MaxSeats = 20, AvailableSeats = 15, AdultPrice = 2200000m, ChildPrice = 1400000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 22, TourId = 11, TourTitle = "Tràng An - Bái Đính Ninh Bình", DepartureDate = new DateTime(2027, 1, 24), ReturnDate = new DateTime(2027, 1, 25), MaxSeats = 20, AvailableSeats = 20, AdultPrice = 2200000m, ChildPrice = 1400000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 23, TourId = 12, TourTitle = "Vũng Tàu - Biển xanh gọi mời", DepartureDate = new DateTime(2026, 12, 13), ReturnDate = new DateTime(2026, 12, 14), MaxSeats = 35, AvailableSeats = 30, AdultPrice = 1500000m, ChildPrice = 1000000m, GuideId = 9, GuideName = "Ngô Tiến Dũng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 24, TourId = 12, TourTitle = "Vũng Tàu - Biển xanh gọi mời", DepartureDate = new DateTime(2026, 12, 27), ReturnDate = new DateTime(2026, 12, 28), MaxSeats = 35, AvailableSeats = 35, AdultPrice = 1500000m, ChildPrice = 1000000m, GuideId = 5, GuideName = "Đặng Hồng Ngọc", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 25, TourId = 13, TourTitle = "Hà Nội - 36 phố phường nghìn năm", DepartureDate = new DateTime(2026, 12, 2), ReturnDate = new DateTime(2026, 12, 2), MaxSeats = 15, AvailableSeats = 2, AdultPrice = 750000m, ChildPrice = 500000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 26, TourId = 13, TourTitle = "Hà Nội - 36 phố phường nghìn năm", DepartureDate = new DateTime(2026, 12, 9), ReturnDate = new DateTime(2026, 12, 9), MaxSeats = 15, AvailableSeats = 12, AdultPrice = 750000m, ChildPrice = 500000m, GuideId = 10, GuideName = "Trịnh Công Sơn", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 27, TourId = 14, TourTitle = "Khám phá đảo Cù Lao Chàm", DepartureDate = new DateTime(2027, 1, 2), ReturnDate = new DateTime(2027, 1, 2), MaxSeats = 25, AvailableSeats = 10, AdultPrice = 1200000m, ChildPrice = 850000m, GuideId = 8, GuideName = "Bùi Khánh Linh", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 28, TourId = 14, TourTitle = "Khám phá đảo Cù Lao Chàm", DepartureDate = new DateTime(2027, 1, 16), ReturnDate = new DateTime(2027, 1, 16), MaxSeats = 25, AvailableSeats = 25, AdultPrice = 1200000m, ChildPrice = 850000m, GuideId = 4, GuideName = "Lê Mạnh Hùng", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 29, TourId = 15, TourTitle = "Hành trình di sản miền Trung", DepartureDate = new DateTime(2027, 1, 1), ReturnDate = new DateTime(2027, 1, 5), MaxSeats = 15, AvailableSeats = 4, AdultPrice = 7200000m, ChildPrice = 4900000m, GuideId = 7, GuideName = "Hoàng Thanh Mai", Status = "open", CreatedAt = now, UpdatedAt = now },
+                new() { Id = 30, TourId = 15, TourTitle = "Hành trình di sản miền Trung", DepartureDate = new DateTime(2027, 1, 15), ReturnDate = new DateTime(2027, 1, 19), MaxSeats = 15, AvailableSeats = 15, AdultPrice = 7200000m, ChildPrice = 4900000m, GuideId = 6, GuideName = "Vũ Anh Tuấn", Status = "open", CreatedAt = now, UpdatedAt = now }
             };
             await _context.TourDepartures.InsertManyAsync(departures);
             _logger.LogInformation("Seeded {Count} departures.", departures.Count);
@@ -480,6 +480,80 @@ public class DbSeeder
             await _context.Bookings.InsertManyAsync(bookings);
             _logger.LogInformation("Seeded {Count} bookings with embedded passengers.", bookings.Count);
         }
+
+        if (await _context.Bookings.CountDocumentsAsync(b => b.DepartureId == 20) == 0)
+        {
+            var now = DateTime.UtcNow;
+            var maxId = (await _context.Bookings.Find(_ => true).SortByDescending(b => b.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 10;
+            var dep20Bookings = new List<Booking>
+            {
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-01", CustomerId = 1, CustomerName = "Nguyễn An", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 0, TotalAmount = 3200000m, Status = "confirmed", CreatedAt = now.AddDays(-6), UpdatedAt = now.AddDays(-6),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 101, FullName = "Nguyễn An", PassengerType = "adult", IdCard = "001200000001", DateOfBirth = new DateTime(1990, 1, 15) },
+                        new() { Id = 102, FullName = "Trần Thị Mai", PassengerType = "adult", IdCard = "001200000002", DateOfBirth = new DateTime(1992, 5, 20) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-02", CustomerId = 2, CustomerName = "Lê Thị Hoa", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 1, TotalChildren = 1, TotalAmount = 2700000m, Status = "confirmed", CreatedAt = now.AddDays(-5), UpdatedAt = now.AddDays(-5),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 103, FullName = "Lê Thị Hoa", PassengerType = "adult", IdCard = "079200000001", DateOfBirth = new DateTime(1988, 3, 12) },
+                        new() { Id = 104, FullName = "Phạm Ngọc Hân", PassengerType = "child", IdCard = null, DateOfBirth = new DateTime(2019, 11, 5) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-03", CustomerId = 3, CustomerName = "Phạm Minh Tuấn", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 1, TotalAmount = 4300000m, Status = "confirmed", CreatedAt = now.AddDays(-4), UpdatedAt = now.AddDays(-4),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 105, FullName = "Phạm Minh Tuấn", PassengerType = "adult", IdCard = "048200000001", DateOfBirth = new DateTime(1993, 8, 19) },
+                        new() { Id = 106, FullName = "Đỗ Thùy Trang", PassengerType = "adult", IdCard = "048200000002", DateOfBirth = new DateTime(1995, 12, 30) },
+                        new() { Id = 107, FullName = "Phạm Minh Khôi", PassengerType = "child", IdCard = null, DateOfBirth = new DateTime(2020, 3, 10) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-04", CustomerId = 4, CustomerName = "Đặng Mỹ Linh", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 1, TotalChildren = 0, TotalAmount = 1600000m, Status = "confirmed", CreatedAt = now.AddDays(-3), UpdatedAt = now.AddDays(-3),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 108, FullName = "Đặng Mỹ Linh", PassengerType = "adult", IdCard = "092200000001", DateOfBirth = new DateTime(1991, 4, 18) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-05", CustomerId = 5, CustomerName = "Bùi Quang Huy", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 0, TotalAmount = 3200000m, Status = "pending", CreatedAt = now.AddDays(-2), UpdatedAt = now.AddDays(-2),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 109, FullName = "Bùi Quang Huy", PassengerType = "adult", IdCard = "031200000001", DateOfBirth = new DateTime(1996, 6, 25) },
+                        new() { Id = 110, FullName = "Nguyễn Thu Hà", PassengerType = "adult", IdCard = "031200000002", DateOfBirth = new DateTime(1997, 10, 15) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-06", CustomerId = 6, CustomerName = "Hoàng Anh Đức", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 1, TotalChildren = 1, TotalAmount = 2700000m, Status = "confirmed", CreatedAt = now.AddDays(-1), UpdatedAt = now.AddDays(-1),
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 111, FullName = "Hoàng Anh Đức", PassengerType = "adult", IdCard = "046200000001", DateOfBirth = new DateTime(1992, 10, 14) },
+                        new() { Id = 112, FullName = "Hoàng Bảo Nam", PassengerType = "child", IdCard = null, DateOfBirth = new DateTime(2019, 7, 22) }
+                    }
+                },
+                new()
+                {
+                    Id = ++maxId, BookingCode = "BK020-07", CustomerId = 7, CustomerName = "Đỗ Kim Liên", DepartureId = 20, TourId = 10, TourTitle = "Chinh phục đỉnh núi Bà Đen", TotalAdults = 2, TotalChildren = 0, TotalAmount = 3200000m, Status = "confirmed", CreatedAt = now, UpdatedAt = now,
+                    Passengers = new List<BookingPassengerEmbedded>
+                    {
+                        new() { Id = 113, FullName = "Đỗ Kim Liên", PassengerType = "adult", IdCard = "056200000001", DateOfBirth = new DateTime(1994, 2, 28) },
+                        new() { Id = 114, FullName = "Lê Hải Đăng", PassengerType = "adult", IdCard = "056200000002", DateOfBirth = new DateTime(1991, 11, 12) }
+                    }
+                }
+            };
+            await _context.Bookings.InsertManyAsync(dep20Bookings);
+            _logger.LogInformation("Seeded {Count} bookings for departure 20.", dep20Bookings.Count);
+        }
     }
 
     private async Task SeedPaymentsAsync()
@@ -549,22 +623,27 @@ public class DbSeeder
 
     private async Task InitializeCountersAsync()
     {
+        var maxBookingId = (await _context.Bookings.Find(_ => true).SortByDescending(b => b.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 20;
+        var maxPaymentId = (await _context.Payments.Find(_ => true).SortByDescending(p => p.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 20;
+        var maxBillId = (await _context.Bills.Find(_ => true).SortByDescending(b => b.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 20;
+        var maxDepId = (await _context.TourDepartures.Find(_ => true).SortByDescending(d => d.Id).Limit(1).FirstOrDefaultAsync())?.Id ?? 50;
+
         var counters = new[]
         {
             ("roles", 3),
-            ("tour_categories", 5),
-            ("provinces", 15),
-            ("employees", 10),
-            ("customers", 12),
-            ("tours", 15),
-            ("tour_departures", 30),
-            ("bookings", 10),
-            ("payments", 7),
-            ("bills", 2),
-            ("reviews", 17),
-            ("schedules", 150),
-            ("images", 75),
-            ("passengers", 20)
+            ("tour_categories", 10),
+            ("provinces", 20),
+            ("employees", 20),
+            ("customers", 30),
+            ("tours", 30),
+            ("tour_departures", Math.Max(50, maxDepId)),
+            ("bookings", Math.Max(50, maxBookingId)),
+            ("payments", Math.Max(50, maxPaymentId)),
+            ("bills", Math.Max(50, maxBillId)),
+            ("reviews", 30),
+            ("schedules", 300),
+            ("images", 150),
+            ("passengers", 300)
         };
 
         foreach (var (name, value) in counters)

@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -99,14 +99,14 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Ảnh đại diện quản trị viên"
              class="w-full h-full object-cover"/>
       </div>
@@ -119,294 +119,250 @@
     <!-- HEADER -->
     <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        
         <h1 class="text-3xl font-black text-blue-900 mb-2">Quản lý Chuyến Khởi Hành</h1>
         <p class="text-slate-500">Quản lý các đợt khởi hành thực tế của các tour, kiểm soát số chỗ và phân công HDV</p>
       </div>
-      <a href="#"
+      <button type="button" id="btnOpenCreateDepartureModal"
         class="bg-blue-900 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-800 transition shadow-sm w-fit text-sm">
         <span class="material-symbols-outlined text-lg">add</span>
         Tạo Chuyến Mới
-      </a>
+      </button>
     </div>
 
     <!-- ALERTS -->
-    <div class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
-      <span class="material-symbols-outlined mr-2">error</span>
-      <span>—</span>
+    <div id="departureAlertSuccess" class="hidden bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg shadow-sm flex items-center justify-between">
+      <div class="flex items-center">
+        <span class="material-symbols-outlined mr-2">check_circle</span>
+        <span id="departureAlertSuccessText">Thao tác thành công!</span>
+      </div>
+      <button type="button" onclick="document.getElementById('departureAlertSuccess').classList.add('hidden')" class="text-green-700 hover:text-green-900">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
     </div>
-    <div class="hidden bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
-      <span class="material-symbols-outlined mr-2">check_circle</span>
-      <span>—</span>
+    <div id="departureAlertError" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm flex items-center justify-between">
+      <div class="flex items-center">
+        <span class="material-symbols-outlined mr-2">error</span>
+        <span id="departureAlertErrorText">Đã có lỗi xảy ra!</span>
+      </div>
+      <button type="button" onclick="document.getElementById('departureAlertError').classList.add('hidden')" class="text-red-700 hover:text-red-900">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
     </div>
-    
 
     <!-- STATS CARDS -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 border-l-4 border-l-blue-900">
-        <div class="flex items-center justify-between mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <!-- Card 1: Đang mở bán -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Đang mở bán</span>
-          <span class="material-symbols-outlined text-blue-900 text-2xl">flight_takeoff</span>
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">flight_takeoff</span>
+          </div>
         </div>
-        <h3 class="text-3xl font-black text-blue-900">—</h3>
-        <p class="text-xs text-slate-500 mt-2">Chuyến đi đang nhận khách</p>
+        <div>
+          <h3 id="statDeparturesOpen" class="text-3xl font-black text-blue-950 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-slate-500 font-medium">Chuyến đi đang nhận khách</p>
+        </div>
       </div>
 
-      <a href="#"
-        class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 block hover:bg-orange-50/50 transition cursor-pointer border-l-4 border-l-orange-500">
-        <div class="flex items-center justify-between mb-4">
+      <!-- Card 2: Chưa gán HDV -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Chưa gán HDV</span>
-          <span class="material-symbols-outlined text-orange-600 text-2xl">person_add</span>
+          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">person_add</span>
+          </div>
         </div>
-        <h3 class="text-3xl font-black text-orange-600">—</h3>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Cần phân công người dẫn đoàn</p>
-      </a>
-
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 border-l-4 border-l-emerald-600">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Khởi hành hôm nay</span>
-          <span class="material-symbols-outlined text-emerald-600 text-2xl">today</span>
+        <div>
+          <h3 id="statDeparturesNoGuide" class="text-3xl font-black text-amber-600 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-amber-600/80 font-medium">Cần phân công người dẫn đoàn</p>
         </div>
-        <h3 class="text-3xl font-black text-emerald-600">—</h3>
-        <p class="text-xs text-slate-500 mt-2">Đoàn khởi hành trong ngày</p>
       </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 border-l-4 border-l-purple-600">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tháng tới</span>
-          <span class="material-symbols-outlined text-purple-600 text-2xl">calendar_month</span>
+      <!-- Card 3: Khởi hành hôm nay -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Khởi hành hôm nay</span>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">calendar_today</span>
+          </div>
         </div>
-        <h3 class="text-3xl font-black text-purple-600">—</h3>
-        <p class="text-xs text-slate-500 mt-2">Chuyến đã lên lịch tháng sau</p>
+        <div>
+          <h3 id="statDeparturesToday" class="text-3xl font-black text-emerald-600 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-slate-500 font-medium">Đoàn khởi hành trong ngày</p>
+        </div>
+      </div>
+
+      <!-- Card 4: Tổng số chuyến -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng số chuyến</span>
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-900 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">calendar_month</span>
+          </div>
+        </div>
+        <div>
+          <h3 id="statDeparturesTotal" class="text-3xl font-black text-indigo-950 font-headline tracking-tight leading-none mb-1.5">—</h3>
+          <p class="text-xs text-slate-500 font-medium">Tổng số chuyến trong hệ thống</p>
+        </div>
       </div>
     </div>
 
     <!-- SEARCH & FILTER FORM -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6">
-      <form action="#" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6">
+      <form id="departureSearchForm" action="#" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
         <div class="flex-1 w-full">
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Tên Tour, Mã Chuyến hoặc Tỉnh thành</label>
+          <label for="departureKeywordInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tên Tour, Mã Chuyến hoặc HDV</label>
           <div class="relative">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-            <input type="text" name="keyword" value="" placeholder="Ví dụ: Hạ Long, Sapa, hoặc mã ID..."
-                  class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm"/>
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+            <input type="text" id="departureKeywordInput" name="keyword" value="" placeholder="Ví dụ: Hạ Long, Sapa, hoặc mã ID..."
+                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm transition"/>
           </div>
         </div>
 
-        <div class="w-full md:w-56">
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Ngày khởi hành</label>
-          <input type="date" name="date" value=""
-                class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm"/>
+        <div class="w-full md:w-60">
+          <label for="departureDateInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Ngày khởi hành</label>
+          <input type="date" id="departureDateInput" name="date" value=""
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 focus:bg-white text-sm transition font-medium text-slate-700"/>
         </div>
 
-        <div class="flex gap-2 w-full md:w-auto">
-          <button type="submit" class="flex-1 md:flex-none bg-blue-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-800 transition text-sm">
-            Lọc kết quả
+        <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
+          <button type="submit" class="flex-1 md:flex-none bg-blue-900 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-blue-800 transition text-sm flex items-center justify-center gap-2 shadow-sm">
+            <span class="material-symbols-outlined text-base">filter_list</span>
+            <span>Lọc kết quả</span>
           </button>
-          <a href="#" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-100 transition flex items-center justify-center text-sm" title="Đặt lại bộ lọc">
+          <button type="button" id="btnResetDepartureFilter" class="px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-100 transition flex items-center justify-center text-sm shadow-sm" title="Đặt lại bộ lọc">
             <span class="material-symbols-outlined text-lg">restart_alt</span>
-          </a>
+          </button>
         </div>
       </form>
     </div>
 
     <!-- STATUS FILTER TABS -->
-    <div class="flex flex-wrap gap-2 mb-6">
-      <a href="#"
-        class="px-4 py-2 rounded-xl font-bold text-xs transition ">
-        Tất cả ()
-      </a>
-      <a href="#"
-        class="px-4 py-2 rounded-xl font-bold text-xs transition ">
-        Đang bán ()
-      </a>
-      <a href="#"
-        class="px-4 py-2 rounded-xl font-bold text-xs transition ">
-        Đã đầy ()
-      </a>
-      <a href="#"
-        class="px-4 py-2 rounded-xl font-bold text-xs transition ">
-        Đã hủy ()
-      </a>
+    <div id="departureStatusTabs" class="flex flex-wrap items-center gap-2 mb-6">
+      <button type="button" data-status="all" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-blue-900 text-white shadow-sm flex items-center gap-1.5">
+        Tất cả
+      </button>
+      <button type="button" data-status="open" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
+        Đang bán
+      </button>
+      <button type="button" data-status="full" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
+        Đã đầy
+      </button>
+      <button type="button" data-status="cancelled" class="px-4 py-2 rounded-xl font-bold text-xs transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
+        Đã hủy
+      </button>
     </div>
 
     <!-- GRID CHUYẾN KHỞI HÀNH -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      
-        
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col justify-between">
-          <div>
-            <!-- Header Card -->
-            <div class="bg-gradient-to-r from-blue-900 to-blue-700 px-6 py-4 text-white">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-semibold uppercase tracking-wider text-blue-200 font-mono">Mã chuyến: #DEP-</span>
-                
-                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500 text-white">Đang bán</span>
-                
-                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-white">Đã đầy</span>
-                
-                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white">Đã hủy</span>
-                
-              </div>
-              <h3 class="text-base font-bold line-clamp-1">
-                <a href="#" class="hover:underline">—</a>
-              </h3>
-              <p class="text-xs text-blue-100 mt-1 flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">location_on</span>—</p>
-            </div>
-
-            <!-- Body Card -->
-            <div class="p-6 space-y-4 text-sm">
-              <!-- Ngày đi & Ngày về -->
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <p class="text-xs text-slate-500 font-semibold mb-1">Khởi hành</p>
-                  <p class="font-bold text-blue-950 flex items-center gap-1 text-xs sm:text-sm">
-                    <span class="material-symbols-outlined text-sm text-slate-400">calendar_today</span>—</p>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-semibold mb-1">Trở về</p>
-                  <p class="font-bold text-blue-950 flex items-center gap-1 text-xs sm:text-sm">
-                    <span class="material-symbols-outlined text-sm text-slate-400">event</span>—</p>
-                </div>
-              </div>
-
-              <!-- Tình trạng giữ chỗ -->
-              <div>
-                <div class="flex items-center justify-between mb-2 text-xs">
-                  <p class="font-bold text-slate-600 uppercase">Tình trạng giữ chỗ</p>
-                  <p class="font-bold text-blue-900">
-                    <span class=" font-black">—</span> /  khách đã đặt
-                    ( chỗ trống)
-                  </p>
-                </div>
-                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                  <div class=" h-2.5 rounded-full transition-all duration-500" style="width: %"></div>
-                </div>
-              </div>
-
-              <!-- Giá vé -->
-              <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100 text-xs">
-                <div>
-                  <p class="text-slate-500 font-semibold mb-1">Giá người lớn</p>
-                  <p class="font-black text-blue-900 text-base">—<span class="text-xs font-medium text-slate-500">đ</span></p>
-                </div>
-                <div>
-                  <p class="text-slate-500 font-semibold mb-1">Giá trẻ em</p>
-                  <p class="font-black text-blue-900 text-base">—<span class="text-xs font-medium text-slate-500">đ</span></p>
-                </div>
-              </div>
-
-              <!-- Hướng dẫn viên -->
-              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <div>
-                  <p class="text-slate-500 font-semibold mb-0.5">Hướng dẫn viên trưởng</p>
-                  <p class="font-bold text-slate-800 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-slate-400 text-base">badge</span>
-                    
-                       ()
-                    
-                      <span class="text-orange-600 font-bold italic">Chưa phân công</span>
-                    
-                  </p>
-                </div>
-                <a href="#" class="text-xs text-blue-900 font-bold hover:underline bg-blue-50 px-3 py-1 rounded-lg">—</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Footer Card Thao tác -->
-          <div class="px-6 py-4 bg-slate-50/80 border-t border-slate-100 flex gap-2 items-center">
-            <a href="#" class="flex-1 bg-white hover:bg-slate-100 text-blue-900 py-2.5 rounded-xl transition font-bold text-xs text-center flex items-center justify-center gap-1 border border-slate-200">
-              <span class="material-symbols-outlined text-sm">visibility</span>
-              Xem Chi Tiết Tour
-            </a>
-            <a href="#" class="px-4 bg-white hover:bg-orange-50 text-orange-600 py-2.5 rounded-xl transition font-bold text-xs flex items-center justify-center border border-slate-200" title="Chỉnh sửa">
-              <span class="material-symbols-outlined text-sm">edit</span>
-            </a>
-            <form action="#" method="POST"
-                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa chuyến khởi hành #DEP-?');" class="inline">
-              
-              
-              <button type="submit" class="px-4 bg-white hover:bg-red-50 text-red-600 py-2.5 rounded-xl transition font-bold text-xs flex items-center justify-center border border-slate-200" title="Xóa chuyến đi">
-                <span class="material-symbols-outlined text-sm">delete</span>
-              </button>
-            </form>
-          </div>
-        </div>
-      
-        <div class="col-span-2 bg-white rounded-2xl p-12 text-center text-slate-400 border border-slate-100">
-          <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">event_busy</span>
-          <p class="text-base font-semibold text-slate-600">Không tìm thấy chuyến khởi hành nào phù hợp.</p>
-          <p class="text-xs mt-1">Hãy thử tìm từ khóa khác hoặc tạo chuyến khởi hành mới.</p>
-        </div>
-      
+    <div id="departuresGridContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     </div>
 
-    
     <!-- PHÂN TRANG -->
-    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-slate-100
-                px-6 py-5 flex flex-col sm:flex-row
-                items-center justify-between gap-4">
-
-        <!-- Thông tin số lượng -->
-        <div class="text-xs text-slate-500">
-            Hiển thị
-            <span class="font-bold text-blue-900">
-                –
-            </span>
-            trên tổng số
-            <span class="font-bold text-blue-900">—</span>
-            chuyến khởi hành
-        </div>
-        <div class="flex items-center gap-1.5">
-
-            <!-- Trang trước -->
-                <span class="w-9 h-9 flex items-center justify-center
-                            border border-slate-200 rounded-lg text-slate-300">
-                    <span class="material-symbols-outlined text-lg">chevron_left</span>
-                </span>
-            
-                <a href=""
-                  class="w-9 h-9 flex items-center justify-center
-                          border border-slate-200 rounded-lg text-slate-600
-                          hover:bg-blue-50 hover:text-blue-900">
-                    <span class="material-symbols-outlined text-lg">chevron_left</span>
-                </a>
-            
-
-            <!-- Các số trang -->
-                <a href=""
-                  class="w-9 h-9 flex items-center justify-center rounded-lg
-                          text-xs font-bold transition
-                          ">—</a>
-            
-
-            <!-- Trang sau -->
-                <a href=""
-                  class="w-9 h-9 flex items-center justify-center
-                          border border-slate-200 rounded-lg text-slate-600
-                          hover:bg-blue-50 hover:text-blue-900">
-                    <span class="material-symbols-outlined text-lg">chevron_right</span>
-                </a>
-            
-                <span class="w-9 h-9 flex items-center justify-center
-                            border border-slate-200 rounded-lg text-slate-300">
-                    <span class="material-symbols-outlined text-lg">chevron_right</span>
-                </span>
-            
-
-        </div>
-        
+    <div id="departurePaginationContainer" class="mt-8 bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <!-- Thông tin số lượng -->
+      <div id="departurePaginationSummary" class="text-xs text-slate-500">
+        Hiển thị <span class="font-bold text-blue-900">1–5</span> trên tổng số <span class="font-bold text-blue-900">0</span> chuyến khởi hành
+      </div>
+      <div id="departurePaginationButtons" class="flex items-center gap-1.5">
+      </div>
     </div>
 
+  </div>
 
+  <!-- MODAL TẠO CHUYẾN KHỞI HÀNH MỚI -->
+  <div id="createDepartureModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
+      <div class="bg-gradient-to-r from-blue-900 to-indigo-900 px-6 py-4 text-white flex justify-between items-center shrink-0">
+        <h3 class="font-bold text-base flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg">flight_takeoff</span>
+          Tạo Chuyến Khởi Hành Mới
+        </h3>
+        <button type="button" id="btnCloseCreateDepartureModal" class="text-white/80 hover:text-white">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+      <form id="createDepartureForm" class="p-6 space-y-4 overflow-y-auto flex-1">
+        <!-- Alert Error in modal -->
+        <div id="createDepartureModalError" class="hidden bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-lg text-xs">
+          <span id="createDepartureModalErrorText">Có lỗi xảy ra</span>
+        </div>
+
+        <!-- Tour Select -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Chọn Tour du lịch <span class="text-red-500">*</span></label>
+          <select id="createDepTourSelect" name="tour_id" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white">
+            <option value="">-- Đang tải danh sách tour... --</option>
+          </select>
+        </div>
+
+        <!-- Departure Date & Return Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ngày khởi hành <span class="text-red-500">*</span></label>
+            <input type="date" id="createDepStartDate" name="departure_date" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ngày trở về <span class="text-red-500">*</span></label>
+            <input type="date" id="createDepEndDate" name="return_date" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white"/>
+          </div>
+        </div>
+
+        <!-- Seats & Status -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số chỗ tối đa <span class="text-red-500">*</span></label>
+            <input type="number" id="createDepMaxSeats" name="max_seats" value="20" min="1" max="200" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Trạng thái chuyến</label>
+            <select id="createDepStatus" name="status" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white">
+              <option value="open" selected>Đang mở bán (Open)</option>
+              <option value="full">Đã đầy (Full)</option>
+              <option value="cancelled">Đã hủy (Cancelled)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Prices -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Giá người lớn (VNĐ) <span class="text-red-500">*</span></label>
+            <input type="number" id="createDepAdultPrice" name="adult_price" min="0" step="10000" placeholder="Lấy theo giá tour..." required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Giá trẻ em (VNĐ)</label>
+            <input type="number" id="createDepChildPrice" name="child_price" min="0" step="10000" placeholder="Tự tính 70% giá..." class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white"/>
+          </div>
+        </div>
+
+        <!-- Guide Selection -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hướng dẫn viên (Tùy chọn)</label>
+          <select id="createDepGuideSelect" name="guide_id" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm bg-white">
+            <option value="">-- Chưa phân công HDV --</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 shrink-0">
+          <button type="button" id="btnCancelCreateDeparture" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">
+            Hủy
+          </button>
+          <button type="submit" id="btnSubmitCreateDeparture" class="px-6 py-2.5 rounded-xl bg-blue-900 text-white font-bold hover:bg-blue-800 transition text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">add</span>
+            <span>Tạo chuyến</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
   
 </main>
 
+<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/admin-pages.js?v=2.3.0"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

@@ -44,7 +44,9 @@
     const userType = String(data.userType || '').toLowerCase();
     // These are initial landing pages available in the supplied static UI.
     if (userType === 'customer' || role === 'customer') {
-      window.location.href = '/client/home.html';
+      const returnTo = new URLSearchParams(window.location.search).get('returnTo');
+      const allowed = /^\/client\/(?:booking\/(?:create|passengers)|payments\/(?:invoice|history)|my_tours\/(?:index|show|review))\.html(?:\?[^#]*)?$/;
+      window.location.href = returnTo && allowed.test(returnTo) ? returnTo : '/client/home.html';
     } else if (role === 'admin') {
       window.location.href = '/admin/dashboard.html';
     } else if (role === 'sale') {

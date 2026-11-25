@@ -20,19 +20,32 @@ public class DeparturesController : ControllerBase
 
     [HttpGet]
     [HttpGet("/departures")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetDepartures(
+        [FromQuery] string? search,
         [FromQuery] string? keyword,
+        [FromQuery] int? tourId,
         [FromQuery] DateTime? date,
         [FromQuery] string? status,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
+        [FromQuery] int pageSize = 5)
     {
-        var (items, total) = await _departureService.QueryDeparturesAsync(keyword, date, status, page, pageSize);
+        var q = !string.IsNullOrWhiteSpace(search) ? search : keyword;
+        var (items, total) = await _departureService.QueryDeparturesAsync(q, tourId, date, status, page, pageSize);
         return Ok(ApiResponse<List<TourDeparture>>.Ok(items, "Lấy danh sách chuyến đi thành công.", total, page, pageSize));
+    }
+
+    [HttpGet("stats")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetDepartureStats()
+    {
+        var stats = await _departureService.GetStatsAsync();
+        return Ok(ApiResponse<DepartureStatsDto>.Ok(stats, "Lấy thống kê chuyến khởi hành thành công."));
     }
 
     [HttpGet("{id:int}")]
     [HttpGet("/departures/{id:int}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetDepartureById(int id)
     {
         var departure = await _departureService.GetDepartureByIdAsync(id);
@@ -41,6 +54,16 @@ public class DeparturesController : ControllerBase
             return NotFound(ApiResponse<object>.Fail($"Không tìm thấy chuyến đi mã {id}."));
         }
         return Ok(ApiResponse<TourDeparture>.Ok(departure, "Lấy chi tiết chuyến đi thành công."));
+    }
+
+    [Authorize(Roles = "Admin,Sale")]
+    [HttpGet("guides")]
+    public async Task<IActionResult> GetGuides([FromServices] IAdminManagementService management)
+    {
+        var employees = await management.GetAllEmployeesAsync();
+        var guides = employees.Where(e => e.RoleId == 3)
+            .Select(e => new { e.Id, FullName = e.FullName }).ToList();
+        return Ok(ApiResponse<object>.Ok(guides));
     }
 
     [HttpPost]
@@ -114,6 +137,25 @@ public class DeparturesController : ControllerBase
         {
             var success = await _departureService.AssignGuideAsync(id, request.GuideId);
             return Ok(ApiResponse<bool>.Ok(success, "Phân công hướng dẫn viên thành công."));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ApiResponse<object>.Fail(ex.Message));
+        }
+    }
+
+    [HttpGet("{id:int}/bookings")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetDepartureBookings(int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 5)
+    {
+        try
+        {
+            var result = await _departureService.GetDepartureBookingsAsync(id, page, pageSize);
+            return Ok(ApiResponse<DepartureBookingsResponse>.Ok(result, "Lấy danh sách khách hàng đặt chuyến thành công."));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ApiResponse<object>.Fail(ex.Message));
         }
         catch (Exception ex)
         {

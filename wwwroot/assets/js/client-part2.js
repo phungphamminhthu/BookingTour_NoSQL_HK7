@@ -44,8 +44,8 @@
     const grid = provincePage ? $('#provinceToursGrid') : $('#catalogTourGrid');
     grid.textContent = 'Đang tải tour...';
     const [categories, provinces] = await Promise.all([
-      request('/api/categories'),
-      request('/api/provinces'),
+      request('/api/categories?all=true'),
+      request('/api/provinces?all=true'),
     ]);
     const form = $('#filter_tour');
     if (form) {
@@ -467,6 +467,13 @@
   }
   async function reviewPage() {
     await requireUser('Customer');
+    const backBtn = $('#reviewBackTourLink') || document.querySelector('a.hover\\:text-primary');
+    if (backBtn) {
+      backBtn.onclick = (e) => {
+        e.preventDefault();
+        alert('Đang tải thông tin chuyến đi, vui lòng đợi trong giây lát...');
+      };
+    }
     const { data: reviews } = await request('/api/reviews/mine');
     const existing = reviews.find(
       (r) =>
@@ -474,11 +481,46 @@
         (params.get('booking_id') && String(r.booking_id) === params.get('booking_id')),
     );
     let booking = null;
-    if (params.get('booking_id'))
-      booking = (await request('/api/bookings/' + params.get('booking_id'))).data;
-    if (!booking && !existing)
+    const bookingId = params.get('booking_id');
+    if (bookingId) {
+      try {
+        booking = (await request('/api/bookings/' + bookingId)).data;
+      } catch (err) {
+        console.warn('Không thể tải thông tin booking:', err);
+      }
+    }
+    const targetTourId = booking?.tour_id || existing?.tour_id;
+    if (!targetTourId) {
+      if (backBtn) {
+        backBtn.onclick = (e) => {
+          e.preventDefault();
+          alert('Không tìm thấy thông tin tour tương ứng để quay lại.');
+        };
+      }
       throw new Error('Hãy chọn đơn đã hoàn thành trong Chuyến đi của tôi để đánh giá.');
-    const tour = (await request('/api/tours/' + (booking?.tour_id || existing.tour_id))).data;
+    }
+
+    let tour = null;
+    try {
+      tour = (await request('/api/tours/' + targetTourId)).data;
+    } catch (err) {
+      console.warn('Không thể tải thông tin tour:', err);
+    }
+
+    if (!tour || !tour.id) {
+      if (backBtn) {
+        backBtn.onclick = (e) => {
+          e.preventDefault();
+          alert('Không tìm thấy dữ liệu chi tiết tour.');
+        };
+      }
+      throw new Error('Không thể tải thông tin chi tiết tour.');
+    }
+
+    if (backBtn) {
+      backBtn.href = tourLink(tour.id);
+      backBtn.onclick = null;
+    }
     text('#reviewTourTitle', tour.title);
     text('#reviewTourCategory', tour.category_name);
     text('#reviewTourDest', tour.province_name);

@@ -48,43 +48,43 @@
   </div>
   <nav class="flex-1 space-y-1">
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../dashboard.html">
+        href="/admin/dashboard.html">
       <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../tours/index.html">
+        href="/admin/tours/index.html">
       <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../categories/index.html">
+        href="/admin/categories/index.html">
       <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../departures/index.html">
+        href="/admin/departures/index.html">
       <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../locations/index.html">
+       href="/admin/locations/index.html">
       <span class="material-symbols-outlined">location_on</span>
       <span>Quản lý địa điểm</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="../customers/index.html">
+        href="/admin/customers/index.html">
       <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../transactions/index.html">
+       href="/admin/transactions/index.html">
       <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
     </a>
 
     <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="../employees/index.html">
+       href="/admin/employees/index.html">
       <span class="material-symbols-outlined">badge</span>
       <span>Quản lý nhân viên</span>
     </a>
@@ -99,14 +99,14 @@
 
 <main class="md:ml-64 min-h-screen flex flex-col">
   <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-
     <div class="flex items-center gap-4">
       <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none"></p>
+        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
       </div>
 
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm">
-        <img src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin-viet_1e3a8a.png"
+      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
              alt="Ảnh đại diện quản trị viên"
              class="w-full h-full object-cover"/>
       </div>
@@ -116,55 +116,168 @@
 
 <div id="assign-guide-content" class="p-8">
 
-    <div class="mb-8">
-        <nav class="flex items-center space-x-2 text-xs text-slate-400 mb-2 font-bold uppercase tracking-wider">
-            <span>Quản trị vận hành</span>
-            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <a href="#" class="hover:underline">Chuyến Khởi Hành</a>
-            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span class="text-indigo-700 font-bold">Phân công HDV</span>
-        </nav>
-        <h1 class="text-3xl font-black text-indigo-700 mb-2">Phân công Hướng dẫn viên</h1>
-        <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mt-3 max-w-xl">
-            <p class="text-xs text-indigo-500 font-bold uppercase tracking-wider mb-1">Thông tin chuyến đi cần phân công</p>
-            <p class="text-base font-extrabold text-blue-950">—</p>
-            <div class="flex flex-wrap items-center gap-4 mt-2 text-xs text-slate-600">
-                <span><strong>Mã chuyến:</strong> #DEP-</span>
-                <span><strong>Khởi hành:</strong>—</span>
-                <span><strong>Số khách:</strong>  pax</span>
-                <span><strong>HDV hiện tại:</strong> <span class="font-bold text-indigo-900">—</span></span>
+    <div class="mb-6">
+        <h1 class="text-3xl font-black text-blue-900 mb-1">Phân công Hướng dẫn viên</h1>
+        <p class="text-slate-500 text-sm">Chỉ định nhân sự có chuyên môn để điều phối và dẫn đoàn cho chuyến khởi hành</p>
+    </div>
+
+    <!-- BANNER THÔNG BÁO THÀNH CÔNG -->
+    <div id="assignGuideAlertSuccess" class="hidden bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 p-4 mb-6 rounded-2xl shadow-sm max-w-4xl flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-600">check_circle</span>
+            <span id="assignGuideAlertSuccessText" class="font-semibold text-sm">Phân công hướng dẫn viên thành công!</span>
+        </div>
+        <button type="button" onclick="document.getElementById('assignGuideAlertSuccess').classList.add('hidden')" class="text-emerald-700 hover:text-emerald-900">
+            <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+    </div>
+
+    <!-- BANNER THÔNG BÁO LỖI -->
+    <div id="assignGuideAlertError" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-2xl shadow-sm max-w-4xl flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-red-600">error</span>
+            <span id="assignGuideAlertErrorText" class="font-semibold text-sm">Có lỗi xảy ra!</span>
+        </div>
+        <button type="button" onclick="document.getElementById('assignGuideAlertError').classList.add('hidden')" class="text-red-700 hover:text-red-900">
+            <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+    </div>
+
+    <!-- CARD THÔNG TIN CHUYẾN ĐI -->
+    <div id="assignGuideDepartureCard" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6 max-w-4xl">
+        <div class="bg-gradient-to-r from-blue-900 to-blue-800 px-6 py-4 text-white flex items-center justify-between gap-4">
+            <div class="flex-1 min-w-0">
+                <p class="text-[11px] font-bold text-blue-200 uppercase tracking-wider font-mono">Thông tin chuyến đi cần phân công</p>
+                <h2 id="assignTourTitle" class="text-lg font-black text-white mt-0.5 line-clamp-1">—</h2>
+            </div>
+            <span id="assignDepartureStatus" class="shrink-0 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-sm">
+                —
+            </span>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                <div>
+                    <p class="text-slate-400 font-semibold mb-1">Mã chuyến</p>
+                    <p id="assignDepartureId" class="font-mono font-bold text-blue-950 text-sm">#DEP-—</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 font-semibold mb-1">Khởi hành</p>
+                    <p id="assignDepDate" class="font-bold text-slate-800 text-sm">—</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 font-semibold mb-1">Trở về</p>
+                    <p id="assignRetDate" class="font-bold text-slate-800 text-sm">—</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 font-semibold mb-1">Số khách / Sức chứa</p>
+                    <p id="assignSeatsInfo" class="font-bold text-blue-900 text-sm">— pax</p>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <span class="text-slate-500 font-semibold">HDV hiện tại:</span>
+                <span id="assignCurrentGuide" class="font-bold text-blue-900 text-sm flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-base text-slate-400">badge</span>
+                    <span>—</span>
+                </span>
             </div>
         </div>
     </div>
-    <div class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm max-w-xl">
-        <p class="font-bold">Lỗi:</p>
-        <p>—</p>
+
+    <!-- CARD DANH SÁCH KHÁCH HÀNG ĐÃ ĐẶT CHUYẾN (ĐẶT TRƯỚC FORM PHÂN CÔNG) -->
+    <div id="assignGuideBookingsCard" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6 max-w-4xl">
+        <!-- Card Header -->
+        <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-900 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-lg">groups</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Danh sách khách hàng đã đặt chuyến</h3>
+                    <p id="assignBookingsSubtitle" class="text-xs text-slate-500 font-medium">Danh sách các đơn đặt chỗ của chuyến khởi hành này</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="assignBookingsSummaryBadge" class="px-3 py-1 bg-blue-50 text-blue-900 text-xs font-bold rounded-lg border border-blue-200 shadow-xs">
+                    0 khách / 0 đơn
+                </span>
+            </div>
+        </div>
+
+        <!-- Trạng thái Loading -->
+        <div id="assignBookingsLoading" class="py-12 flex flex-col items-center justify-center text-slate-400">
+            <span class="material-symbols-outlined text-3xl animate-spin text-blue-900 mb-2">sync</span>
+            <p class="text-xs font-semibold">Đang tải danh sách khách đặt chỗ...</p>
+        </div>
+
+        <!-- Trạng thái Trống (Empty State) -->
+        <div id="assignBookingsEmpty" class="hidden py-12 px-6 text-center">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                <span class="material-symbols-outlined text-3xl">person_off</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-700 mb-1">Chưa có khách hàng đặt chuyến khởi hành này.</h4>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto">Hiện tại chuyến khởi hành này chưa có đơn đặt chỗ nào được ghi nhận trong hệ thống.</p>
+        </div>
+
+        <!-- Trạng thái Lỗi (Error State) -->
+        <div id="assignBookingsError" class="hidden py-8 px-6 text-center">
+            <div class="w-12 h-12 mx-auto mb-2 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
+                <span class="material-symbols-outlined text-2xl">error</span>
+            </div>
+            <p id="assignBookingsErrorText" class="text-xs font-semibold text-rose-600 mb-2">Không thể tải danh sách khách đặt chỗ.</p>
+            <button type="button" id="btnRetryBookings" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-blue-900 font-bold text-xs rounded-lg transition">Thử lại</button>
+        </div>
+
+        <!-- Bảng danh sách khách hàng -->
+        <div id="assignBookingsTableWrapper" class="hidden overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-600 uppercase text-[11px] font-bold tracking-wider border-b border-slate-100">
+                        <th class="py-3 px-4 w-12 text-center">STT</th>
+                        <th class="py-3 px-4">Mã booking</th>
+                        <th class="py-3 px-4">Khách hàng</th>
+                        <th class="py-3 px-4">Số điện thoại</th>
+                        <th class="py-3 px-4">Email</th>
+                        <th class="py-3 px-4 text-center">Số khách</th>
+                        <th class="py-3 px-4">Ngày đặt</th>
+                        <th class="py-3 px-4 text-center">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody id="assignBookingsTableBody" class="divide-y divide-slate-100 text-xs">
+                    <!-- Dòng dữ liệu được render động -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Thanh Phân Trang (Pagination) -->
+        <div id="assignBookingsPagination" class="hidden px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white">
+            <p id="assignBookingsPaginationSummary" class="text-xs text-slate-500 font-medium">
+                Hiển thị 1–5 trên tổng số 7 đơn
+            </p>
+            <div id="assignBookingsPaginationButtons" class="flex items-center gap-1.5">
+                <!-- Nút phân trang: < 1 2 > -->
+            </div>
+        </div>
     </div>
-    
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 max-w-xl">
-        <form action="#" method="POST" class="space-y-6">
-            
-
+    <!-- CARD FORM PHÂN CÔNG (ĐẶT SAU DANH SÁCH KHÁCH HÀNG) -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 max-w-4xl">
+        <form id="assignGuideForm" action="#" method="POST" class="space-y-6">
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Chọn Hướng dẫn viên phụ trách <span class="text-red-500">*</span></label>
-                <select name="guideId" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition text-sm font-medium" required>
-                    <option value="">-- Vui lòng chọn Hướng dẫn viên --</option>
-                    
-                        <option value="" >
-                             -  ()
-                        </option>
-                    
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
+                    Chọn Hướng dẫn viên phụ trách <span class="text-red-500">*</span>
+                </label>
+                <select id="assignGuideSelect" name="guideId" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition text-sm font-medium bg-white" required>
+                    <option value="">-- Đang nạp danh sách Hướng dẫn viên... --</option>
                 </select>
-                <p class="text-xs text-slate-500 mt-2">Chọn nhân sự có chuyên môn phụ trách dẫn đoàn và điều phối chuyến đi.</p>
+                <p class="text-xs text-slate-500 mt-2">Chọn nhân sự có chuyên môn để điều phối và dẫn đoàn trong suốt chuyến đi.</p>
             </div>
 
-            <div class="flex gap-4 pt-6 border-t border-slate-100">
-                <button type="submit" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm text-sm">
+            <div class="flex gap-4 pt-4 border-t border-slate-100">
+                <button type="submit" id="btnSubmitAssignGuide" class="bg-blue-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-800 transition flex items-center gap-2 shadow-sm text-sm">
                     <span class="material-symbols-outlined text-sm">how_to_reg</span>
-                    Xác nhận phân công
+                    <span>Xác nhận phân công</span>
                 </button>
-                <a href="#" class="bg-slate-100 text-slate-700 px-8 py-3 rounded-xl font-bold hover:bg-slate-200 transition text-sm">
+                <a href="index.html" class="bg-slate-100 text-slate-700 px-8 py-3 rounded-xl font-bold hover:bg-slate-200 transition text-sm flex items-center justify-center">
                     Hủy Bỏ
                 </a>
             </div>
@@ -176,8 +289,10 @@
 
 </main>
 
+<script src="../../assets/js/api-client.js"></script>
 <script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.2.0"></script>
+<script src="../../assets/js/admin-pages.js?v=2.6.0"></script>
 <script src="../../assets/js/icons-fallback.js"></script>
+<script src="../../assets/js/admin-router.js"></script>
 </body>
 </html>

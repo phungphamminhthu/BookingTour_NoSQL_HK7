@@ -8,7 +8,6 @@ namespace Backend_DotNet.Controllers;
 
 [ApiController]
 [Route("api/admin/[controller]")]
-[Authorize(Roles = "Admin,Sale")]
 public class DashboardController : ControllerBase
 {
     private readonly IAdminManagementService _service;
@@ -19,7 +18,9 @@ public class DashboardController : ControllerBase
     }
 
     [HttpGet]
-    [HttpGet("/admin/dashboard")]
+    [HttpGet("/api/dashboard")]
+    [HttpGet("/admin/dashboard/stats")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetDashboard([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
     {
         var stats = await _service.GetDashboardStatsAsync(startDate, endDate);

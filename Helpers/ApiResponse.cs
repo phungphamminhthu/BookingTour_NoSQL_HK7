@@ -16,11 +16,25 @@ public class ApiResponse<T>
     [JsonPropertyName("total")]
     public long? Total { get; set; }
 
+    [JsonPropertyName("totalItems")]
+    public long? TotalItems => Total;
+
     [JsonPropertyName("page")]
     public int? Page { get; set; }
 
+    [JsonPropertyName("currentPage")]
+    public int? CurrentPage => Page;
+
     [JsonPropertyName("pageSize")]
     public int? PageSize { get; set; }
+
+    [JsonPropertyName("totalPages")]
+    public int? TotalPages => (Total.HasValue && PageSize.HasValue && PageSize.Value > 0)
+        ? (int)Math.Ceiling((double)Total.Value / PageSize.Value)
+        : null;
+
+    [JsonPropertyName("total_pages")]
+    public int? TotalPagesSnake => TotalPages;
 
     [JsonPropertyName("errors")]
     public object? Errors { get; set; }

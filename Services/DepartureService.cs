@@ -16,7 +16,7 @@ public class DepartureService : IDepartureService
         _logger = logger;
     }
 
-    public async Task<(List<TourDeparture> Items, long TotalCount)> QueryDeparturesAsync(string? keyword, DateTime? date, string? status, int page = 1, int pageSize = 10)
+    public async Task<(List<TourDeparture> Items, long TotalCount)> QueryDeparturesAsync(string? keyword, int? tourId, DateTime? date, string? status, int page = 1, int pageSize = 5)
     {
         var builder = Builders<TourDeparture>.Filter;
         var filter = builder.Empty;
@@ -41,6 +41,11 @@ public class DepartureService : IDepartureService
             }
         }
 
+        if (tourId.HasValue && tourId.Value > 0)
+        {
+            filter &= builder.Eq(d => d.TourId, tourId.Value);
+        }
+
         if (date.HasValue)
         {
             var dayStart = date.Value.Date;
@@ -48,14 +53,26 @@ public class DepartureService : IDepartureService
             filter &= builder.Gte(d => d.DepartureDate, dayStart) & builder.Lt(d => d.DepartureDate, dayEnd);
         }
 
-        if (!string.IsNullOrWhiteSpace(status))
+        if (!string.IsNullOrWhiteSpace(status) && !string.Equals(status.Trim(), "all", StringComparison.OrdinalIgnoreCase))
         {
-            filter &= builder.Eq(d => d.Status, status.Trim().ToLower());
+            var st = status.Trim().ToLower();
+            if (st == "full" || st == "sold_out")
+            {
+                filter &= builder.Or(
+                    builder.Eq(d => d.Status, "full"),
+                    builder.Eq(d => d.Status, "sold_out"),
+                    builder.Lte(d => d.AvailableSeats, 0)
+                );
+            }
+            else
+            {
+                filter &= builder.Eq(d => d.Status, st);
+            }
         }
 
         var totalCount = await _context.TourDepartures.CountDocumentsAsync(filter);
         var p = page > 0 ? page : 1;
-        var ps = pageSize > 0 ? pageSize : 10;
+        var ps = pageSize > 0 ? Math.Min(pageSize, 100) : 5;
 
         var items = await _context.TourDepartures.Find(filter)
             .SortBy(d => d.DepartureDate)
@@ -65,6 +82,54 @@ public class DepartureService : IDepartureService
 
         await PopulateDepartureRelationsAsync(items);
         return (items, totalCount);
+    }
+
+    private static readonly TimeZoneInfo VietnamTimeZone = GetVietnamTimeZone();
+
+    private static TimeZoneInfo GetVietnamTimeZone()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh");
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                return TimeZoneInfo.CreateCustomTimeZone("Vietnam Standard Time", TimeSpan.FromHours(7), "Vietnam Standard Time", "Vietnam Standard Time");
+            }
+        }
+    }
+
+    private static (DateTime StartUtc, DateTime EndUtc) GetVietnamTodayUtcRange()
+    {
+        var nowUtc = DateTime.UtcNow;
+        var nowVn = TimeZoneInfo.ConvertTimeFromUtc(nowUtc, VietnamTimeZone);
+        var startVn = new DateTime(nowVn.Year, nowVn.Month, nowVn.Day, 0, 0, 0, DateTimeKind.Unspecified);
+        var endVn = startVn.AddDays(1);
+        var startUtc = TimeZoneInfo.ConvertTimeToUtc(startVn, VietnamTimeZone);
+        var endUtc = TimeZoneInfo.ConvertTimeToUtc(endVn, VietnamTimeZone);
+        return (startUtc, endUtc);
+    }
+
+    public async Task<DepartureStatsDto> GetStatsAsync()
+    {
+        var all = await _context.TourDepartures.Find(_ => true).ToListAsync();
+        var (todayStartUtc, todayEndUtc) = GetVietnamTodayUtcRange();
+
+        return new DepartureStatsDto
+        {
+            TotalCount = all.Count,
+            OpenCount = all.Count(d => (d.Status == "open" || string.IsNullOrWhiteSpace(d.Status)) && d.AvailableSeats > 0),
+            UnassignedCount = all.Count(d => !d.GuideId.HasValue || d.GuideId.Value <= 0 || string.IsNullOrWhiteSpace(d.GuideName) || d.GuideName == "Chưa phân công"),
+            TodayCount = all.Count(d => d.DepartureDate >= todayStartUtc && d.DepartureDate < todayEndUtc),
+            FullCount = all.Count(d => d.Status == "sold_out" || d.Status == "full" || d.AvailableSeats <= 0),
+            CancelledCount = all.Count(d => d.Status == "cancelled")
+        };
     }
 
     public async Task<TourDeparture?> GetDepartureByIdAsync(int id)
@@ -77,17 +142,60 @@ public class DepartureService : IDepartureService
         return departure;
     }
 
+    private static void ValidateDeparture(DepartureCreateRequest request)
+    {
+        if (request.DepartureDate == default || request.ReturnDate < request.DepartureDate)
+            throw new ArgumentException("Ngày về phải bằng hoặc sau ngày khởi hành.");
+        if (request.Status is not ("open" or "full" or "cancelled"))
+            throw new ArgumentException("Trạng thái chuyến khởi hành không hợp lệ.");
+    }
+
+    private async Task<Employee?> FindGuideAsync(int? id)
+    {
+        if (id is null) return null;
+        return await _context.Employees.Find(e => e.Id == id.Value && e.RoleId == 3).FirstOrDefaultAsync()
+            ?? throw new ArgumentException("Hướng dẫn viên không hợp lệ.");
+    }
+
     public async Task<TourDeparture> CreateDepartureAsync(DepartureCreateRequest request)
     {
+        if (request.TourId <= 0)
+        {
+            throw new ArgumentException("Vui lòng chọn tour du lịch.");
+        }
+
         var tour = await _context.Tours.Find(t => t.Id == request.TourId).FirstOrDefaultAsync()
                    ?? throw new ArgumentException($"Tour du lịch mã {request.TourId} không tồn tại.");
 
-        string? guideName = null;
-        if (request.GuideId.HasValue && request.GuideId.Value > 0)
+        if (request.DepartureDate == default)
         {
-            var guide = await _context.Employees.Find(e => e.Id == request.GuideId.Value).FirstOrDefaultAsync();
-            guideName = guide?.FullName;
+            throw new ArgumentException("Vui lòng chọn ngày khởi hành hợp lệ.");
         }
+
+        if (request.ReturnDate == default)
+        {
+            throw new ArgumentException("Vui lòng chọn ngày kết thúc hợp lệ.");
+        }
+
+        if (request.ReturnDate < request.DepartureDate)
+        {
+            throw new ArgumentException("Ngày kết thúc phải cùng ngày hoặc sau ngày khởi hành.");
+        }
+
+        if (request.MaxSeats <= 0)
+        {
+            throw new ArgumentException("Số lượng khách tối đa phải lớn hơn 0.");
+        }
+
+        if (request.AdultPrice < 0 || request.ChildPrice < 0)
+        {
+            throw new ArgumentException("Giá vé không được là số âm.");
+        }
+
+        var adultPrice = request.AdultPrice > 0 ? request.AdultPrice : tour.MinPrice;
+        var childPrice = request.ChildPrice > 0 ? request.ChildPrice : Math.Round(adultPrice * 0.7m);
+
+        var guide = await FindGuideAsync(request.GuideId);
 
         var nextId = await _context.GetNextSequenceAsync("tour_departures");
         var now = DateTime.UtcNow;
@@ -101,16 +209,17 @@ public class DepartureService : IDepartureService
             ReturnDate = request.ReturnDate,
             MaxSeats = request.MaxSeats,
             AvailableSeats = request.MaxSeats,
-            AdultPrice = request.AdultPrice,
-            ChildPrice = request.ChildPrice,
-            Status = request.Status ?? "open",
+            AdultPrice = adultPrice,
+            ChildPrice = childPrice,
+            Status = string.IsNullOrWhiteSpace(request.Status) ? "open" : request.Status.Trim().ToLower(),
             GuideId = request.GuideId,
-            GuideName = guideName,
+            GuideName = guide?.FullName,
             CreatedAt = now,
             UpdatedAt = now
         };
 
         await _context.TourDepartures.InsertOneAsync(departure);
+        departure.Tour = tour;
         return departure;
     }
 
@@ -119,31 +228,42 @@ public class DepartureService : IDepartureService
         var departure = await _context.TourDepartures.Find(d => d.Id == id).FirstOrDefaultAsync()
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {id}.");
 
+        ValidateDeparture(request);
         var tour = await _context.Tours.Find(t => t.Id == request.TourId).FirstOrDefaultAsync()
                    ?? throw new ArgumentException($"Tour du lịch mã {request.TourId} không tồn tại.");
+        var guide = await FindGuideAsync(request.GuideId);
+        var reserved = Math.Max(0, departure.MaxSeats - departure.AvailableSeats);
+        var available = request.AvailableSeats ?? request.MaxSeats - reserved;
+        if (available < 0 || available > request.MaxSeats - reserved)
+            throw new ArgumentException($"Sức chứa và chỗ trống phải giữ đủ {reserved} chỗ đã đặt.");
+        if (tour.Id != departure.TourId && (reserved > 0 ||
+            await _context.Bookings.Find(b => b.DepartureId == id).AnyAsync()))
+            throw new ArgumentException("Không thể đổi tour của lịch đã có khách đặt.");
 
-        string? guideName = departure.GuideName;
-        if (request.GuideId.HasValue && request.GuideId.Value > 0)
-        {
-            var guide = await _context.Employees.Find(e => e.Id == request.GuideId.Value).FirstOrDefaultAsync();
-            guideName = guide?.FullName;
-        }
+        var adultPrice = request.AdultPrice > 0 ? request.AdultPrice : (departure.AdultPrice > 0 ? departure.AdultPrice : tour.MinPrice);
+        var childPrice = request.ChildPrice > 0 ? request.ChildPrice : Math.Round(adultPrice * 0.7m);
 
-        departure.TourId = tour.Id;
-        departure.TourTitle = tour.Title;
-        departure.DepartureDate = request.DepartureDate;
-        departure.ReturnDate = request.ReturnDate;
-        departure.MaxSeats = request.MaxSeats;
-        departure.AvailableSeats = request.AvailableSeats;
-        departure.AdultPrice = request.AdultPrice;
-        departure.ChildPrice = request.ChildPrice;
-        departure.Status = request.AvailableSeats <= 0 ? "full" : (request.Status ?? departure.Status);
-        departure.GuideId = request.GuideId;
-        departure.GuideName = guideName;
-        departure.UpdatedAt = DateTime.UtcNow;
-
-        await _context.TourDepartures.ReplaceOneAsync(d => d.Id == id, departure);
-        return departure;
+        var update = Builders<TourDeparture>.Update
+            .Set(d => d.TourId, tour.Id)
+            .Set(d => d.TourTitle, tour.Title)
+            .Set(d => d.DepartureDate, request.DepartureDate)
+            .Set(d => d.ReturnDate, request.ReturnDate)
+            .Set(d => d.MaxSeats, request.MaxSeats)
+            .Set(d => d.AvailableSeats, available)
+            .Set(d => d.AdultPrice, adultPrice)
+            .Set(d => d.ChildPrice, childPrice)
+            .Set(d => d.Status, available == 0 && request.Status == "open" ? "full" : (request.Status ?? departure.Status))
+            .Set(d => d.GuideId, request.GuideId)
+            .Set(d => d.GuideName, guide?.FullName)
+            .Set(d => d.UpdatedAt, DateTime.UtcNow);
+        var updated = await _context.TourDepartures.FindOneAndUpdateAsync(
+            d => d.Id == id && d.AvailableSeats == departure.AvailableSeats &&
+                 d.MaxSeats == departure.MaxSeats && d.UpdatedAt == departure.UpdatedAt,
+            update, new FindOneAndUpdateOptions<TourDeparture> { ReturnDocument = ReturnDocument.After });
+        if (updated == null)
+            throw new ArgumentException("Lịch hoặc số ghế đã thay đổi. Vui lòng tải lại trang và thử lại.");
+        updated.Tour = tour;
+        return updated;
     }
 
     public async Task<bool> DeleteDepartureAsync(int id)
@@ -152,13 +272,16 @@ public class DepartureService : IDepartureService
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {id}.");
 
         var hasBookings = await _context.Bookings.Find(b => b.DepartureId == id).AnyAsync();
-        if (hasBookings)
+        if (hasBookings || departure.AvailableSeats < departure.MaxSeats)
         {
             throw new InvalidOperationException($"Không thể xóa chuyến đi mã {id} vì đã có khách đặt chỗ.");
         }
 
-        var result = await _context.TourDepartures.DeleteOneAsync(d => d.Id == id);
-        return result.DeletedCount > 0;
+        var result = await _context.TourDepartures.DeleteOneAsync(d => d.Id == id &&
+            d.AvailableSeats == departure.AvailableSeats && d.UpdatedAt == departure.UpdatedAt);
+        if (result.DeletedCount == 0)
+            throw new InvalidOperationException("Lịch hoặc số ghế đã thay đổi. Vui lòng tải lại trang.");
+        return true;
     }
 
     public async Task<bool> AssignGuideAsync(int id, int guideId)
@@ -166,7 +289,7 @@ public class DepartureService : IDepartureService
         var departure = await _context.TourDepartures.Find(d => d.Id == id).FirstOrDefaultAsync()
                         ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {id}.");
 
-        var guide = await _context.Employees.Find(e => e.Id == guideId).FirstOrDefaultAsync()
+        var guide = await _context.Employees.Find(e => e.Id == guideId && e.RoleId == 3).FirstOrDefaultAsync()
                     ?? throw new KeyNotFoundException($"Không tìm thấy hướng dẫn viên mã {guideId}.");
 
         var update = Builders<TourDeparture>.Update
@@ -175,7 +298,81 @@ public class DepartureService : IDepartureService
             .Set(d => d.UpdatedAt, DateTime.UtcNow);
 
         var result = await _context.TourDepartures.UpdateOneAsync(d => d.Id == id, update);
-        return result.ModifiedCount > 0;
+        return result.MatchedCount > 0;
+    }
+
+    public async Task<DepartureBookingsResponse> GetDepartureBookingsAsync(int departureId, int page = 1, int pageSize = 5)
+    {
+        var departure = await _context.TourDepartures.Find(d => d.Id == departureId).FirstOrDefaultAsync()
+                        ?? throw new KeyNotFoundException($"Không tìm thấy chuyến đi mã {departureId}.");
+
+        if (page < 1) page = 1;
+        if (pageSize <= 0) pageSize = 5;
+
+        // Lấy tất cả booking của chuyến khởi hành này để tính tổng số khách và tổng số đơn
+        var allBookings = await _context.Bookings
+            .Find(b => b.DepartureId == departureId)
+            .ToListAsync();
+
+        var totalBookings = allBookings.Count;
+        var totalPassengers = allBookings.Sum(b => b.TotalAdults + b.TotalChildren);
+        var totalPages = (int)Math.Ceiling((double)totalBookings / pageSize);
+        if (totalPages == 0) totalPages = 1;
+
+        // Phân trang danh sách booking sắp xếp theo Id giảm dần
+        var pagedBookings = allBookings
+            .OrderByDescending(b => b.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var customerIds = pagedBookings.Select(b => b.CustomerId).Distinct().ToList();
+        var customers = await _context.Customers
+            .Find(c => customerIds.Contains(c.Id))
+            .ToListAsync();
+        var customerDict = customers.ToDictionary(c => c.Id);
+
+        var tourTitle = departure.TourTitle;
+        if (string.IsNullOrWhiteSpace(tourTitle) && departure.TourId > 0)
+        {
+            var tour = await _context.Tours.Find(t => t.Id == departure.TourId).FirstOrDefaultAsync();
+            tourTitle = tour?.Title;
+        }
+
+        var items = pagedBookings.Select(b =>
+        {
+            customerDict.TryGetValue(b.CustomerId, out var cust);
+            return new DepartureBookingDto
+            {
+                Id = b.Id,
+                BookingCode = b.BookingCode,
+                CustomerId = b.CustomerId,
+                CustomerName = !string.IsNullOrWhiteSpace(b.CustomerName) ? b.CustomerName : (cust?.FullName ?? $"Khách #{b.CustomerId}"),
+                CustomerPhone = cust?.Phone,
+                CustomerEmail = cust?.Email,
+                DepartureId = b.DepartureId,
+                TourId = b.TourId ?? departure.TourId,
+                TourTitle = !string.IsNullOrWhiteSpace(b.TourTitle) ? b.TourTitle : tourTitle,
+                TotalAdults = b.TotalAdults,
+                TotalChildren = b.TotalChildren,
+                TotalAmount = b.TotalAmount,
+                Status = b.Status,
+                CreatedAt = b.CreatedAt,
+                Passengers = b.Passengers ?? new()
+            };
+        }).ToList();
+
+        return new DepartureBookingsResponse
+        {
+            DepartureId = departureId,
+            TourTitle = tourTitle ?? "Chuyến đi",
+            TotalBookings = totalBookings,
+            TotalPassengers = totalPassengers,
+            Page = page,
+            PageSize = pageSize,
+            TotalPages = totalPages,
+            Items = items
+        };
     }
 
     private async Task PopulateDepartureRelationsAsync(List<TourDeparture> departures)
