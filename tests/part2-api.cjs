@@ -4,7 +4,10 @@ const base = process.env.PART2_TEST_URL || 'http://localhost:5282';
 async function call(path, method = 'GET', body, token, expected = 200) {
   const response = await fetch(base + path, {
     method,
-    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: 'Bearer ' + token } : {}),
+    },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const value = await response.json().catch(() => null);
@@ -12,7 +15,12 @@ async function call(path, method = 'GET', body, token, expected = 200) {
   return value;
 }
 const login = async (usernameOrEmail) =>
-  (await call('/api/auth/login', 'POST', { usernameOrEmail, password: '123456' })).data.token;
+  (
+    await call('/api/auth/login', 'POST', {
+      usernameOrEmail,
+      password: '123456',
+    })
+  ).data.token;
 let checks = 0;
 const pass = (name) => {
   checks++;
@@ -27,14 +35,19 @@ const pass = (name) => {
   assert.equal((await call('/api/tours?q=%5B')).total, 0);
   pass('Keyword binding and literal regex');
   const filtered = await call('/api/tours?province_id=6&gia_tu=1000000&gia_den=9000000');
-  assert(filtered.data.every((t) => t.province_id === 6 && t.min_price >= 1000000 && t.min_price <= 9000000));
+  assert(
+    filtered.data.every(
+      (t) => t.province_id === 6 && t.min_price >= 1000000 && t.min_price <= 9000000,
+    ),
+  );
   assert(filtered.total > 0);
   const multi = await call('/api/tours?category_id%5B%5D=1&category_id%5B%5D=2&pageSize=100');
   assert(multi.data.every((t) => [1, 2].includes(t.category_id)));
   pass('Combined filters and multiple categories');
   assert((await call('/api/tours?region=' + encodeURIComponent('Miền Bắc'))).total > 0);
   assert.equal(
-    (await call('/api/tours?q=__NO_MATCH_93847__&destination=' + encodeURIComponent('Đà Nẵng'))).total,
+    (await call('/api/tours?q=__NO_MATCH_93847__&destination=' + encodeURIComponent('Đà Nẵng')))
+      .total,
     0,
   );
   const sorted = await call('/api/tours?sort=asc&pageSize=100');
@@ -60,6 +73,48 @@ const pass = (name) => {
   await call('/api/customer/profile', 'GET', undefined, admin, 403);
   await call('/api/customer/profile', 'GET', undefined, undefined, 401);
   pass('Role separation and authentication');
+  const tourBody = {
+    title: 'Tour kiểm thử thông tin chi tiết',
+    categoryId: 1,
+    provinceId: 4,
+    durationDays: 2,
+    durationNights: 1,
+    minPrice: 2000000,
+    language: 'Tiếng Việt',
+    transport: 'Xe du lịch và tàu tham quan',
+    accommodation: '1 đêm khách sạn 3 sao',
+    includedServices: 'Xe, phòng nghỉ và 3 bữa chính',
+    excludedServices: 'Đồ uống và chi phí cá nhân',
+  };
+  const createdTour = (await call('/api/tours', 'POST', tourBody, admin, 201)).data;
+  try {
+    let saved = (await call('/api/tours/' + createdTour.id)).data;
+    assert.equal(saved.language, tourBody.language);
+    assert.equal(saved.transport, tourBody.transport);
+    assert.equal(saved.accommodation, tourBody.accommodation);
+    assert.equal(saved.excluded_services, tourBody.excludedServices);
+    // Form cũ không gửi trường mới thì không được xóa nội dung đã lưu.
+    const { language, transport, accommodation, excludedServices, ...oldForm } = tourBody;
+    await call('/api/tours/' + createdTour.id, 'PUT', oldForm, admin);
+    saved = (await call('/api/tours/' + createdTour.id)).data;
+    assert.equal(saved.transport, transport);
+    assert.equal(saved.accommodation, accommodation);
+    assert.equal(saved.language, language);
+    assert.equal(saved.excluded_services, excludedServices);
+    await call(
+      '/api/tours/' + createdTour.id,
+      'PUT',
+      { ...tourBody, excludedServices: 'Đồ uống; phòng đơn' },
+      admin,
+    );
+    assert.equal(
+      (await call('/api/tours/' + createdTour.id)).data.excluded_services,
+      'Đồ uống; phòng đơn',
+    );
+  } finally {
+    await call('/api/tours/' + createdTour.id, 'DELETE', undefined, admin);
+  }
+  pass('Tour metadata persistence and compatibility with existing admin forms');
   const profile = (await call('/api/customer/profile', 'GET', undefined, customer)).data.customer;
   const profileBody = {
     fullName: 'Khách kiểm thử Phần 2',
@@ -73,7 +128,13 @@ const pass = (name) => {
     (await call('/api/customer/profile', 'GET', undefined, customer)).data.customer.full_name,
     profileBody.fullName,
   );
-  await call('/api/customer/profile', 'PUT', { ...profileBody, birthday: '2999-01-01' }, customer, 400);
+  await call(
+    '/api/customer/profile',
+    'PUT',
+    { ...profileBody, birthday: '2999-01-01' },
+    customer,
+    400,
+  );
   await call(
     '/api/customer/password/update',
     'POST',
@@ -95,11 +156,18 @@ const pass = (name) => {
     },
     customer,
   );
-  await call('/api/auth/login', 'POST', { usernameOrEmail: profile.email, password: 'NewPassword123' });
+  await call('/api/auth/login', 'POST', {
+    usernameOrEmail: profile.email,
+    password: 'NewPassword123',
+  });
   await call(
     '/api/customer/password/update',
     'POST',
-    { current_password: 'NewPassword123', new_password: '123456', new_password_confirmation: '123456' },
+    {
+      current_password: 'NewPassword123',
+      new_password: '123456',
+      new_password_confirmation: '123456',
+    },
     customer,
   );
   await call(
@@ -136,9 +204,20 @@ const pass = (name) => {
     customer,
     400,
   );
-  await call('/api/reviews/' + created.id, 'PUT', { rating: 5, comment: 'Không được sửa' }, other, 404);
+  await call(
+    '/api/reviews/' + created.id,
+    'PUT',
+    { rating: 5, comment: 'Không được sửa' },
+    other,
+    404,
+  );
   await call('/api/reviews/' + created.id, 'DELETE', undefined, other, 404);
-  await call('/api/reviews/' + created.id, 'PUT', { rating: 5, comment: 'Đã cập nhật đánh giá' }, customer);
+  await call(
+    '/api/reviews/' + created.id,
+    'PUT',
+    { rating: 5, comment: 'Đã cập nhật đánh giá' },
+    customer,
+  );
   assert(
     (await call('/api/reviews/mine', 'GET', undefined, customer)).data.some(
       (r) => r.id === created.id && r.rating === 5,
@@ -150,6 +229,7 @@ const pass = (name) => {
   const employee = {
     username: 'part2_' + unique,
     password: '12345678',
+    password_confirmation: '12345678',
     full_name: 'Nhân viên kiểm thử',
     email: `part2_${unique}@example.com`,
     phone: '0900000000',
@@ -157,9 +237,15 @@ const pass = (name) => {
   };
   const emp = (await call('/api/employees', 'POST', employee, admin, 201)).data;
   const oldEmployeeToken = (
-    await call('/api/auth/login', 'POST', { usernameOrEmail: employee.username, password: employee.password })
+    await call('/api/auth/login', 'POST', {
+      usernameOrEmail: employee.username,
+      password: employee.password,
+    })
   ).data.token;
-  assert.equal((await call('/api/employees?search=' + employee.username, 'GET', undefined, admin)).total, 1);
+  assert.equal(
+    (await call('/api/employees?search=' + employee.username, 'GET', undefined, admin)).total,
+    1,
+  );
   await call(
     '/api/employees/' + emp.id,
     'PUT',
@@ -169,12 +255,20 @@ const pass = (name) => {
   assert.equal((await call('/api/employees/' + emp.id, 'GET', undefined, admin)).data.role_id, 3);
   await call('/api/auth/me', 'GET', undefined, oldEmployeeToken, 401);
   const changedEmployeeToken = (
-    await call('/api/auth/login', 'POST', { usernameOrEmail: employee.username, password: employee.password })
+    await call('/api/auth/login', 'POST', {
+      usernameOrEmail: employee.username,
+      password: employee.password,
+    })
   ).data.token;
   await call(
     '/api/employees',
     'POST',
-    { ...employee, username: employee.username + '_bad', email: 'bad' + employee.email, role_id: 999 },
+    {
+      ...employee,
+      username: employee.username + '_bad',
+      email: 'bad' + employee.email,
+      role_id: 999,
+    },
     admin,
     400,
   );
@@ -211,7 +305,13 @@ const pass = (name) => {
     userFullName: 'Khách kiểm thử',
     userPhone: '0912345678',
     userEmail: 'khach1@gmail.com',
-    passengers: [{ full_name: 'Khách kiểm thử', passenger_type: 'adult', date_of_birth: '1995-01-01' }],
+    passengers: [
+      {
+        full_name: 'Khách kiểm thử',
+        passenger_type: 'adult',
+        date_of_birth: '1995-01-01',
+      },
+    ],
     card_number: '4111111111111111',
     card_holder: 'TEST CUSTOMER',
     card_expiry: '12/30',
@@ -231,7 +331,9 @@ const pass = (name) => {
   await call('/api/bookings/' + newBooking.id + '/cancel', 'POST', undefined, customer);
   await call('/api/bookings/' + newBooking.id + '/cancel', 'POST', undefined, customer, 400);
   assert.equal((await call('/api/departures/' + departure.id)).data.available_seats, 4);
-  pass('Real booking handoff, passenger validation, review eligibility, cancellation and seat restoration');
+  pass(
+    'Real booking handoff, passenger validation, review eligibility, cancellation and seat restoration',
+  );
   console.log(`Completed ${checks} groups of API checks.`);
 })().catch((error) => {
   console.error(error);

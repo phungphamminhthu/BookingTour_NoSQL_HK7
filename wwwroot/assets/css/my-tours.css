@@ -55,3 +55,41 @@
   animation: pulse-subtle 2s infinite ease-in-out;
 }
 
+/* Popup xác nhận xóa nằm giữa viewport, bên trên cả header/sidebar. */
+.review-delete-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: calc(100% - 32px);
+  max-width: 420px;
+  max-height: calc(100dvh - 32px);
+  padding: 28px;
+  border: 0;
+  border-radius: 20px;
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.2);
+}
+
+.review-delete-dialog::backdrop { background: rgba(15, 23, 42, 0.5); }
+.review-delete-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+  background: #fef2f2;
+  color: #dc2626;
+}
+.review-delete-dialog h2 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
+.review-delete-dialog p { margin: 0; font-size: 14px; line-height: 1.7; color: #64748b; }
+.review-delete-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.review-delete-actions button { min-height: 44px; padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.review-delete-cancel { background: #f1f5f9; color: #334155; }
+.review-delete-cancel:hover { background: #e2e8f0; }
+.review-delete-confirm { background: #dc2626; color: #fff; }
+.review-delete-confirm:hover { background: #b91c1c; }
+.review-delete-actions button:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+

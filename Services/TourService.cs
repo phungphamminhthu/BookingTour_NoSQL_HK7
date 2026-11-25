@@ -207,6 +207,10 @@ public class TourService : ITourService
             Description = request.Description?.Trim(),
             ItinerarySummary = request.ItinerarySummary?.Trim(),
             IncludedServices = request.IncludedServices?.Trim(),
+            ExcludedServices = request.ExcludedServices?.Trim(),
+            Language = request.Language?.Trim(),
+            Transport = request.Transport?.Trim(),
+            Accommodation = request.Accommodation?.Trim(),
             ThumbnailUrl = request.ThumbnailUrl,
             CreatedBy = 1,
             CreatedAt = now,
@@ -250,6 +254,11 @@ public class TourService : ITourService
         tour.Description = request.Description?.Trim();
         tour.ItinerarySummary = request.ItinerarySummary?.Trim();
         tour.IncludedServices = request.IncludedServices?.Trim();
+        // Form cũ chưa gửi các trường mới thì giữ thông tin đã có trong MongoDB.
+        if (request.ExcludedServices != null) tour.ExcludedServices = request.ExcludedServices.Trim();
+        if (request.Language != null) tour.Language = request.Language.Trim();
+        if (request.Transport != null) tour.Transport = request.Transport.Trim();
+        if (request.Accommodation != null) tour.Accommodation = request.Accommodation.Trim();
         tour.UpdatedAt = DateTime.UtcNow;
 
         if (!string.IsNullOrWhiteSpace(request.ThumbnailUrl))

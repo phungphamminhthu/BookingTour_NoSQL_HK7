@@ -266,6 +266,24 @@ if (args.Contains("--audit-db"))
     return;
 }
 
+// Bổ sung lịch demo tương lai khi được yêu cầu; không di chuyển các lịch có booking cũ.
+if (args.Contains("--seed-upcoming-departures"))
+{
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();
+    await seeder.SeedAsync();
+    await seeder.SeedUpcomingDeparturesAsync();
+    return;
+}
+
+// Cập nhật chương trình chi tiết cho các tour mẫu khi được yêu cầu.
+if (args.Contains("--refresh-tour-content"))
+{
+    using var scope = app.Services.CreateScope();
+    await scope.ServiceProvider.GetRequiredService<DbSeeder>().RefreshTourContentAsync();
+    return;
+}
+
 // Automatically seed MongoDB on application startup
 using (var scope = app.Services.CreateScope())
 {

@@ -95,6 +95,18 @@ public class TourCreateRequest
     [JsonPropertyName("includedServices")]
     public string? IncludedServices { get; set; }
 
+    [JsonPropertyName("excludedServices")]
+    public string? ExcludedServices { get; set; }
+
+    [JsonPropertyName("language")]
+    public string? Language { get; set; }
+
+    [JsonPropertyName("transport")]
+    public string? Transport { get; set; }
+
+    [JsonPropertyName("accommodation")]
+    public string? Accommodation { get; set; }
+
     [JsonPropertyName("thumbnailUrl")]
     public string? ThumbnailUrl { get; set; }
 }

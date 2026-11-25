@@ -150,13 +150,16 @@ let browser, currentPage;
   await page.click('#btnSubmitReview');
   await page.waitForURL('**/my_tours/index.html?tab=completed');
   await page.waitForSelector('#myReviewsSection');
+  await page.locator('#myReviewsSection article')
+    .filter({ hasText: 'Đánh giá đã sửa từ trình duyệt' }).locator('button').click();
+  await page.locator('#deleteReviewDialog .review-delete-cancel').click();
+  assert.equal(await page.locator('#myReviewsSection article')
+    .filter({ hasText: 'Đánh giá đã sửa từ trình duyệt' }).count(), 1);
+  await page.locator('#myReviewsSection article')
+    .filter({ hasText: 'Đánh giá đã sửa từ trình duyệt' }).locator('button').click();
   await Promise.all([
     page.waitForEvent('load'),
-    page
-      .locator('#myReviewsSection article')
-      .filter({ hasText: 'Đánh giá đã sửa từ trình duyệt' })
-      .locator('button')
-      .click(),
+    page.locator('#deleteReviewDialog .review-delete-confirm').click(),
   ]);
   await open('/client/my_tours/show.html?id=1');
   assert(!(await page.locator('#voucherBookingCode').innerText()).includes('BK-2026'));

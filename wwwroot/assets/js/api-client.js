@@ -20,6 +20,7 @@ async function apiRequest(path, options = {}) {
     const message = validation || payload?.message || payload?.title || (typeof payload === 'string' ? payload : `HTTP ${response.status}`);
     const error = new Error(message);
     error.status = response.status;
+    error.errors = payload?.errors;
     throw error;
   }
   return payload;

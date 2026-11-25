@@ -1,4 +1,5 @@
 using Backend_DotNet.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Backend_DotNet.Data;
@@ -41,6 +42,112 @@ public class DbSeeder
             _logger.LogError(ex, "Error while seeding MongoDB database.");
             throw;
         }
+    }
+
+    // Chạy chủ động bằng --seed-upcoming-departures, không tự thêm lịch mỗi lần mở app.
+    public async Task SeedUpcomingDeparturesAsync()
+    {
+        var now = DateTime.UtcNow;
+        var vietnamOffset = TimeSpan.FromHours(7);
+        var today = new DateTimeOffset(now).ToOffset(vietnamOffset).Date;
+        // Chừa ít nhất 3 ngày chuẩn bị, chọn thứ Bảy tiếp theo theo giờ Việt Nam.
+        var firstDay = today.AddDays(3);
+        while (firstDay.DayOfWeek != DayOfWeek.Saturday) firstDay = firstDay.AddDays(1);
+
+        var tours = await _context.Tours.Find(_ => true).SortBy(t => t.Id).ToListAsync();
+        var added = 0;
+        for (var index = 0; index < tours.Count; index++)
+        {
+            var tour = tours[index];
+            var departures = await _context.TourDepartures.Find(d => d.TourId == tour.Id)
+                .SortByDescending(d => d.DepartureDate).ToListAsync();
+            var availableCount = departures.Count(d => d.DepartureDate > now && d.Status == "open" && d.AvailableSeats > 0);
+            if (availableCount >= 3) continue;
+
+            var template = departures.FirstOrDefault();
+            var adultPrice = template?.AdultPrice > 0 ? template.AdultPrice : tour.MinPrice;
+            if (adultPrice <= 0) throw new InvalidOperationException($"Tour {tour.Id} chưa có giá hợp lệ để tạo lịch.");
+            var childPrice = template?.ChildPrice ?? decimal.Round(adultPrice * 0.6m);
+            var maxSeats = template?.MaxSeats > 0 ? template.MaxSeats : 20;
+            // Rải các tour trong 3 cuối tuần; mỗi tour cách nhau 2 tuần để dễ chọn ngày.
+            var departureDay = firstDay.AddDays((index % 3) * 7);
+            while (availableCount < 3)
+            {
+                var departureDate = new DateTimeOffset(departureDay.AddHours(8), vietnamOffset).UtcDateTime;
+                var returnDate = new DateTimeOffset(
+                    departureDay.AddDays(Math.Max(1, tour.DurationDays) - 1).AddHours(18), vietnamOffset).UtcDateTime;
+                departureDay = departureDay.AddDays(14);
+
+                // Không tạo lại ngày đã tồn tại, kể cả lịch đã hủy hoặc hết chỗ.
+                if (departures.Any(d => d.DepartureDate == departureDate)) continue;
+                var departure = new TourDeparture
+                {
+                    Id = await _context.GetNextSequenceAsync("tour_departures"),
+                    TourId = tour.Id,
+                    TourTitle = tour.Title,
+                    DepartureDate = departureDate,
+                    ReturnDate = returnDate,
+                    MaxSeats = maxSeats,
+                    AvailableSeats = maxSeats,
+                    AdultPrice = adultPrice,
+                    ChildPrice = childPrice,
+                    Status = "open",
+                    // Hướng dẫn viên sẽ được admin phân công; không sao chép lịch làm việc cũ.
+                    GuideId = null,
+                    GuideName = null,
+                    CreatedAt = now,
+                    UpdatedAt = now
+                };
+                await _context.TourDepartures.InsertOneAsync(departure);
+                departures.Add(departure);
+                availableCount++;
+                added++;
+            }
+        }
+        _logger.LogInformation("Added {Count} upcoming departures; all tours now have at least 3 bookable dates.", added);
+    }
+
+    // Chỉ chạy khi được yêu cầu để không ghi đè nội dung admin sửa mỗi lần khởi động.
+    public async Task RefreshTourContentAsync()
+    {
+        var tours = await _context.Tours.Find(_ => true).SortBy(t => t.Id).ToListAsync();
+        var catalog = TourContentCatalog.All.ToDictionary(c => c.Id);
+        // Kiểm tra toàn bộ trước khi ghi; không gán nhầm chương trình cho tour khác.
+        foreach (var tour in tours)
+        {
+            if (!catalog.TryGetValue(tour.Id, out var content) || content.Title != tour.Title ||
+                content.Days.Length != tour.DurationDays || tour.DurationNights != tour.DurationDays - 1)
+                throw new InvalidOperationException($"Tour {tour.Id} không khớp bộ nội dung. Cần soạn chương trình riêng trước khi cập nhật.");
+        }
+
+        var changed = 0;
+        foreach (var tour in tours)
+        {
+            var before = tour.ToBsonDocument();
+            var previousSchedules = tour.Schedules;
+            TourContentCatalog.Apply(tour, catalog[tour.Id]);
+            foreach (var schedule in tour.Schedules)
+            {
+                if (!previousSchedules.Any(s => s.DayNumber == schedule.DayNumber))
+                    schedule.Id = await _context.GetNextSequenceAsync("schedules");
+            }
+            if (before.Equals(tour.ToBsonDocument())) continue;
+
+            // $set chỉ thay nội dung, không đụng giá, ảnh, thời lượng, lịch khởi hành hay booking.
+            var update = Builders<Tour>.Update
+                .Set(t => t.Description, tour.Description)
+                .Set(t => t.ItinerarySummary, tour.ItinerarySummary)
+                .Set(t => t.Language, tour.Language)
+                .Set(t => t.Transport, tour.Transport)
+                .Set(t => t.Accommodation, tour.Accommodation)
+                .Set(t => t.IncludedServices, tour.IncludedServices)
+                .Set(t => t.ExcludedServices, tour.ExcludedServices)
+                .Set(t => t.Schedules, tour.Schedules)
+                .Set(t => t.UpdatedAt, DateTime.UtcNow);
+            var result = await _context.Tours.UpdateOneAsync(t => t.Id == tour.Id, update);
+            changed += (int)result.ModifiedCount;
+        }
+        _logger.LogInformation("Updated content for {Changed}/{Total} tours.", changed, tours.Count);
     }
 
     private async Task SeedRolesAsync()
@@ -222,17 +329,7 @@ public class DbSeeder
                     }
                 }
 
-                // Add schedules based on duration
-                for (int day = 1; day <= d.Days; day++)
-                {
-                    tour.Schedules.Add(new TourScheduleEmbedded
-                    {
-                        Id = (d.Id - 1) * 10 + day,
-                        DayNumber = day,
-                        Title = $"Ngày {day}: Khám phá điểm đến nổi bật",
-                        Activities = $"Hoạt động tham quan, trải nghiệm văn hóa, ẩm thực đặc sắc của ngày thứ {day}."
-                    });
-                }
+                TourContentCatalog.Apply(tour, TourContentCatalog.All.Single(c => c.Id == tour.Id));
 
                 tours.Add(tour);
             }

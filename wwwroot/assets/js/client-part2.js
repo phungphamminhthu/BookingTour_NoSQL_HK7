@@ -18,9 +18,12 @@
   const path = location.pathname;
   const tourLink = (id) => `/client/tours/show.html?id=${id}`;
   const statusName = (value) =>
-    ({ confirmed: 'Đã xác nhận', pending: 'Chờ xác nhận', completed: 'Hoàn thành', cancelled: 'Đã hủy' })[
-      value
-    ] || value;
+    ({
+      confirmed: 'Đã xác nhận',
+      pending: 'Chờ xác nhận',
+      completed: 'Hoàn thành',
+      cancelled: 'Đã hủy',
+    })[value] || value;
   function tourCard(tour) {
     return `<div class="group bg-white rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all border border-slate-100">
       <div class="relative h-56 overflow-hidden"><img src="${imageUrl(tour.thumbnail_url)}" alt="${esc(tour.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/>
@@ -49,7 +52,9 @@
       const province = form.elements.province_id;
       province.innerHTML =
         '<option value="">Tất cả điểm đến</option>' +
-        provinces.data.map((p) => `<option value="${p.id}">${esc(p.province_name)}</option>`).join('');
+        provinces.data
+          .map((p) => `<option value="${p.id}">${esc(p.province_name)}</option>`)
+          .join('');
       const checked = params.getAll('category_id[]');
       if (params.has('category_id')) checked.push(params.get('category_id'));
       $('#catalogCategoryList').innerHTML = categories.data
@@ -113,7 +118,8 @@
   }
   async function detail() {
     const id = params.get('id');
-    if (!/^\d+$/.test(id || '')) throw new Error('Mã tour không hợp lệ. Vui lòng chọn tour từ danh sách.');
+    if (!/^\d+$/.test(id || ''))
+      throw new Error('Mã tour không hợp lệ. Vui lòng chọn tour từ danh sách.');
     const { data: tour } = await request('/api/tours/' + id);
     document.title = tour.title + ' | Vietnam Expeditions';
     for (const [selector, value] of Object.entries({
@@ -124,9 +130,9 @@
       '#tourDetailDuration': `${tour.duration_days} ngày ${tour.duration_nights} đêm`,
       '#itineraryDaysCount': `${tour.duration_days} ngày`,
       '#tourDetailPrice': money(tour.min_price),
-      '#tourDetailTransport': 'Xem dịch vụ bao gồm',
-      '#tourDetailHotel': 'Xem dịch vụ bao gồm',
-      '#tourDetailLanguage': 'Liên hệ để xác nhận',
+      '#tourDetailTransport': tour.transport || 'Chưa cập nhật phương tiện',
+      '#tourDetailHotel': tour.accommodation || 'Chưa cập nhật lưu trú',
+      '#tourDetailLanguage': tour.language || 'Chưa cập nhật ngôn ngữ',
     }))
       text(selector, value);
     const reviews = tour.reviews || [];
@@ -143,13 +149,23 @@
           `<div class="min-w-full h-full snap-start flex-shrink-0"><img class="w-full h-full object-cover" src="${imageUrl(img.img_url)}" alt="${esc(tour.title)}"></div>`,
       )
       .join('');
-    $('#tourDetailInclusions').innerHTML = `<li>${esc(tour.included_services || 'Chưa cập nhật')}</li>`;
-    $('#tourDetailExclusions').innerHTML = '<li>Liên hệ để xác nhận chi phí ngoài chương trình.</li>';
+    // Mỗi dòng dịch vụ trong document MongoDB được hiển thị thành một mục riêng.
+    const serviceItems = (value) =>
+      (value || 'Chưa cập nhật dịch vụ')
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => `<li>${esc(line)}</li>`)
+        .join('');
+    $('#tourDetailInclusions').innerHTML = serviceItems(tour.included_services);
+    $('#tourDetailExclusions').innerHTML = serviceItems(tour.excluded_services);
     $('#itineraryContainer').innerHTML =
       (tour.schedules || [])
+        .slice()
+        .sort((a, b) => a.day_number - b.day_number)
         .map(
           (s) =>
-            `<div class="p-5 bg-white rounded-2xl border border-slate-100"><h4 class="font-bold text-primary">Ngày ${s.day_number}: ${esc(s.title)}</h4><p class="text-sm mt-2 whitespace-pre-line">${esc(s.activities)}</p></div>`,
+            `<div class="p-5 bg-white rounded-2xl border border-slate-100"><h4 class="font-bold text-primary">Ngày ${s.day_number}: ${esc(s.title.replace(/^(?:\s*Ngày\s+\d+\s*[:：.\-–]\s*)+/iu, ''))}</h4><p class="text-sm mt-2 whitespace-pre-line">${esc(s.activities)}</p></div>`,
         )
         .join('') || 'Chưa cập nhật lịch trình.';
     $('#reviewsContainer').innerHTML =
@@ -161,7 +177,8 @@
         .join('') || 'Chưa có đánh giá.';
     $('#btnWriteReviewLink').href = '/client/my_tours/index.html?tab=completed';
     const departures = (tour.departures || []).filter(
-      (d) => d.status === 'open' && d.available_seats > 0 && new Date(d.departure_date) > new Date(),
+      (d) =>
+        d.status === 'open' && d.available_seats > 0 && new Date(d.departure_date) > new Date(),
     );
     const select = $('#departureSelect');
     text('#tourDetailStatusBadge', departures.length ? 'Đang mở bán' : 'Chưa có lịch mở bán');
@@ -215,15 +232,24 @@
     bindForm(form, async (fd) => {
       const body = Object.fromEntries(fd);
       body.birthday = body.birthday || null;
-      await request('/api/customer/profile', { method: 'PUT', body: JSON.stringify(body) });
+      await request('/api/customer/profile', {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      });
       // Chỉ cập nhật tên hiển thị đã xác nhận; dữ liệu hồ sơ vẫn nằm trong MongoDB.
       for (const storage of [localStorage, sessionStorage])
         if (storage.getItem('bookingtour_user'))
           storage.setItem(
             'bookingtour_user',
-            JSON.stringify({ id: user.id, fullName: body.fullName, email: body.email }),
+            JSON.stringify({
+              id: user.id,
+              fullName: body.fullName,
+              email: body.email,
+            }),
           );
-      document.querySelectorAll('[data-nav-user-name]').forEach((el) => (el.textContent = body.fullName));
+      document
+        .querySelectorAll('[data-nav-user-name]')
+        .forEach((el) => (el.textContent = body.fullName));
       text('[data-user-fullname]', body.fullName);
       text('aside h2', `Chào ${body.fullName}`);
       notice('Cập nhật hồ sơ thành công.');
@@ -232,14 +258,19 @@
       const body = Object.fromEntries(fd);
       if (body.new_password !== body.new_password_confirmation)
         throw new Error('Mật khẩu xác nhận không khớp.');
-      await request('/api/customer/password/update', { method: 'POST', body: JSON.stringify(body) });
+      await request('/api/customer/password/update', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
       $('#passwordForm').reset();
       notice('Đã đổi mật khẩu.');
     });
   }
   function bookingState(booking) {
     if (booking.status === 'cancelled') return 'cancelled';
-    return booking.status === 'confirmed' && booking.return_date && new Date(booking.return_date) < new Date()
+    return booking.status === 'confirmed' &&
+      booking.return_date &&
+      new Date(booking.return_date) < new Date()
       ? 'completed'
       : booking.status;
   }
@@ -251,7 +282,12 @@
     ]);
     let tab = params.get('tab') || 'all';
     let search = params.get('q') || '';
-    const counts = { all: bookings.length, upcoming: 0, completed: 0, cancelled: 0 };
+    const counts = {
+      all: bookings.length,
+      upcoming: 0,
+      completed: 0,
+      cancelled: 0,
+    };
     for (const b of bookings)
       counts[
         bookingState(b) === 'completed'
@@ -301,10 +337,15 @@
       document.querySelectorAll('[data-cancel-booking]').forEach(
         (button) =>
           (button.onclick = async () => {
-            if (!confirm('Hủy đặt tour này? Nếu đã thanh toán, vui lòng liên hệ để xử lý hoàn tiền.')) return;
+            if (
+              !confirm('Hủy đặt tour này? Nếu đã thanh toán, vui lòng liên hệ để xử lý hoàn tiền.')
+            )
+              return;
             button.disabled = true;
             try {
-              await request('/api/bookings/' + button.dataset.cancelBooking + '/cancel', { method: 'POST' });
+              await request('/api/bookings/' + button.dataset.cancelBooking + '/cancel', {
+                method: 'POST',
+              });
               location.reload();
             } catch (error) {
               failure(error);
@@ -314,7 +355,8 @@
       );
       document.querySelectorAll('.my-tours-tab').forEach((el) => {
         const active = el.dataset.filterTab === tab;
-        for (const name of ['active', 'bg-primary', 'text-white']) el.classList.toggle(name, active);
+        for (const name of ['active', 'bg-primary', 'text-white'])
+          el.classList.toggle(name, active);
         el.classList.toggle('text-slate-600', !active);
       });
       $('#myToursClearSearch')?.classList.toggle('hidden', !search);
@@ -358,10 +400,12 @@
     section.querySelectorAll('[data-delete-review]').forEach(
       (button) =>
         (button.onclick = async () => {
-          if (!confirm('Xóa đánh giá của bạn?')) return;
+          if (!(await confirmReviewDelete())) return;
           button.disabled = true;
           try {
-            await request('/api/reviews/' + button.dataset.deleteReview, { method: 'DELETE' });
+            await request('/api/reviews/' + button.dataset.deleteReview, {
+              method: 'DELETE',
+            });
             location.reload();
           } catch (error) {
             failure(error);
@@ -369,6 +413,18 @@
           }
         }),
     );
+  }
+  function confirmReviewDelete() {
+    const dialog = $('#deleteReviewDialog');
+    if (dialog.open) return Promise.resolve(false);
+    // Reset trước mỗi lần mở: Escape luôn hủy, kể cả lần trước đã xác nhận.
+    dialog.returnValue = 'cancel';
+    return new Promise((resolve) => {
+      dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), {
+        once: true,
+      });
+      dialog.showModal();
+    });
   }
   async function voucher() {
     await requireUser('Customer');
@@ -397,7 +453,8 @@
     };
     for (const [key, value] of Object.entries(values)) text('#' + key, value);
     $('#voucherTourImage').src = imageUrl(b.tour_image);
-    const canReview = ['confirmed', 'completed'].includes(b.status) && new Date(b.return_date) < new Date();
+    const canReview =
+      ['confirmed', 'completed'].includes(b.status) && new Date(b.return_date) < new Date();
     $('#voucherReviewLink').hidden = !canReview;
     $('#voucherReviewLink').href = 'review.html?booking_id=' + b.id;
     $('#voucherPassengersTable').innerHTML = (b.passengers || [])
@@ -417,7 +474,8 @@
         (params.get('booking_id') && String(r.booking_id) === params.get('booking_id')),
     );
     let booking = null;
-    if (params.get('booking_id')) booking = (await request('/api/bookings/' + params.get('booking_id'))).data;
+    if (params.get('booking_id'))
+      booking = (await request('/api/bookings/' + params.get('booking_id'))).data;
     if (!booking && !existing)
       throw new Error('Hãy chọn đơn đã hoàn thành trong Chuyến đi của tôi để đánh giá.');
     const tour = (await request('/api/tours/' + (booking?.tour_id || existing.tour_id))).data;
@@ -457,7 +515,9 @@
     form.elements.feedback.value = existing?.comment || '';
     text('#btnSubmitReview', existing ? 'Lưu thay đổi' : 'Gửi đánh giá');
     bindForm(form, async (fd) => {
-      const endpoint = existing ? '/api/reviews/' + existing.id : '/api/bookings/' + booking.id + '/review';
+      const endpoint = existing
+        ? '/api/reviews/' + existing.id
+        : '/api/bookings/' + booking.id + '/review';
       await request(endpoint, {
         method: existing ? 'PUT' : 'POST',
         body: JSON.stringify({ rating, comment: fd.get('feedback') }),
@@ -470,7 +530,8 @@
     buttons.forEach((button) => (button.disabled = true));
     notice('Đang tải dữ liệu...');
     if (path.endsWith('/home.html')) await home();
-    else if (path.endsWith('/tours/index.html') || path.endsWith('/tours/by_province.html')) await catalog();
+    else if (path.endsWith('/tours/index.html') || path.endsWith('/tours/by_province.html'))
+      await catalog();
     else if (path.endsWith('/tours/show.html')) await detail();
     else if (path.endsWith('/profile/show.html')) await profile();
     else if (path.endsWith('/my_tours/index.html')) await myTours();

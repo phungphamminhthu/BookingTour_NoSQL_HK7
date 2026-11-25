@@ -2,6 +2,7 @@ using Backend_DotNet.Data;
 using Backend_DotNet.DTOs;
 using Backend_DotNet.Models;
 using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend_DotNet.Services;
 
@@ -214,28 +215,28 @@ public class AdminManagementService : IAdminManagementService
         var existingUser = await _context.Employees.Find(e => e.Username.ToLower() == request.Username.ToLower().Trim()).FirstOrDefaultAsync();
         if (existingUser != null)
         {
-            throw new ArgumentException("Tên đăng nhập đã được sử dụng.");
+            throw new ValidationException(new ValidationResult("Tên đăng nhập đã được sử dụng.", new[] { "username" }), null, null);
         }
 
         var existingEmail = await _context.Employees.Find(e => e.Email.ToLower() == request.Email.ToLower().Trim()).FirstOrDefaultAsync();
         if (existingEmail != null)
         {
-            throw new ArgumentException("Email nhân viên đã được sử dụng.");
+            throw new ValidationException(new ValidationResult("Email nhân viên đã được sử dụng.", new[] { "email" }), null, null);
         }
 
         var role = await _context.Roles.Find(r => r.Id == request.RoleId).FirstOrDefaultAsync()
-            ?? throw new ArgumentException("Vai trò không tồn tại.");
+            ?? throw new ValidationException(new ValidationResult("Vai trò không tồn tại.", new[] { "role_id" }), null, null);
         var nextId = await _context.GetNextSequenceAsync("employees");
         var now = DateTime.UtcNow;
 
         var employee = new Employee
         {
             Id = nextId,
-            Username = request.Username.Trim(),
+            Username = request.Username.Trim().ToLowerInvariant(),
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             FullName = request.FullName.Trim(),
-            Email = request.Email.Trim(),
-            Phone = request.Phone.Trim(),
+            Email = request.Email.Trim().ToLowerInvariant(),
+            Phone = EmployeeFieldValidation.NormalizePhone(request.Phone),
             RoleId = request.RoleId,
             RoleName = role?.RoleName ?? (request.RoleId == 1 ? "Admin" : request.RoleId == 2 ? "Sale" : "Guide"),
             CreatedAt = now,
@@ -254,18 +255,18 @@ public class AdminManagementService : IAdminManagementService
         var emailCheck = await _context.Employees.Find(e => e.Email.ToLower() == request.Email.ToLower().Trim() && e.Id != id).FirstOrDefaultAsync();
         if (emailCheck != null)
         {
-            throw new ArgumentException("Email này đã được sử dụng bởi nhân viên khác.");
+            throw new ValidationException(new ValidationResult("Email này đã được sử dụng bởi nhân viên khác.", new[] { "email" }), null, null);
         }
 
         var role = await _context.Roles.Find(r => r.Id == request.RoleId).FirstOrDefaultAsync()
-            ?? throw new ArgumentException("Vai trò không tồn tại.");
+            ?? throw new ValidationException(new ValidationResult("Vai trò không tồn tại.", new[] { "role_id" }), null, null);
         if (employee.RoleName == "Admin" && role.RoleName != "Admin" &&
             await _context.Employees.CountDocumentsAsync(e => e.RoleName == "Admin") <= 1)
             throw new ArgumentException("Không thể đổi vai trò của quản trị viên cuối cùng.");
 
         employee.FullName = request.FullName.Trim();
-        employee.Email = request.Email.Trim();
-        employee.Phone = request.Phone.Trim();
+        employee.Email = request.Email.Trim().ToLowerInvariant();
+        employee.Phone = EmployeeFieldValidation.NormalizePhone(request.Phone);
         employee.RoleId = request.RoleId;
         employee.RoleName = role?.RoleName ?? employee.RoleName;
         employee.UpdatedAt = DateTime.UtcNow;
