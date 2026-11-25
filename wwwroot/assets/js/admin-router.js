@@ -180,7 +180,7 @@
       if (!rawRole) return 'Quản trị viên';
       const r = String(rawRole).trim().toLowerCase();
       if (r === 'admin' || r.includes('quản trị')) return 'Quản trị viên';
-      if (r === 'sale' || r.includes('kinh doanh') || r.includes('sale')) return 'Nhân viên Sale';
+      if (r === 'sale' || r.includes('kinh doanh') || r.includes('sale')) return 'Nhân viên kinh doanh';
       if (r === 'guide' || r.includes('hướng dẫn')) return 'Hướng dẫn viên';
       return rawRole;
     }
@@ -378,7 +378,7 @@
     } else if (p.includes('/employees')) {
       if (!window.Part2) await loadScript('/assets/js/part2-common.js');
       if (!window.Part2EmployeePages) await loadScript('/assets/js/employee-pages.js');
-      window.Part2EmployeePages?.start?.();
+      await window.Part2EmployeePages?.start?.();
     } else {
       // Default: Dashboard
       if (!window.BookingTourDashboard) {

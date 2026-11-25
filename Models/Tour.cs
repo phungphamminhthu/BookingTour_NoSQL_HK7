@@ -49,6 +49,22 @@ public class Tour : BaseEntity
     [JsonPropertyName("included_services")]
     public string? IncludedServices { get; set; }
 
+    [BsonElement("excluded_services")]
+    [JsonPropertyName("excluded_services")]
+    public string? ExcludedServices { get; set; }
+
+    [BsonElement("language")]
+    [JsonPropertyName("language")]
+    public string? Language { get; set; }
+
+    [BsonElement("transport")]
+    [JsonPropertyName("transport")]
+    public string? Transport { get; set; }
+
+    [BsonElement("accommodation")]
+    [JsonPropertyName("accommodation")]
+    public string? Accommodation { get; set; }
+
     [BsonElement("min_price")]
     [JsonPropertyName("min_price")]
     public decimal MinPrice { get; set; }

@@ -1,0 +1,25 @@
+/* Các hàng dùng chung độ rộng cột; tên/email dài không đẩy lệch vai trò. */
+.employee-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px 24px;
+}
+.employee-identity {
+  grid-column: 1 / -1;
+}
+.employee-role {
+  justify-self: start;
+}
+.employee-actions {
+  justify-self: end;
+  white-space: nowrap;
+}
+@media (min-width: 1024px) {
+  .employee-row {
+    grid-template-columns: minmax(0, 1fr) 128px 96px;
+  }
+  .employee-identity {
+    grid-column: auto;
+  }
+}

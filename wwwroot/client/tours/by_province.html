@@ -111,8 +111,8 @@
 </head>
 <body class="bg-surface font-body text-on-surface">
 <!-- Top Navigation Bar -->
-<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
-    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+<nav class="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+    <div class="flex flex-wrap gap-3 justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="../home.html" class="text-2xl font-black text-blue-900 dark:text-white italic font-['Be_Vietnam_Pro'] tracking-tight hover:opacity-80 transition-opacity decoration-transparent">
             Vietnam Expeditions
         </a>
@@ -153,9 +153,9 @@
 
 
 
-<div class="p-8 max-w-6xl mx-auto">
+<main class="px-4 py-8 md:px-8 max-w-6xl mx-auto">
     <!-- Header + Nút quay lại -->
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col items-start gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
         <div>
             <span class="text-secondary font-bold text-xs uppercase tracking-widest">Điểm đến nổi bật</span>
             <h2 class="text-3xl font-extrabold text-blue-900 mt-1">Tour Du Lịch Theo Tỉnh Thành</h2>
@@ -169,7 +169,7 @@
 
     <!-- Grid Tour -->
     <div id="provinceToursGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"><p>Đang tải tour...</p></div><div id="catalogPagination" class="flex justify-center gap-2 mt-8"></div>
-</div>
+</main>
 
 <!-- Footer (Correctly positioned at bottom of page) -->
 <footer class="w-full rounded-t-[2rem] mt-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">

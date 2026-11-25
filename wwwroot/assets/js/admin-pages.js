@@ -1041,6 +1041,8 @@
     const pageSize = 10;
     const previous = document.querySelector('[data-tour-prev]');
     const next = document.querySelector('[data-tour-next]');
+    // Người dùng có thể chuyển module trong lúc API danh sách tour đang tải.
+    if (!previous || !next) return;
     let keyword = urlParams.get('keyword') || '';
     let catId = urlParams.get('category_id') || '';
     let provId = urlParams.get('province_id') || '';

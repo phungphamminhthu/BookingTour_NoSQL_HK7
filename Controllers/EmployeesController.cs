@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using MongoDB.Driver;
 
 namespace Backend_DotNet.Controllers;
 
@@ -55,6 +56,14 @@ public class EmployeesController : ControllerBase
             var employee = await _service.CreateEmployeeAsync(request);
             return StatusCode(StatusCodes.Status201Created, ApiResponse<Employee>.Ok(employee, "Tạo nhân viên thành công."));
         }
+        catch (ValidationException ex)
+        {
+            return FieldValidationError(ex);
+        }
+        catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest(ApiResponse<object>.Fail("Tên đăng nhập hoặc email đã được sử dụng."));
+        }
         catch (Exception ex)
         {
             return BadRequest(ApiResponse<object>.Fail(ex.Message));
@@ -75,10 +84,25 @@ public class EmployeesController : ControllerBase
         {
             return NotFound(ApiResponse<object>.Fail(ex.Message));
         }
+        catch (ValidationException ex)
+        {
+            return FieldValidationError(ex);
+        }
+        catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest(ApiResponse<object>.Fail("Email đã được sử dụng."));
+        }
         catch (Exception ex)
         {
             return BadRequest(ApiResponse<object>.Fail(ex.Message));
         }
+    }
+
+    private IActionResult FieldValidationError(ValidationException exception)
+    {
+        var errors = exception.ValidationResult!.MemberNames.ToDictionary(
+            field => field, _ => new[] { exception.Message });
+        return BadRequest(ApiResponse<object>.Fail("Vui lòng kiểm tra lại thông tin.", errors));
     }
 }
 
