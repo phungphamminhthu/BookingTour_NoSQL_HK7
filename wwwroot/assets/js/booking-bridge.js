@@ -18,6 +18,7 @@
   const draftKey = 'bookingtour_api_booking_draft';
   const inputClass = 'w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm';
 
+  // Đọc mã chuyến từ URL, kiểm tra tài khoản và nạp tour/chuyến cho bước đặt tương ứng.
   async function start() {
     const user = await requireUser('Customer');
     if (!user) return;
@@ -63,6 +64,7 @@
     }
   }
 
+  // Nhập số vé/liên hệ, tính giá hiển thị và nhờ API kiểm tra bản nháp.
   function create(user, tour, dep) {
     const form = $('#bookingForm');
     const existingDraft = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
@@ -95,6 +97,7 @@
       text('#summary_children', children);
       text('#summary_adult_amount', money(adults * dep.adult_price));
       text('#summary_child_amount', money(children * dep.child_price));
+      // Giá giao diện = người lớn × đơn giá lớn + trẻ em × đơn giá trẻ; backend vẫn tính lại khi lưu đơn.
       text('#summary_total', money(adults * dep.adult_price + children * dep.child_price));
     };
     document.querySelectorAll('.quantity-btn').forEach(
@@ -134,6 +137,7 @@
     });
   }
 
+  // Tạo các ô hành khách đúng số vé và giữ bản nháp cho bước thanh toán.
   function passengers(tour, dep, draft) {
     const form = $('form');
     const container = $('.lg\\:col-span-8.space-y-6');
@@ -214,6 +218,7 @@
     });
   }
 
+  // Hiển thị giá/phương thức thanh toán, gửi checkout để backend lưu đơn thật.
   function invoice(tour, dep, draft) {
     if (!draft.passengers) throw new Error('Vui lòng nhập danh sách hành khách trước khi thanh toán.');
     const form = $('#checkoutForm');

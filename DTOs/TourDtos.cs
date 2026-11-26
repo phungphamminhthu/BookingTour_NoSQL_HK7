@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_DotNet.DTOs;
 
+// Ánh xạ tham số trên URL vào bộ lọc tour và kiểm tra giới hạn trước khi gọi Service.
 public class TourQueryParameters
 {
     [FromQuery(Name = "q")]
@@ -41,7 +42,7 @@ public class TourQueryParameters
 
     [FromQuery(Name = "sort")]
     [RegularExpression("^(featured|asc|desc)$")]
-    public string? SapXep { get; set; } = "featured"; // featured, asc, desc
+    public string? SapXep { get; set; } = "featured"; // Thứ tự mặc định, giá tăng, giá giảm (featured, asc, desc).
 
     [FromQuery(Name = "page")]
     [Range(1, int.MaxValue)]

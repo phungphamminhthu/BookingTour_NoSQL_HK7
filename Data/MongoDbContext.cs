@@ -34,6 +34,7 @@ public class MongoDbContext
     public IMongoCollection<Bill> Bills => _database.GetCollection<Bill>("bills");
     public IMongoCollection<Review> Reviews => _database.GetCollection<Review>("reviews");
     public IMongoCollection<Counter> Counters => _database.GetCollection<Counter>("counters");
+    // Dùng $inc và FindOneAndUpdate để cấp id tăng dần nguyên tử; không lấy số document làm id.
     public async Task<int> GetNextSequenceAsync(string counterName)
     {
         var filter = Builders<Counter>.Filter.Eq(c => c.Id, counterName);
@@ -48,23 +49,24 @@ public class MongoDbContext
         return result.SequenceValue;
     }
 
+    // Tạo index phục vụ tìm kiếm và ràng buộc duy nhất ngay khi khởi tạo dữ liệu.
     public async Task EnsureIndexesAsync()
     {
-        // Roles indexes
+        // Index cho vai trò.
         await Roles.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Role>(Builders<Role>.IndexKeys.Ascending(r => r.Id), new CreateIndexOptions { Unique = true }),
             new CreateIndexModel<Role>(Builders<Role>.IndexKeys.Ascending(r => r.RoleName), new CreateIndexOptions { Unique = true })
         });
 
-        // Categories indexes
+        // Index cho danh mục.
         await TourCategories.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<TourCategory>(Builders<TourCategory>.IndexKeys.Ascending(c => c.Id), new CreateIndexOptions { Unique = true }),
             new CreateIndexModel<TourCategory>(Builders<TourCategory>.IndexKeys.Ascending(c => c.CategoryName), new CreateIndexOptions { Unique = true })
         });
 
-        // Provinces indexes
+        // Index cho tỉnh/thành.
         await Provinces.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Province>(Builders<Province>.IndexKeys.Ascending(p => p.Id), new CreateIndexOptions { Unique = true }),
@@ -72,7 +74,7 @@ public class MongoDbContext
             new CreateIndexModel<Province>(Builders<Province>.IndexKeys.Ascending(p => p.Region))
         });
 
-        // Employees indexes
+        // Index cho nhân viên.
         await Employees.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Employee>(Builders<Employee>.IndexKeys.Ascending(e => e.Id), new CreateIndexOptions { Unique = true }),
@@ -80,14 +82,14 @@ public class MongoDbContext
             new CreateIndexModel<Employee>(Builders<Employee>.IndexKeys.Ascending(e => e.Email), new CreateIndexOptions { Unique = true })
         });
 
-        // Customers indexes
+        // Index cho khách hàng.
         await Customers.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Customer>(Builders<Customer>.IndexKeys.Ascending(c => c.Id), new CreateIndexOptions { Unique = true }),
             new CreateIndexModel<Customer>(Builders<Customer>.IndexKeys.Ascending(c => c.Email), new CreateIndexOptions { Unique = true })
         });
 
-        // Tours indexes
+        // Index cho tour.
         await Tours.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Tour>(Builders<Tour>.IndexKeys.Ascending(t => t.Id), new CreateIndexOptions { Unique = true }),
@@ -97,7 +99,7 @@ public class MongoDbContext
             new CreateIndexModel<Tour>(Builders<Tour>.IndexKeys.Ascending(t => t.Title))
         });
 
-        // Departures indexes
+        // Index cho lịch khởi hành.
         await TourDepartures.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<TourDeparture>(Builders<TourDeparture>.IndexKeys.Ascending(d => d.Id), new CreateIndexOptions { Unique = true }),
@@ -106,7 +108,7 @@ public class MongoDbContext
             new CreateIndexModel<TourDeparture>(Builders<TourDeparture>.IndexKeys.Ascending(d => d.Status))
         });
 
-        // Bookings indexes
+        // Index cho đơn đặt tour.
         await Bookings.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Booking>(Builders<Booking>.IndexKeys.Ascending(b => b.Id), new CreateIndexOptions { Unique = true }),
@@ -115,14 +117,14 @@ public class MongoDbContext
             new CreateIndexModel<Booking>(Builders<Booking>.IndexKeys.Ascending(b => b.DepartureId))
         });
 
-        // Payments indexes
+        // Index cho thanh toán.
         await Payments.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Payment>(Builders<Payment>.IndexKeys.Ascending(p => p.Id), new CreateIndexOptions { Unique = true }),
             new CreateIndexModel<Payment>(Builders<Payment>.IndexKeys.Ascending(p => p.BookingId))
         });
 
-        // Bills indexes
+        // Index cho hóa đơn.
         await Bills.Indexes.CreateManyAsync(new[]
         {
             new CreateIndexModel<Bill>(Builders<Bill>.IndexKeys.Ascending(b => b.Id), new CreateIndexOptions { Unique = true }),
@@ -130,7 +132,7 @@ public class MongoDbContext
             new CreateIndexModel<Bill>(Builders<Bill>.IndexKeys.Ascending(b => b.BookingId))
         });
 
-        // Reviews indexes
+        // Index cho đánh giá.
         await Reviews.Indexes.CreateManyAsync(new[]
         {
             // Dữ liệu mẫu cũ chưa có booking_id; chỉ áp dụng unique cho bản ghi có ID số.
@@ -141,6 +143,7 @@ public class MongoDbContext
             new CreateIndexModel<Review>(Builders<Review>.IndexKeys.Ascending(r => r.TourId)),
             new CreateIndexModel<Review>(Builders<Review>.IndexKeys.Ascending(r => r.CustomerId))
         });
+        // Index ghép theo thứ tự tỉnh, giá, mã tour; hiệu quả phụ thuộc bộ lọc/thứ tự sắp xếp thực tế.
         await Tours.Indexes.CreateOneAsync(new CreateIndexModel<Tour>(
             Builders<Tour>.IndexKeys.Ascending(t => t.ProvinceId).Ascending(t => t.MinPrice).Ascending(t => t.Id)));
         await TourDepartures.Indexes.CreateOneAsync(new CreateIndexModel<TourDeparture>(

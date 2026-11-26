@@ -258,6 +258,7 @@ public class EmployeeUpdateRequest : IValidatableObject
 // Dùng cùng quy tắc cho thêm/sửa; cho phép nhập số điện thoại có khoảng trắng hoặc +84.
 public static class EmployeeFieldValidation
 {
+    // Bỏ dấu phân cách và đổi đầu +84 thành 0 để kiểm tra/lưu số điện thoại thống nhất.
     public static string NormalizePhone(string phone)
     {
         var value = System.Text.RegularExpressions.Regex.Replace(phone ?? "", @"[\s().-]", "");
@@ -374,7 +375,7 @@ public class DashboardRecentBookingDto
 
 public class TransactionDetailDto
 {
-    // Transaction info
+    // Thông tin giao dịch.
     [JsonPropertyName("transaction_id")]
     public int TransactionId { get; set; }
 
@@ -402,7 +403,7 @@ public class TransactionDetailDto
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    // Customer info
+    // Thông tin khách hàng.
     [JsonPropertyName("customer_id")]
     public int CustomerId { get; set; }
 
@@ -418,7 +419,7 @@ public class TransactionDetailDto
     [JsonPropertyName("customer_address")]
     public string? CustomerAddress { get; set; }
 
-    // Booking & Tour info
+    // Thông tin đơn đặt tour và tour.
     [JsonPropertyName("booking_id")]
     public int? BookingId { get; set; }
 
@@ -455,7 +456,7 @@ public class TransactionDetailDto
     [JsonPropertyName("remaining_amount")]
     public decimal RemainingAmount => TotalBookingAmount > PaidAmount ? TotalBookingAmount - PaidAmount : 0;
 
-    // Bill info
+    // Thông tin hóa đơn nội bộ.
     [JsonPropertyName("bill_id")]
     public int? BillId { get; set; }
 

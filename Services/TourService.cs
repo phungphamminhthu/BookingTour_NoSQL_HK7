@@ -19,6 +19,7 @@ public class TourService : ITourService
         _logger = logger;
     }
 
+    // Lấy các tour mới nhất cho trang chủ, giới hạn số kết quả và ghép thông tin liên quan.
     public async Task<List<Tour>> GetFeaturedToursAsync(int limit = 8)
     {
         var tours = await _context.Tours.Find(_ => true)
@@ -30,6 +31,7 @@ public class TourService : ITourService
         return tours;
     }
 
+    // Ghép các bộ lọc, đếm tổng và lấy một trang tour trực tiếp từ MongoDB.
     public async Task<(List<Tour> Items, long TotalCount)> QueryToursAsync(TourQueryParameters p)
     {
         var builder = Builders<Tour>.Filter;
@@ -63,7 +65,7 @@ public class TourService : ITourService
 
         if (!string.IsNullOrWhiteSpace(p.VungMien))
         {
-            // Find provinces in that region
+            // Tra mã tỉnh/thành thuộc vùng đã chọn trước khi lọc tour.
             var region = p.VungMien.Trim().Replace("Miền ", "", StringComparison.OrdinalIgnoreCase);
             var provinceIds = await _context.Provinces.Find(pr => pr.Region == region).Project(pr => pr.Id).ToListAsync();
             filter &= builder.In(t => t.ProvinceId, provinceIds);
@@ -115,6 +117,7 @@ public class TourService : ITourService
                 break;
         }
 
+        // Bỏ qua (trang - 1) × kích thước trang; đếm tổng trước Skip/Limit để tính đủ số trang.
         var page = p.Page > 0 ? p.Page : 1;
         var pageSize = p.PageSize > 0 ? p.PageSize : 9;
 
@@ -124,6 +127,7 @@ public class TourService : ITourService
         return (items, totalCount);
     }
 
+    // Đọc tour cùng mảng ảnh/lịch trình nhúng, rồi ghép lịch khởi hành và đánh giá.
     public async Task<Tour?> GetTourByIdAsync(int id)
     {
         var tour = await _context.Tours.Find(t => t.Id == id).FirstOrDefaultAsync();
@@ -135,7 +139,7 @@ public class TourService : ITourService
             .SortBy(d => d.DepartureDate)
             .ToListAsync();
 
-        // Populate guide info for departures
+        // Ghép thông tin hướng dẫn viên vào từng lịch khởi hành.
         var guideIds = tour.Departures.Where(d => d.GuideId.HasValue).Select(d => d.GuideId!.Value).Distinct().ToList();
         if (guideIds.Any())
         {
@@ -175,6 +179,7 @@ public class TourService : ITourService
         return tour;
     }
 
+    // Tra cứu các tour tham chiếu đến tỉnh/thành được chọn.
     public async Task<List<Tour>> GetToursByProvinceIdAsync(int provinceId)
     {
         var tours = await _context.Tours.Find(t => t.ProvinceId == provinceId).ToListAsync();
@@ -182,6 +187,7 @@ public class TourService : ITourService
         return tours;
     }
 
+    // Kiểm tra danh mục/tỉnh tồn tại, cấp mã và lưu document tour mới.
     public async Task<Tour> CreateTourAsync(TourCreateRequest request)
     {
         var category = await _context.TourCategories.Find(c => c.Id == request.CategoryId).FirstOrDefaultAsync()
@@ -232,6 +238,7 @@ public class TourService : ITourService
         return tour;
     }
 
+    // Cập nhật thông tin tour, giữ dữ liệu cũ khi form không gửi các trường tùy chọn mới.
     public async Task<Tour> UpdateTourAsync(int id, TourUpdateRequest request)
     {
         var tour = await _context.Tours.Find(t => t.Id == id).FirstOrDefaultAsync()
@@ -264,7 +271,7 @@ public class TourService : ITourService
         if (!string.IsNullOrWhiteSpace(request.ThumbnailUrl))
         {
             tour.ThumbnailUrl = request.ThumbnailUrl;
-            // Mark existing as not thumbnail
+            // Bỏ cờ ảnh đại diện ở các ảnh cũ.
             foreach (var img in tour.Images)
             {
                 img.IsThumbnail = false;
@@ -282,12 +289,13 @@ public class TourService : ITourService
         return tour;
     }
 
+    // Chặn xóa tour có đơn đặt liên quan; tour hợp lệ được xóa cùng lịch khởi hành.
     public async Task<bool> DeleteTourAsync(int id)
     {
         var tour = await _context.Tours.Find(t => t.Id == id).FirstOrDefaultAsync()
                    ?? throw new KeyNotFoundException($"Không tìm thấy tour với mã {id}.");
 
-        // Check if there are active bookings for departures of this tour
+        // Kiểm tra mọi booking liên quan đến các lịch của tour trước khi xóa.
         var departureIds = await _context.TourDepartures.Find(d => d.TourId == id).Project(d => d.Id).ToListAsync();
         if (departureIds.Any())
         {
@@ -298,12 +306,13 @@ public class TourService : ITourService
             }
         }
 
-        // Delete departures of this tour
+        // Xóa các lịch khởi hành của tour đã vượt qua điều kiện bảo vệ dữ liệu.
         await _context.TourDepartures.DeleteManyAsync(d => d.TourId == id);
         var result = await _context.Tours.DeleteOneAsync(t => t.Id == id);
         return result.DeletedCount > 0;
     }
 
+    // Thêm ngày vào mảng schedules bằng $push, kèm điều kiện ngày chưa tồn tại.
     public async Task<TourScheduleEmbedded> AddScheduleAsync(int tourId, ScheduleCreateRequest request)
     {
         var filters = Builders<Tour>.Filter;
@@ -328,6 +337,7 @@ public class TourService : ITourService
         return schedule;
     }
 
+    // Dùng arrayFilters và $set để sửa đúng phần tử lịch trình, tránh trùng ngày.
     public async Task<bool> UpdateScheduleAsync(int scheduleId, ScheduleUpdateRequest request)
     {
         var filters = Builders<Tour>.Filter;
@@ -362,6 +372,7 @@ public class TourService : ITourService
         return true;
     }
 
+    // Dùng $pull xóa phần tử lịch trình theo mã trong document tour.
     public async Task<bool> DeleteScheduleAsync(int scheduleId)
     {
         var filter = Builders<Tour>.Filter.ElemMatch(t => t.Schedules, item => item.Id == scheduleId);
@@ -374,6 +385,7 @@ public class TourService : ITourService
         return true;
     }
 
+    // Lưu URL ảnh vào mảng images và cập nhật ảnh đại diện nếu được chọn.
     public async Task<TourImageEmbedded> AddImageAsync(int tourId, string imgUrl, bool isThumbnail)
     {
         var tour = await _context.Tours.Find(t => t.Id == tourId).FirstOrDefaultAsync()
@@ -403,6 +415,7 @@ public class TourService : ITourService
         return newImg;
     }
 
+    // Xóa ảnh nhúng, xử lý tệp R2 thuộc dự án và chọn lại ảnh đại diện khi cần.
     public async Task<bool> DeleteImageAsync(int imageId)
     {
         var tour = await _context.Tours.Find(t => t.Images.Any(i => i.Id == imageId)).FirstOrDefaultAsync()
@@ -448,6 +461,7 @@ public class TourService : ITourService
         return result.ModifiedCount > 0;
     }
 
+    // Lấy dữ liệu liên quan theo các tập mã rồi ghép ở C#, hạn chế truy vấn từng tour.
     private async Task PopulateTourRelationsAsync(List<Tour> tours)
     {
         if (!tours.Any()) return;

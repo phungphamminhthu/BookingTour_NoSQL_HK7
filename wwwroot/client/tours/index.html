@@ -107,6 +107,15 @@
          -ms-overflow-style: none;
          scrollbar-width: none;
          }
+        /* Ô giá ưu tiên chỗ hiển thị số tiền, không dành chỗ cho nút tăng/giảm. */
+        #catalogMinPrice, #catalogMaxPrice { appearance: textfield; }
+        #catalogMinPrice::-webkit-inner-spin-button,
+        #catalogMinPrice::-webkit-outer-spin-button,
+        #catalogMaxPrice::-webkit-inner-spin-button,
+        #catalogMaxPrice::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface">
@@ -155,8 +164,8 @@
 
 <div class="pt-24 pb-20 px-6 max-w-screen-2xl mx-auto flex flex-col md:flex-row gap-8">
     <!-- Sidebar Filters -->
-    <aside class="w-full md:w-72 flex-shrink-0">
-      <div class="sticky top-28 space-y-8">
+    <aside class="w-full md:w-80 lg:w-[22rem] flex-shrink-0">
+      <div class="space-y-8">
         <!-- Breadcrumbs -->
         <nav aria-label="Breadcrumb" class="flex text-xs font-label text-outline mb-6">
           <ol class="flex items-center space-x-2">
@@ -171,8 +180,9 @@
 
             <!-- Tìm kiếm theo từ khóa -->
             <div class="mb-6">
-              <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Tìm kiếm từ khóa</label>
+              <label for="catalogKeyword" class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Từ khóa</label>
               <input type="text"
+                     id="catalogKeyword"
                      name="q"
                      value=""
                      placeholder="Tên tour, địa điểm..."
@@ -181,10 +191,23 @@
 
             <!-- Tỉnh / Thành phố -->
             <div class="mb-6">
-              <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Tỉnh / Thành phố</label>
+              <label for="catalogProvinceSelect" class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Điểm đến</label>
               <select name="province_id" id="catalogProvinceSelect" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:ring-primary cursor-pointer">
                 <option value="">-- Tất cả điểm đến --</option>
               </select>
+            </div>
+
+            <!-- Nơi đón khách khác với tỉnh/thành đến tham quan. -->
+            <div class="mb-6">
+              <label for="catalogPickupPoint" class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Nơi khởi hành</label>
+              <input id="catalogPickupPoint" type="text" name="pickupPoint" placeholder="Địa điểm đón khách..."
+                     class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:ring-primary"/>
+            </div>
+
+            <div class="mb-6">
+              <label for="catalogStartDate" class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Ngày khởi hành từ</label>
+              <input id="catalogStartDate" type="date" name="startDate"
+                     class="w-full min-w-0 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:ring-primary"/>
             </div>
 
             <!-- Loại hình tour -->
@@ -194,46 +217,28 @@
               </div>
             </div>
 
-            <!-- Khoảng giá tối đa -->
-            
+            <!-- Để trống một đầu giá nếu không muốn giới hạn đầu đó. -->
             <div class="mb-6">
-              <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-3">Khoảng giá tối đa</label>
-              <input class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                     type="range"
-                     name="gia_den"
-                     min="500000"
-                     max="50000000"
-                     step="500000"
-                     value=""
-                     oninput="document.getElementById('display_price').innerText = Number(this.value).toLocaleString('vi-VN') + ' VNĐ'"/>
-              <div id="display_price" class="text-xs font-bold text-primary mt-2 text-right">
-                25.000.000 VNĐ
-              </div>
-              <div class="flex justify-between mt-1 text-[11px] font-medium text-slate-400">
-                <span>500k VNĐ</span>
-                <span>50tr VNĐ</span>
+              <p class="text-xs font-bold uppercase tracking-wider text-secondary mb-3">Khoảng giá</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="catalogMinPrice" class="block text-xs text-slate-600 mb-2">Từ (VNĐ)</label>
+                  <input id="catalogMinPrice" type="number" min="0" step="any" name="gia_tu" placeholder="0"
+                         class="w-full min-w-0 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:ring-primary"/>
+                </div>
+                <div>
+                  <label for="catalogMaxPrice" class="block text-xs text-slate-600 mb-2">Đến (VNĐ)</label>
+                  <input id="catalogMaxPrice" type="number" min="0" step="any" name="gia_den" placeholder="Để trống"
+                         class="w-full min-w-0 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:ring-primary"/>
+                </div>
               </div>
             </div>
 
             <!-- Thời gian tối đa -->
-            
             <div class="mb-6">
-              <label class="block text-xs font-bold uppercase tracking-wider text-secondary mb-3">Thời gian tối đa</label>
-              <input class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                     type="range"
-                     name="so_ngay"
-                     min="1"
-                     max="15"
-                     step="1"
-                     value=""
-                     oninput="document.getElementById('display_days').innerText = this.value + ' ngày'"/>
-              <div id="display_days" class="text-xs font-bold text-primary mt-2 text-right">
-                7 ngày
-              </div>
-              <div class="flex justify-between mt-1 text-[11px] font-medium text-slate-400">
-                <span>1 ngày</span>
-                <span>15 ngày</span>
-              </div>
+              <label for="catalogMaxDays" class="block text-xs font-bold uppercase tracking-wider text-secondary mb-2">Thời gian tối đa (ngày)</label>
+              <input id="catalogMaxDays" type="number" name="so_ngay" min="1" max="365" step="1" placeholder="Không giới hạn"
+                     class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:ring-1 focus:ring-primary"/>
             </div>
               <input type="hidden" name="region" value="" />
             
@@ -241,11 +246,11 @@
             <button type="submit" class="w-full bg-primary text-white py-2.5 px-4 rounded-xl hover:bg-primary-container transition font-bold text-sm shadow-md">
               Áp dụng bộ lọc
             </button>
-            <a href="#" class="block text-center w-full mt-3 text-xs text-slate-500 hover:text-red-500 font-semibold py-1">
+            <a href="index.html" class="block text-center w-full mt-3 text-xs text-slate-500 hover:text-red-500 font-semibold py-1">
               Xóa bộ lọc
             </a>
           </div>
-        <div class="space-y-3 mt-4"><label class="block text-xs font-bold">Giá từ (VNĐ)<input class="w-full rounded-lg border-slate-200 text-sm" type="number" min="0" name="gia_tu"></label><label class="block text-xs font-bold">Điểm đến / Từ khóa<input class="w-full rounded-lg border-slate-200 text-sm" name="destination"></label><label class="block text-xs font-bold">Ngày khởi hành từ<input class="w-full rounded-lg border-slate-200 text-sm" type="date" name="startDate"></label><label class="block text-xs font-bold">Nơi khởi hành<input class="w-full rounded-lg border-slate-200 text-sm" name="pickupPoint"></label></div></form>
+        </form>
       </div>
     </aside>
 
@@ -264,7 +269,6 @@
           <span class="text-xs font-bold text-slate-500 uppercase">Sắp xếp:</span>
           <select name="sort"
                   form="filter_tour"
-                  onchange="document.getElementById('filter_tour').submit()"
                   class="bg-transparent border-none text-sm font-bold text-primary focus:ring-0 cursor-pointer">
             <option value="featured" >Mới nhất / Nổi bật</option>
             <option value="asc" >Giá: Thấp đến Cao</option>

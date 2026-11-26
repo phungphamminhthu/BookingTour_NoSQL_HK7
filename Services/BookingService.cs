@@ -17,16 +17,19 @@ public class BookingService : IBookingService
         _logger = logger;
     }
 
+    // Lấy ngày hiện tại theo giờ Việt Nam (UTC+7) để kiểm tra ngày sinh và lịch đi.
     private static DateTime VietnamToday()
     {
         return DateTime.UtcNow.AddHours(7).Date;
     }
 
+    // Tổng tiền = số người lớn × giá người lớn + số trẻ em × giá trẻ em của lịch đã chọn.
     private static decimal CalculateTotal(TourDeparture departure, DraftBookingRequest request)
     {
         return request.TotalAdults * departure.AdultPrice + request.TotalChildren * departure.ChildPrice;
     }
 
+    // Kiểm tra lịch, số chỗ và tính giá bản nháp; bước này chưa giữ ghế hoặc lưu đơn.
     public async Task<object> ValidateDraftAsync(DraftBookingRequest request)
     {
         var departure = await _context.TourDepartures.Find(d => d.Id == request.DepartureId).FirstOrDefaultAsync()
@@ -67,6 +70,7 @@ public class BookingService : IBookingService
         };
     }
 
+    // Kiểm tra lại dữ liệu, giữ ghế có điều kiện và ghi đơn cùng hành khách nhúng vào MongoDB.
     public async Task<Booking> CheckoutAsync(int customerId, CheckoutRequest request)
     {
         var payLater = request.PaymentMethod is "bank_transfer" or "cash";
@@ -91,6 +95,7 @@ public class BookingService : IBookingService
             if (p.DateOfBirth.HasValue)
             {
                 if (p.DateOfBirth.Value.Date > today) throw new ArgumentException("Ngày sinh không hợp lệ.");
+                // Tuổi tính tại ngày đặt: chênh lệch năm, trừ 1 nếu năm nay chưa đến sinh nhật.
                 var age = today.Year - p.DateOfBirth.Value.Year;
                 if (p.DateOfBirth.Value.Date > today.AddYears(-age)) age--;
                 if (string.Equals(p.PassengerType, "adult", StringComparison.OrdinalIgnoreCase) && age < 12)
@@ -122,6 +127,7 @@ public class BookingService : IBookingService
             throw new ArgumentException("Giá đã thay đổi. Vui lòng tải lại trang để kiểm tra tổng tiền.");
         }
 
+        // Mã đơn lấy từ counters; định dạng D3 thêm số 0 đầu để hiển thị, không giới hạn tổng số đơn.
         var nextBookingId = await _context.GetNextSequenceAsync("bookings");
         var bookingCode = $"BK{nextBookingId:D3}";
         var now = DateTime.UtcNow;
@@ -160,7 +166,7 @@ public class BookingService : IBookingService
             UpdatedAt = now
         };
 
-        // Record payment
+        // Chuẩn bị document khoản thu; đơn chờ thu tiền chưa ghi khoản thu ở bước này.
         var nextPaymentId = payLater ? 0 : await _context.GetNextSequenceAsync("payments");
         var payment = new Payment
         {
@@ -173,7 +179,7 @@ public class BookingService : IBookingService
             UpdatedAt = now
         };
 
-        // Record bill
+        // Chuẩn bị document hóa đơn nội bộ, chưa phải hóa đơn VAT điện tử.
         var nextBillId = payLater ? 0 : await _context.GetNextSequenceAsync("bills");
         var bill = new Bill
         {
@@ -185,15 +191,18 @@ public class BookingService : IBookingService
             CreatedAt = now,
             UpdatedAt = now
         };
+        // Gộp điều kiện đủ ghế, lịch, giá vào ngay thao tác ghi để hạn chế hai yêu cầu cùng giữ một số chỗ cũ.
         var departureFilter = Builders<TourDeparture>.Filter.Where(d =>
             d.Id == departure.Id && d.Status == "open" && d.DepartureDate >= today.AddHours(-7) &&
             d.AvailableSeats >= totalPassengers && d.AdultPrice == departure.AdultPrice &&
             d.ChildPrice == departure.ChildPrice && d.TourId == departure.TourId);
         var updates = Builders<TourDeparture>.Update;
+        // Ghế còn lại sau giữ chỗ = ghế hiện tại - tổng số vé; $inc cập nhật nguyên tử trên một document.
         var reserve = updates.Inc(d => d.AvailableSeats, -totalPassengers).Set(d => d.UpdatedAt, now);
         var full = Builders<TourDeparture>.Filter.Where(d => d.Id == departure.Id && d.AvailableSeats == 0 && d.Status == "open");
         var markFull = updates.Set(d => d.Status, "full");
         var hello = await _context.Database.RunCommandAsync<BsonDocument>(new BsonDocument("hello", 1));
+        // Chỉ dùng transaction đa document khi MongoDB là replica set hoặc đi qua mongos.
         if (hello.Contains("setName") || hello.GetValue("msg", "").AsString == "isdbgrid")
         {
             using var session = await _context.Database.Client.StartSessionAsync();
@@ -214,7 +223,7 @@ public class BookingService : IBookingService
         }
         else
         {
-            // Standalone MongoDB has no multi-document transactions.
+            // MongoDB standalone không hỗ trợ transaction nhiều document; nhánh này dùng xử lý bù khi lỗi.
             if (await _context.TourDepartures.FindOneAndUpdateAsync(departureFilter, reserve) is null)
                 throw new InvalidOperationException("Lịch khởi hành, giá hoặc số chỗ đã thay đổi. Vui lòng tải lại trang.");
 
@@ -230,7 +239,7 @@ public class BookingService : IBookingService
             }
             catch
             {
-                // Match the generated MongoDB IDs so old documents can never be removed.
+                // Chỉ dọn các document có ObjectId vừa tạo trong lần này để không xóa nhầm dữ liệu cũ.
                 await Task.WhenAll(
                     _context.Bookings.DeleteOneAsync(b => b.MongoId == booking.MongoId),
                     _context.Payments.DeleteOneAsync(p => p.MongoId == payment.MongoId),
@@ -253,6 +262,7 @@ public class BookingService : IBookingService
         return booking;
     }
 
+    // Đọc vé theo mã và chủ sở hữu khi có customerId, rồi ghép dữ liệu trả giao diện.
     public async Task<Booking?> GetBookingByIdAsync(int id, int? customerId = null)
     {
         var filter = Builders<Booking>.Filter.Eq(b => b.Id, id);
@@ -284,6 +294,7 @@ public class BookingService : IBookingService
         return booking;
     }
 
+    // Chỉ lấy đơn của khách hiện tại và ghép thông tin tour/chuyến để hiển thị lịch sử.
     public async Task<List<Booking>> GetCustomerBookingsAsync(int customerId)
     {
         var bookings = await _context.Bookings.Find(b => b.CustomerId == customerId)
@@ -326,6 +337,7 @@ public class BookingService : IBookingService
         return bookings;
     }
 
+    // Tra các khoản thanh toán của những đơn thuộc khách, kèm hóa đơn và lịch đi.
     public async Task<List<object>> GetCustomerPaymentHistoryAsync(int customerId)
     {
         var bookings = await _context.Bookings.Find(b => b.CustomerId == customerId).ToListAsync();
@@ -382,6 +394,7 @@ public class BookingService : IBookingService
         return result;
     }
 
+    // Lấy đơn chờ xác nhận thu tiền, có thể giới hạn riêng chuyển khoản.
     public async Task<List<object>> GetPendingPaymentsAsync(bool bankOnly)
     {
         var rows = await _context.Bookings.Find(b => (b.PaymentOption == "bank_transfer" || (!bankOnly && b.PaymentOption == "cash")) && b.Status == "pending")
@@ -389,6 +402,7 @@ public class BookingService : IBookingService
         return rows.Select(b => (object)new { b.Id, b.BookingCode, b.TourTitle, b.TotalAmount, b.CreatedAt, b.PaymentOption }).ToList();
     }
 
+    // Nhân viên xác nhận thu tiền, ghi khoản thu/hóa đơn và chuyển đơn sang confirmed.
     public async Task ConfirmPendingPaymentAsync(int bookingId, int employeeId, bool bankOnly)
     {
         var booking = await _context.Bookings.Find(b => b.Id == bookingId && (b.PaymentOption == "bank_transfer" || (!bankOnly && b.PaymentOption == "cash")))
@@ -396,8 +410,8 @@ public class BookingService : IBookingService
         if (booking.Status == "confirmed") return;
         if (booking.Status != "pending") throw new InvalidOperationException("Đơn không còn chờ thanh toán.");
 
-        // The booking's ObjectId is also the unique key in each settlement collection.
-        // Retrying a partial confirmation reuses the same payment and bill.
+        // Dùng ObjectId của booking làm khóa duy nhất cho document khoản thu và hóa đơn tương ứng.
+        // Khi xác nhận lại sau lỗi một phần, tái sử dụng khoản thu và hóa đơn đã tạo.
         var now = DateTime.UtcNow;
         var paymentId = await _context.GetNextSequenceAsync("payments");
         await _context.Payments.UpdateOneAsync(p => p.MongoId == booking.MongoId,
@@ -424,6 +438,7 @@ public class BookingService : IBookingService
             Builders<Booking>.Update.Set(b => b.Status, "confirmed").Set(b => b.UpdatedAt, now));
     }
 
+    // Chỉ tạo đánh giá cho đơn của khách đã xác nhận và chuyến đã kết thúc.
     public async Task<Review> SubmitReviewAsync(int customerId, int bookingId, ReviewCreateRequest request)
     {
         var booking = await _context.Bookings.Find(b => b.Id == bookingId && b.CustomerId == customerId).FirstOrDefaultAsync()
@@ -463,9 +478,11 @@ public class BookingService : IBookingService
         return review;
     }
 
+    // Lọc đánh giá theo customer_id để khách chỉ xem danh sách đánh giá của mình.
     public Task<List<Review>> GetCustomerReviewsAsync(int customerId) =>
         _context.Reviews.Find(r => r.CustomerId == customerId).SortByDescending(r => r.CreatedAt).ToListAsync();
 
+    // Hủy đơn của khách khi chưa khởi hành, đổi trạng thái rồi hoàn đúng số ghế một lần.
     public async Task<bool> CancelBookingAsync(int customerId, int bookingId)
     {
         var booking = await _context.Bookings.Find(b => b.Id == bookingId && b.CustomerId == customerId).FirstOrDefaultAsync()
@@ -487,6 +504,7 @@ public class BookingService : IBookingService
         return true;
     }
 
+    // Cập nhật số sao/nội dung với bộ lọc đồng thời mã đánh giá và mã chủ sở hữu.
     public async Task<Review> UpdateReviewAsync(int customerId, int reviewId, ReviewCreateRequest request)
     {
         // Kèm customerId trong bộ lọc để không sửa được đánh giá của người khác.
@@ -498,6 +516,7 @@ public class BookingService : IBookingService
             ?? throw new KeyNotFoundException("Không tìm thấy đánh giá của bạn.");
     }
 
+    // Xóa đánh giá theo cả mã đánh giá và mã khách, không cho xóa đánh giá người khác.
     public async Task<bool> DeleteReviewAsync(int customerId, int reviewId)
     {
         var result = await _context.Reviews.DeleteOneAsync(r => r.Id == reviewId && r.CustomerId == customerId);

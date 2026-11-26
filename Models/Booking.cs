@@ -43,8 +43,9 @@ public class Booking : BaseEntity
 
     [BsonElement("status")]
     [JsonPropertyName("status")]
-    public string Status { get; set; } = "confirmed"; // pending, confirmed, cancelled
+    public string Status { get; set; } = "confirmed"; // Chờ xác nhận, đã xác nhận, đã hủy (giá trị lưu: pending, confirmed, cancelled).
 
+    // Danh sách hành khách thuộc riêng đơn này nên được nhúng vào document bookings.
     [BsonElement("passengers")]
     [JsonPropertyName("passengers")]
     public List<BookingPassengerEmbedded> Passengers { get; set; } = new();
@@ -54,7 +55,7 @@ public class Booking : BaseEntity
     [JsonPropertyName("payment_option")]
     public string? PaymentOption { get; set; }
 
-    // Additional info for responses
+    // Các trường bổ sung bên dưới chỉ phục vụ phản hồi API, không lưu do có BsonIgnore.
     [BsonIgnore]
     [JsonPropertyName("tour_image")]
     public string? TourImage { get; set; }

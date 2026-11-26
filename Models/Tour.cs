@@ -77,6 +77,7 @@ public class Tour : BaseEntity
     [JsonPropertyName("thumbnail_url")]
     public string? ThumbnailUrl { get; set; }
 
+    // Ảnh và lịch trình là các mảng document nhúng, đọc cùng document tour.
     [BsonElement("images")]
     [JsonPropertyName("images")]
     public List<TourImageEmbedded> Images { get; set; } = new();
@@ -85,7 +86,7 @@ public class Tour : BaseEntity
     [JsonPropertyName("schedules")]
     public List<TourScheduleEmbedded> Schedules { get; set; } = new();
 
-    // Navigation-like properties for API responses
+    // Dữ liệu liên quan bên dưới chỉ ghép để trả API, không ghi vào document tour (BsonIgnore).
     [BsonIgnore]
     [JsonPropertyName("category")]
     public TourCategory? Category { get; set; }

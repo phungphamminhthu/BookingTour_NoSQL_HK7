@@ -23,6 +23,7 @@ public class BookingsController : ControllerBase
 
     [HttpPost("validate-draft")]
     [HttpPost("/booking/{id:int}/continue")]
+    // Kiểm tra dữ liệu chuyển tiếp từ trang chi tiết trước khi sang bước đặt tour.
     public async Task<IActionResult> ValidateDraft([FromBody] DraftBookingRequest request)
     {
         if (!ModelState.IsValid)
@@ -87,6 +88,7 @@ public class BookingsController : ControllerBase
     [Authorize(Roles = "Customer")]
     [HttpPost("checkout")]
     [HttpPost("/payments/checkout/{id:int}")]
+    // Lấy mã khách từ JWT và yêu cầu Service kiểm tra/lưu đơn đặt tour.
     public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)
     {
         if (!ModelState.IsValid)
@@ -114,6 +116,7 @@ public class BookingsController : ControllerBase
     [Authorize(Roles = "Customer")]
     [HttpGet("{id:int}")]
     [HttpGet("/my-tours/{id:int}")]
+    // Chỉ trả vé thuộc tài khoản khách đang đăng nhập.
     public async Task<IActionResult> GetBookingDetail(int id)
     {
         var customerId = GetCurrentCustomerId();
@@ -132,6 +135,7 @@ public class BookingsController : ControllerBase
     [HttpGet("my-tours")]
     [HttpGet("/my-tours")]
     [HttpGet("/customer/booking")]
+    // Trả các đơn đặt tour của khách hiện tại.
     public async Task<IActionResult> GetMyBookings()
     {
         var customerId = GetCurrentCustomerId();
@@ -146,12 +150,14 @@ public class BookingsController : ControllerBase
 
     [Authorize(Roles = "Customer")]
     [HttpPost("{id:int}/cancel")]
+    // Yêu cầu hủy đơn và hoàn ghế sau khi kiểm tra chủ sở hữu, trạng thái và thời điểm.
     public async Task<IActionResult> Cancel(int id) => Ok(ApiResponse<bool>.Ok(
         await _bookingService.CancelBookingAsync(GetCurrentCustomerId(), id), "Đã hủy đặt tour."));
 
     [Authorize(Roles = "Customer")]
     [HttpPost("{id:int}/review")]
     [HttpPost("/my-tours/{id:int}/review")]
+    // Nhận số sao/nội dung và chuyển Service kiểm tra điều kiện đánh giá của đơn.
     public async Task<IActionResult> SubmitReview(int id, [FromBody] ReviewCreateRequest request)
     {
         if (!ModelState.IsValid)
@@ -179,6 +185,7 @@ public class BookingsController : ControllerBase
     [Authorize(Roles = "Customer")]
     [HttpGet("/api/customer/payment-history")]
     [HttpGet("/customer/payment-history")]
+    // Trả lịch sử khoản thu thuộc các đơn của khách hiện tại.
     public async Task<IActionResult> GetPaymentHistory()
     {
         var customerId = GetCurrentCustomerId();
@@ -194,6 +201,7 @@ public class BookingsController : ControllerBase
     [Authorize(Roles = "Customer")]
     [HttpGet("/api/customer/profile")]
     [HttpGet("/customer/profile")]
+    // Ghép hồ sơ khách với tổng đơn, tổng giá trị và điểm hiển thị.
     public async Task<IActionResult> GetProfile()
     {
         var customerId = GetCurrentCustomerId();
@@ -207,7 +215,9 @@ public class BookingsController : ControllerBase
 
         var bookings = await _bookingService.GetCustomerBookingsAsync(customerId);
         var activeBookings = bookings.Where(b => b.Status != "cancelled").ToList();
+        // Đang cộng giá trị đơn chưa hủy, gồm cả pending; chưa đồng nghĩa tổng tiền đã thu.
         var totalSpent = activeBookings.Sum(b => b.TotalAmount);
+        // Điểm hiển thị = phần nguyên của tổng giá trị đơn / 1.000; đây chưa phải sổ giao dịch điểm thưởng.
         var rewardPoints = (int)Math.Floor(totalSpent / 1000m);
 
         string tier = rewardPoints switch
@@ -233,6 +243,7 @@ public class BookingsController : ControllerBase
     [HttpPost("/api/customer/profile/update")]
     [HttpPut("/api/customer/profile")]
     [HttpPost("/customer/profile/update")]
+    // Nhận thay đổi hồ sơ của khách đang đăng nhập, không lấy mã chủ sở hữu từ form.
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
     {
         if (!ModelState.IsValid)
@@ -260,6 +271,7 @@ public class BookingsController : ControllerBase
     [Authorize(Roles = "Customer")]
     [HttpPost("/api/customer/password/update")]
     [HttpPost("/customer/password/update")]
+    // Chuyển dữ liệu đổi mật khẩu của khách hiện tại sang lớp xác thực.
     public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
     {
         if (!ModelState.IsValid)
@@ -287,13 +299,16 @@ public class BookingsController : ControllerBase
     [Authorize(Roles = "Customer")]
     [HttpGet("/api/reward-points")]
     [HttpGet("/reward-points")]
+    // Tính điểm hiển thị từ tổng giá trị các đơn chưa hủy theo quy tắc hiện tại.
     public async Task<IActionResult> GetRewardPoints()
     {
         var customerId = GetCurrentCustomerId();
         if (customerId <= 0) return Unauthorized(ApiResponse<object>.Fail("Vui lòng đăng nhập."));
 
         var bookings = await _bookingService.GetCustomerBookingsAsync(customerId);
+        // Đang cộng giá trị đơn chưa hủy, gồm cả pending; chưa đồng nghĩa tổng tiền đã thu.
         var totalSpent = bookings.Where(b => b.Status != "cancelled").Sum(b => b.TotalAmount);
+        // Quy đổi 1.000 đồng thành 1 điểm, bỏ phần lẻ bằng Math.Floor.
         var points = (int)Math.Floor(totalSpent / 1000m);
 
         return Ok(ApiResponse<object>.Ok(new
@@ -303,6 +318,7 @@ public class BookingsController : ControllerBase
         }));
     }
 
+    // Đọc mã khách từ JWT đã xác thực, từ chối tài khoản khác loại Customer.
     private int GetCurrentCustomerId()
     {
         if (!User.IsInRole("Customer") || User.FindFirstValue("user_type") != "customer") return 0;

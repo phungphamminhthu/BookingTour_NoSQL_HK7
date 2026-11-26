@@ -17,14 +17,17 @@ public class ReviewsController : ControllerBase
     private int CustomerId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("mine")]
+    // Lấy đánh giá của khách được xác định bằng JWT.
     public async Task<IActionResult> Mine() =>
         Ok(ApiResponse<object>.Ok(await _service.GetCustomerReviewsAsync(CustomerId)));
 
     [HttpPut("{id:int}")]
+    // Sửa đánh giá, luôn chuyển cả mã khách để Service kiểm tra quyền sở hữu.
     public async Task<IActionResult> Update(int id, ReviewCreateRequest request) =>
         Ok(ApiResponse<object>.Ok(await _service.UpdateReviewAsync(CustomerId, id, request), "Đã cập nhật đánh giá."));
 
     [HttpDelete("{id:int}")]
+    // Xóa đánh giá của khách hiện tại, quyền sở hữu được kiểm tra trong truy vấn.
     public async Task<IActionResult> Delete(int id) =>
         Ok(ApiResponse<bool>.Ok(await _service.DeleteReviewAsync(CustomerId, id), "Đã xóa đánh giá."));
 }

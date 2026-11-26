@@ -24,6 +24,7 @@
       completed: 'Hoàn thành',
       cancelled: 'Đã hủy',
     })[value] || value;
+  // Dựng thẻ tour từ dữ liệu API, escape nội dung trước khi chèn HTML.
   function tourCard(tour) {
     return `<div class="group bg-white rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all border border-slate-100">
       <div class="relative h-56 overflow-hidden"><img src="${imageUrl(tour.thumbnail_url)}" alt="${esc(tour.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform"/>
@@ -32,6 +33,7 @@
       <h3 class="text-lg font-bold text-primary my-2">${esc(tour.title)}</h3><p class="text-xs text-slate-500 mb-4">${tour.duration_days} ngày ${tour.duration_nights} đêm · ${esc(tour.pickup_point)}</p></div>
       <a class="block text-center py-3 rounded-full bg-slate-100 text-primary font-bold text-sm" href="${tourLink(tour.id)}">Xem chi tiết</a></div></div>`;
   }
+  // Nạp tour nổi bật từ API cho trang chủ.
   async function home() {
     const grid = $('[data-featured-tours]');
     grid.textContent = 'Đang tải tour...';
@@ -39,7 +41,12 @@
     grid.innerHTML = result.data.map(tourCard).join('') || 'Chưa có tour.';
     // Form GET giữ nguyên destination, startDate và pickupPoint khi chuyển trang.
   }
+  // Khôi phục bộ lọc từ URL, gọi API tìm kiếm và dựng danh sách/phân trang.
   async function catalog() {
+    // Trang chủ/URL cũ dùng destination; quy về một ô q để không lọc trùng từ khóa.
+    if (!params.get('q')?.trim() && params.get('destination')?.trim())
+      params.set('q', params.get('destination').trim());
+    params.delete('destination');
     const provincePage = path.endsWith('/by_province.html');
     const grid = provincePage ? $('#provinceToursGrid') : $('#catalogTourGrid');
     grid.textContent = 'Đang tải tour...';
@@ -70,23 +77,23 @@
         'gia_den',
         'so_ngay',
         'region',
-        'destination',
         'startDate',
         'pickupPoint',
       ]) {
         const field = form.elements[name];
         if (field && params.has(name)) field.value = params.get(name);
       }
-      for (const [name, display, suffix] of [
-        ['gia_den', '#display_price', ' đ'],
-        ['so_ngay', '#display_days', ' ngày'],
-      ]) {
-        const field = form.elements[name];
-        if (!field) continue;
-        const update = () => text(display, Number(field.value).toLocaleString('vi-VN') + suffix);
-        field.addEventListener('input', update);
-        update();
-      }
+      // Kiểm tra khoảng giá tại form; backend vẫn kiểm tra lại trước khi truy vấn MongoDB.
+      const minPrice = form.elements.gia_tu;
+      const maxPrice = form.elements.gia_den;
+      const validatePrice = () => {
+        const invalid = minPrice.value !== '' && maxPrice.value !== '' &&
+          Number(minPrice.value) > Number(maxPrice.value);
+        maxPrice.setCustomValidity(invalid ? 'Giá đến phải lớn hơn hoặc bằng giá từ.' : '');
+      };
+      minPrice.addEventListener('input', validatePrice);
+      maxPrice.addEventListener('input', validatePrice);
+      validatePrice();
       const sort = $('select[name="sort"]');
       sort.value = params.get('sort') || 'featured';
       const reset = form.querySelector('a');
@@ -116,6 +123,7 @@
       location.search = next.toString();
     });
   }
+  // Hiển thị chi tiết, lịch trình và đánh giá, chỉ cho chọn chuyến còn mở bán.
   async function detail() {
     const id = params.get('id');
     if (!/^\d+$/.test(id || ''))
@@ -135,6 +143,7 @@
       '#tourDetailLanguage': tour.language || 'Chưa cập nhật ngôn ngữ',
     }))
       text(selector, value);
+    // Điểm trung bình = tổng số sao / số đánh giá; hiển thị 1 chữ số thập phân và tránh chia cho 0.
     const reviews = tour.reviews || [];
     text(
       '#tourDetailRating',
@@ -207,6 +216,7 @@
       location.href = `/client/booking/create.html?tour_id=${tour.id}&departure_id=${select.value}`;
     });
   }
+  // Đọc/lưu hồ sơ thật qua API và xử lý form đổi mật khẩu.
   async function profile() {
     await requireUser('Customer');
     const { data } = await request('/api/customer/profile');
@@ -266,6 +276,7 @@
       notice('Đã đổi mật khẩu.');
     });
   }
+  // Suy ra nhãn hoàn thành từ đơn confirmed và ngày về đã qua để hiển thị.
   function bookingState(booking) {
     if (booking.status === 'cancelled') return 'cancelled';
     return booking.status === 'confirmed' &&
@@ -274,6 +285,7 @@
       ? 'completed'
       : booking.status;
   }
+  // Nạp đơn/đánh giá của khách, lọc tab và từ khóa trên danh sách đã nhận.
   async function myTours() {
     await requireUser('Customer');
     const [{ data: bookings }, { data: reviews }] = await Promise.all([
@@ -384,6 +396,7 @@
     render();
     await renderMyReviews(reviews);
   }
+  // Hiển thị đánh giá của khách, gắn thao tác sửa/xóa qua API.
   async function renderMyReviews(reviews) {
     const section = document.createElement('section');
     section.className = 'my-8 space-y-4';
@@ -414,6 +427,7 @@
         }),
     );
   }
+  // Mở hộp thoại xác nhận ở giữa trang và trả kết quả xác nhận hoặc hủy.
   function confirmReviewDelete() {
     const dialog = $('#deleteReviewDialog');
     if (dialog.open) return Promise.resolve(false);
@@ -426,6 +440,7 @@
       dialog.showModal();
     });
   }
+  // Lấy vé theo mã, hiển thị lịch đi và danh sách hành khách nhúng trong đơn.
   async function voucher() {
     await requireUser('Customer');
     const { data: b } = await request('/api/bookings/' + params.get('id'));
@@ -465,6 +480,7 @@
       .join('');
     $('#voucherEmptyPassengers').classList.toggle('hidden', !!b.passengers?.length);
   }
+  // Nạp đánh giá hiện có hoặc tạo mới cho booking, gửi số sao/nội dung tới API.
   async function reviewPage() {
     await requireUser('Customer');
     const backBtn = $('#reviewBackTourLink') || document.querySelector('a.hover\\:text-primary');
@@ -567,6 +583,7 @@
       location.href = 'index.html?tab=completed';
     });
   }
+  // Chọn hàm theo URL và khóa nút gửi trong thời gian nạp dữ liệu.
   async function start() {
     const buttons = [...document.querySelectorAll('form [type="submit"]')];
     buttons.forEach((button) => (button.disabled = true));

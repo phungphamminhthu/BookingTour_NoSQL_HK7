@@ -19,6 +19,7 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
+    // Xác minh mật khẩu và cấp JWT; email dùng cho khách, username dùng cho nhân viên.
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
         var input = request.UsernameOrEmail.Trim();
@@ -26,7 +27,7 @@ public class AuthService : IAuthService
 
         if (isEmail)
         {
-            // Login as customer
+            // Đăng nhập khách hàng bằng email.
             var customer = await _context.Customers.Find(c => c.Email.ToLower() == input.ToLower()).FirstOrDefaultAsync();
             if (customer == null || !VerifyPassword(request.Password, customer.PasswordHash))
             {
@@ -52,7 +53,7 @@ public class AuthService : IAuthService
         }
         else
         {
-            // Login as employee
+            // Đăng nhập nhân viên bằng username.
             var employee = await _context.Employees.Find(e => e.Username.ToLower() == input.ToLower()).FirstOrDefaultAsync();
             if (employee == null || !VerifyPassword(request.Password, employee.PasswordHash))
             {
@@ -82,6 +83,7 @@ public class AuthService : IAuthService
         }
     }
 
+    // Kiểm tra email trùng, cấp mã và băm mật khẩu trước khi lưu tài khoản khách.
     public async Task<Customer> RegisterCustomerAsync(RegisterRequest request)
     {
         var existing = await _context.Customers.Find(c => c.Email.ToLower() == request.Email.ToLower()).FirstOrDefaultAsync();
@@ -109,16 +111,19 @@ public class AuthService : IAuthService
         return customer;
     }
 
+    // Đọc khách theo mã đã xác thực từ JWT.
     public async Task<Customer?> GetCurrentCustomerAsync(int customerId)
     {
         return await _context.Customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
     }
 
+    // Đọc nhân viên hiện tại để đối chiếu tài khoản và vai trò còn hợp lệ.
     public async Task<Employee?> GetCurrentEmployeeAsync(int employeeId)
     {
         return await _context.Employees.Find(e => e.Id == employeeId).FirstOrDefaultAsync();
     }
 
+    // Kiểm tra ngày sinh/email rồi $set các trường hồ sơ được phép thay đổi.
     public async Task<bool> UpdateCustomerProfileAsync(int customerId, UpdateProfileRequest request)
     {
         if (request.Birthday?.Date > DateTime.UtcNow.Date)
@@ -147,6 +152,7 @@ public class AuthService : IAuthService
         return result.ModifiedCount > 0;
     }
 
+    // Kiểm tra mật khẩu cũ và xác nhận mật khẩu mới, sau đó lưu hash BCrypt mới.
     public async Task<bool> UpdateCustomerPasswordAsync(int customerId, UpdatePasswordRequest request)
     {
         if (request.NewPassword != request.NewPasswordConfirmation)
@@ -171,11 +177,12 @@ public class AuthService : IAuthService
         return result.ModifiedCount > 0;
     }
 
+    // Đối chiếu mật khẩu nhập với hash BCrypt, không giải mã mật khẩu đã lưu.
     private static bool VerifyPassword(string password, string storedHash)
     {
         try
         {
-            // BCrypt.Net can verify $2y$ (PHP format) and $2a$ hashes
+            // BCrypt.Net hỗ trợ đối chiếu hash có tiền tố $2y$ và $2a$.
             if (storedHash.StartsWith("$2y$"))
             {
                 storedHash = "$2a$" + storedHash.Substring(4);
