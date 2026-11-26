@@ -42,6 +42,8 @@
         storage.removeItem('bookingtour_token');
         storage.removeItem('bookingtour_user');
         storage.removeItem('bookingtour_role');
+        storage.removeItem('bookingtour_api_booking_draft');
+        storage.removeItem('booking_passengers_draft');
       }
       location.href = '/client/auth/login.html';
     } else

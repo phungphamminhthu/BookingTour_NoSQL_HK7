@@ -1,516 +1,583 @@
 <!DOCTYPE html>
-<html lang="vi" >
+<html lang="vi">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Chi tiết Tour - Vietnam Expeditions</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-  <link rel="stylesheet" href="../../assets/css/material-symbols.css"/>
-  <script>
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: { primary: "#1e3a8a", secondary: "#64748b", accent: "#3b82f6" }
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Chi tiết Tour - Vietnam Expeditions</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/material-symbols.css" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { primary: "#1e3a8a", secondary: "#64748b", accent: "#3b82f6" }
+                }
             }
         }
-    }
-  </script>
-  <style>
-    .material-symbols-outlined {
-    font-family: 'Material Symbols Outlined', sans-serif;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    vertical-align: middle;
-  }
-    body { font-family: 'Public Sans', sans-serif; }
-  </style>
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined', sans-serif;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+    </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900 overflow-x-hidden">
 
-<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-slate-50 py-6 border-r border-slate-200">
-  <div class="px-6 mb-8">
-    <h1 class="text-lg font-black text-blue-900 mb-1 tracking-tighter">Trang quản trị</h1>
-    <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Vietnam Expedition</p>
-  </div>
-  <nav class="flex-1 space-y-1">
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="/admin/dashboard.html">
-      <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="/admin/tours/index.html">
-      <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="/admin/categories/index.html">
-      <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="/admin/departures/index.html">
-      <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="/admin/locations/index.html">
-      <span class="material-symbols-outlined">location_on</span>
-      <span>Quản lý địa điểm</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-        href="/admin/customers/index.html">
-      <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="/admin/transactions/index.html">
-      <span class="material-symbols-outlined">payments</span><span>Quản lý giao dịch</span>
-    </a>
-
-    <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
-       href="/admin/employees/index.html">
-      <span class="material-symbols-outlined">badge</span>
-      <span>Quản lý nhân viên</span>
-    </a>
-  </nav>
-     <div class="px-4 mt-auto border-t border-slate-200 pt-4">
-    <button id="adminLogoutBtn" type="button" class="w-full text-red-500 hover:bg-red-50 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-all text-sm font-semibold text-left">
-      <span class="material-symbols-outlined">logout</span>
-      <span>Đăng xuất</span>
-    </button>
-  </div>
-</aside>
-
-<main class="md:ml-64 min-h-screen flex flex-col">
-  <header class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
-    <div class="flex items-center gap-4">
-      <div class="text-right hidden sm:block">
-        <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
-        <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Quản trị viên</span>
-      </div>
-
-      <div class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
-        <img id="adminUserAvatar" src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
-             alt="Ảnh đại diện quản trị viên"
-             class="w-full h-full object-cover"/>
-      </div>
-    </div>
-  </header>
-
-
-<div id="tour-detail-content" class="p-8 h-full overflow-y-auto bg-slate-50/50">
-
-
-    <!-- HEADER -->
-    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>   
-            <div class="flex flex-wrap items-center gap-3 mb-1">
-                <h1 class="text-2xl md:text-3xl font-black text-blue-900">—</h1>
-                <span data-tour-category class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">—</span>
-            </div>
-            <p class="text-slate-500 font-medium flex items-center gap-2 text-sm">
-                <span class="material-symbols-outlined text-sm text-slate-400">location_on</span>
-                <span data-tour-province>—</span>
-                <span class="text-slate-300">•</span>
-                <span data-tour-header-duration class="text-xs font-bold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-lg">—</span>
-            </p>
+    <aside
+        class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-slate-50 py-6 border-r border-slate-200">
+        <div class="px-6 mb-8">
+            <h1 class="text-lg font-black text-blue-900 mb-1 tracking-tighter">Trang quản trị</h1>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Vietnam Expedition</p>
         </div>
-        <div class="flex gap-2">
-            <a data-tour-edit href="#" class="bg-blue-900 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-orange-700 transition flex items-center shadow-sm text-sm">
-                <span class="material-symbols-outlined text-sm mr-1.5">edit</span> Sửa Tour
+        <nav class="flex-1 space-y-1">
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/dashboard.html">
+                <span class="material-symbols-outlined">dashboard</span><span>Tổng quan</span>
             </a>
-            <a data-tour-list href="/admin/tours/index.html" class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold hover:bg-slate-50 transition flex items-center shadow-sm text-sm">
-                <span class="material-symbols-outlined text-sm mr-1.5">arrow_back</span> Danh sách
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/tours/index.html">
+                <span class="material-symbols-outlined">confirmation_number</span><span>Quản lý tour</span>
             </a>
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/categories/index.html">
+                <span class="material-symbols-outlined">category</span><span>Quản lý danh mục</span>
+            </a>
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/departures/index.html">
+                <span class="material-symbols-outlined">map</span><span>Quản lý chuyến đi</span>
+            </a>
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/locations/index.html">
+                <span class="material-symbols-outlined">location_on</span>
+                <span>Quản lý địa điểm</span>
+            </a>
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/customers/index.html">
+                <span class="material-symbols-outlined">group</span><span>Quản lý khách hàng</span>
+            </a>
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/transactions/index.html">
+                <span class="material-symbols-outlined">payments</span><span>Quản lý Giao Dịch</span>
+            </a>
+
+            <a class="rounded-xl mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all font-semibold text-sm #"
+                href="/admin/employees/index.html">
+                <span class="material-symbols-outlined">badge</span>
+                <span>Quản lý Nhân Viên</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto border-t border-slate-200 pt-4">
+            <button id="adminLogoutBtn" type="button"
+                class="w-full text-red-500 hover:bg-red-50 rounded-xl px-4 py-2.5 flex items-center gap-3 transition-all text-sm font-semibold text-left">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Đăng xuất</span>
+            </button>
         </div>
-    </div>
+    </aside>
 
-
-    <!-- FLASH MESSAGES -->
-    
-    
-    <div class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm">
-        <ul class="list-disc list-inside text-sm">
-                
-            
-        </ul>
-    </div>
-    
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
-        <!-- CỘT TRÁI (2/3): GIỚI THIỆU, LỊCH TRÌNH VÀ CÁC CHUYẾN ĐI -->
-        <div class="lg:col-span-2 space-y-8">
-
-            <!-- THÔNG TIN GIỚI THIỆU -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <h3 class="text-base font-bold text-blue-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-3">
-                    <span class="material-symbols-outlined text-blue-900">description</span> Thông tin giới thiệu
-                </h3>
-                <div class="space-y-4 text-sm">
-                    <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase mb-1">Mô tả chi tiết</p>
-                        <p class="text-slate-700 leading-relaxed">—</p>
-                    </div>
-
-                    
-                    <div class="pt-3 border-t border-slate-100">
-                        <p class="text-xs font-bold text-slate-500 uppercase mb-1">Tóm tắt hành trình</p>
-                        <p class="text-slate-700 leading-relaxed">—</p>
-                    </div>
-                    
-
-                    
-                    <div class="pt-3 border-t border-slate-100">
-                        <p class="text-xs font-bold text-slate-500 uppercase mb-1">Dịch vụ bao gồm</p>
-                        <p class="text-slate-700 leading-relaxed">—</p>
-                    </div>
-                    
-                </div>
-            </div>
-
-            <!-- QUẢN LÝ LỊCH TRÌNH TOUR (TOUR SCHEDULES) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6" id="schedules">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b border-slate-100 pb-3 gap-2">
-                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-900">map</span>
-                        Lịch Trình Chuyến Đi Chi Tiết (<span data-tour-schedule-count>0</span> ngày)
-                    </h3>
-                    <button type="button" disabled data-add-schedule onclick="openAddScheduleModal()"
-                            class="bg-blue-900 text-white text-xs px-4 py-2 rounded-xl font-bold hover:bg-blue-800 transition flex items-center gap-1.5 shadow-sm w-fit">
-                        <span class="material-symbols-outlined text-base">add</span> Thêm Ngày Lịch Trình
-                    </button>
+    <main class="md:ml-64 min-h-screen flex flex-col">
+        <header
+            class="flex justify-end items-center w-full px-6 h-16 sticky top-0 bg-slate-50/80 backdrop-blur-xl z-40 shadow-sm border-b border-slate-200">
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold text-blue-900 leading-none" id="adminUserDisplayName">Quản trị viên</p>
+                    <span class="text-xs text-slate-400 font-medium" id="adminUserRole">Admin</span>
                 </div>
 
-                <div data-tour-schedules class="space-y-4" aria-live="polite">Đang tải lịch trình…</div>
+                <div
+                    class="w-10 h-10 rounded-full border border-slate-200 overflow-hidden shadow-sm bg-blue-100 flex items-center justify-center">
+                    <img id="adminUserAvatar"
+                        src="https://pub-2198db5444f34bb593fc9eade3a65a70.r2.dev/avatars/avatar_admin_1e3a8a_80x80.png"
+                        alt="Admin Profile" class="w-full h-full object-cover" />
+                </div>
             </div>
+        </header>
 
-            <!-- DANH SÁCH CÁC ĐỢT KHỞI HÀNH CỦA TOUR NÀY -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b border-slate-100 pb-3 gap-2">
-                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-900">flight_takeoff</span>
-                        Các Đợt Khởi Hành Đã Lên Lịch (<span data-tour-departure-count>0</span> chuyến)
-                    </h3>
-                    <a href="../departures/index.html"
-                       class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-bold hover:bg-emerald-700 transition flex items-center gap-1.5 shadow-sm w-fit">
-                        <span class="material-symbols-outlined text-base">add</span> Quản lý chuyến khởi hành
+
+        <div id="tour-detail-content" class="p-8 h-full overflow-y-auto bg-slate-50/50">
+
+
+            <!-- HEADER -->
+            <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="flex flex-wrap items-center gap-3 mb-1">
+                        <h1 class="text-2xl md:text-3xl font-black text-blue-900">—</h1>
+                        <span data-tour-category
+                            class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">—</span>
+                    </div>
+                    <p class="text-slate-500 font-medium flex items-center gap-2 text-sm">
+                        <span class="material-symbols-outlined text-sm text-slate-400">location_on</span>
+                        <span data-tour-province>—</span>
+                        <span class="text-slate-300">•</span>
+                        <span data-tour-header-duration
+                            class="text-xs font-bold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-lg">—</span>
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <a data-tour-edit href="#"
+                        class="bg-blue-900 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-orange-700 transition flex items-center shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-sm mr-1.5">edit</span> Sửa Tour
+                    </a>
+                    <a data-tour-list href="/admin/tours/index.html"
+                        class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold hover:bg-slate-50 transition flex items-center shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-sm mr-1.5">arrow_back</span> Danh sách
                     </a>
                 </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase">
-                            <tr>
-                                <th class="px-4 py-3">Mã chuyến</th>
-                                <th class="px-4 py-3">Ngày đi - về</th>
-                                <th class="px-4 py-3">Chỗ trống</th>
-                                <th class="px-4 py-3">Giá người lớn</th>
-                                <th class="px-4 py-3">HDV trưởng</th>
-                                <th class="px-4 py-3">Trạng thái</th>
-                                <th class="px-4 py-3 text-right">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-4 py-3 font-mono font-bold text-slate-500">#DEP-</td>
-                                <td class="px-4 py-3">
-                                    <div class="font-bold text-slate-800">—</div>
-                                    <div class="text-[11px] text-slate-400">Về: </div>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span class="font-bold text-blue-900">—</span> / 
-                                </td>
-                                <td class="px-4 py-3 font-bold text-orange-600 whitespace-nowrap">
-                                     đ
-                                </td>
-                                <td class="px-4 py-3 text-slate-600">—</td>
-                                <td class="px-4 py-3">
-                                    
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Đang bán</span>
-                                    
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Đã đầy</span>
-                                    
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800">Đã hủy</span>
-                                    
-                                </td>
-                                <td class="px-4 py-3 text-right whitespace-nowrap">
-                                    <a href="#" class="p-1 text-slate-400 hover:text-orange-600" title="Chỉnh sửa">
-                                        <span class="material-symbols-outlined text-base">edit</span>
-                                    </a>
-                                    <a href="#" class="p-1 text-slate-400 hover:text-indigo-600" title="Gán HDV">
-                                        <span class="material-symbols-outlined text-base">person_add</span>
-                                    </a>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td colspan="7" class="px-4 py-8 text-center text-slate-400">
-                                    Tour này chưa có chuyến khởi hành nào. Bấm nút "Thêm Chuyến Khởi Hành" để lên lịch đợt đi mới.
-                                </td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
-        </div>
 
-        <!-- CỘT PHẢI (1/3): THAM SỐ VÀ BỘ SƯU TẬP ẢNH -->
-        <div class="space-y-8">
+            <!-- FLASH MESSAGES -->
 
-            <!-- THAM SỐ TOUR -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <h3 class="text-base font-bold text-blue-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-3">
-                    <span class="material-symbols-outlined text-blue-900">tune</span> Tham số Tour
-                </h3>
-                <ul class="space-y-3.5 text-xs">
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 font-medium">Mã Tour:</span>
-                        <span class="font-bold text-slate-800 font-mono">#TOUR-</span>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 font-medium">Danh mục:</span>
-                        <span class="font-bold text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg">—</span>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 font-medium">Thời lượng:</span>
-                        <span class="font-bold text-slate-800"> ngày  đêm</span>
-                    </li>
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 font-medium">Điểm đón:</span>
-                        <span class="font-bold text-slate-800 text-right">—</span>
-                    </li>
-                    <li class="flex justify-between items-center pt-2 border-t border-slate-100">
-                        <span class="text-slate-500 font-medium">Giá từ:</span>
-                        <span class="font-extrabold text-orange-600 text-sm"> đ</span>
-                    </li>
+
+            <div class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm">
+                <ul class="list-disc list-inside text-sm">
+
+
                 </ul>
             </div>
 
-            <!-- THƯ VIỆN ẢNH -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
 
-                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-900">photo_library</span> Thư viện ảnh (<span data-tour-image-count>0</span>)
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+                <!-- CỘT TRÁI (2/3): GIỚI THIỆU, LỊCH TRÌNH VÀ CÁC CHUYẾN ĐI -->
+                <div class="lg:col-span-2 space-y-8">
+
+                    <!-- THÔNG TIN GIỚI THIỆU -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <h3
+                            class="text-base font-bold text-blue-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <span class="material-symbols-outlined text-blue-900">description</span> Thông tin giới
+                            thiệu
+                        </h3>
+                        <div class="space-y-4 text-sm">
+                            <div>
+                                <p class="text-xs font-bold text-slate-500 uppercase mb-1">Mô tả chi tiết</p>
+                                <p class="text-slate-700 leading-relaxed">—</p>
+                            </div>
+
+
+                            <div class="pt-3 border-t border-slate-100">
+                                <p class="text-xs font-bold text-slate-500 uppercase mb-1">Tóm tắt hành trình</p>
+                                <p class="text-slate-700 leading-relaxed">—</p>
+                            </div>
+
+
+
+                            <div class="pt-3 border-t border-slate-100">
+                                <p class="text-xs font-bold text-slate-500 uppercase mb-1">Dịch vụ bao gồm</p>
+                                <p class="text-slate-700 leading-relaxed">—</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- QUẢN LÝ LỊCH TRÌNH TOUR (TOUR SCHEDULES) -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6" id="schedules">
+                        <div
+                            class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b border-slate-100 pb-3 gap-2">
+                            <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-blue-900">map</span>
+                                Lịch Trình Chuyến Đi Chi Tiết (<span data-tour-schedule-count>0</span> ngày)
+                            </h3>
+                            <button type="button" disabled data-add-schedule onclick="openAddScheduleModal()"
+                                class="bg-blue-900 text-white text-xs px-4 py-2 rounded-xl font-bold hover:bg-blue-800 transition flex items-center gap-1.5 shadow-sm w-fit">
+                                <span class="material-symbols-outlined text-base">add</span> Thêm Ngày Lịch Trình
+                            </button>
+                        </div>
+
+                        <div data-tour-schedules class="space-y-4" aria-live="polite">Đang tải lịch trình…</div>
+                    </div>
+
+                    <!-- DANH SÁCH CÁC ĐỢT KHỞI HÀNH CỦA TOUR NÀY -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <div
+                            class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b border-slate-100 pb-3 gap-2">
+                            <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-blue-900">flight_takeoff</span>
+                                Các Đợt Khởi Hành Đã Lên Lịch (<span data-tour-departure-count>0</span> chuyến)
+                            </h3>
+                            <a href="../departures/index.html"
+                                class="bg-emerald-600 text-white text-xs px-4 py-2 rounded-xl font-bold hover:bg-emerald-700 transition flex items-center gap-1.5 shadow-sm w-fit">
+                                <span class="material-symbols-outlined text-base">add</span> Quản lý chuyến khởi hành
+                            </a>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3">Mã chuyến</th>
+                                        <th class="px-4 py-3">Ngày đi - về</th>
+                                        <th class="px-4 py-3">Chỗ trống</th>
+                                        <th class="px-4 py-3">Giá người lớn</th>
+                                        <th class="px-4 py-3">HDV trưởng</th>
+                                        <th class="px-4 py-3">Trạng thái</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="px-4 py-3 font-mono font-bold text-slate-500">#DEP-</td>
+                                        <td class="px-4 py-3">
+                                            <div class="font-bold text-slate-800">—</div>
+                                            <div class="text-[11px] text-slate-400">Về: </div>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="font-bold text-blue-900">—</span> /
+                                        </td>
+                                        <td class="px-4 py-3 font-bold text-orange-600 whitespace-nowrap">
+                                            đ
+                                        </td>
+                                        <td class="px-4 py-3 text-slate-600">—</td>
+                                        <td class="px-4 py-3">
+
+                                            <span
+                                                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Đang
+                                                bán</span>
+
+                                            <span
+                                                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Đã
+                                                đầy</span>
+
+                                            <span
+                                                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800">Đã
+                                                hủy</span>
+
+                                        </td>
+                                        <td class="px-4 py-3 text-right whitespace-nowrap">
+                                            <a href="#" class="p-1 text-slate-400 hover:text-orange-600"
+                                                title="Chỉnh sửa">
+                                                <span class="material-symbols-outlined text-base">edit</span>
+                                            </a>
+                                            <a href="#" class="p-1 text-slate-400 hover:text-indigo-600"
+                                                title="Gán HDV">
+                                                <span class="material-symbols-outlined text-base">person_add</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="7" class="px-4 py-8 text-center text-slate-400">
+                                            Tour này chưa có chuyến khởi hành nào. Bấm nút "Thêm Chuyến Khởi Hành" để
+                                            lên lịch đợt đi mới.
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CỘT PHẢI (1/3): THAM SỐ VÀ BỘ SƯU TẬP ẢNH -->
+                <div class="space-y-8">
+
+                    <!-- THAM SỐ TOUR -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <h3
+                            class="text-base font-bold text-blue-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <span class="material-symbols-outlined text-blue-900">tune</span> Tham số Tour
+                        </h3>
+                        <ul class="space-y-3.5 text-xs">
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">Mã Tour:</span>
+                                <span class="font-bold text-slate-800 font-mono">#TOUR-</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">Danh mục:</span>
+                                <span class="font-bold text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg">—</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">Thời lượng:</span>
+                                <span class="font-bold text-slate-800"> ngày đêm</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500 font-medium">Điểm đón:</span>
+                                <span class="font-bold text-slate-800 text-right">—</span>
+                            </li>
+                            <li class="flex justify-between items-center pt-2 border-t border-slate-100">
+                                <span class="text-slate-500 font-medium">Giá từ:</span>
+                                <span class="font-extrabold text-orange-600 text-sm"> đ</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- THƯ VIỆN ẢNH -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+
+                            <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-blue-900">photo_library</span> Thư viện ảnh
+                                (<span data-tour-image-count>0</span>)
+                            </h3>
+                            <button type="button" disabled data-tour-upload onclick="openUploadModal()"
+                                class="text-xs bg-blue-50 text-blue-900 px-3 py-1 rounded-full font-bold hover:bg-blue-100 transition cursor-pointer">
+                                + Tải ảnh lên
+                            </button>
+                        </div>
+                        <div data-tour-gallery class="grid grid-cols-2 gap-3">
+
+
+                            <div
+                                class="aspect-square bg-slate-100 rounded-xl overflow-hidden relative group border border-slate-200">
+                                <img src=""
+                                    class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                                    alt="Tour image">
+
+                                <div
+                                    class="absolute top-1.5 left-1.5 bg-orange-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
+                                    Bìa
+                                </div>
+
+                                <form action="#" method="POST"
+                                    onsubmit="return confirm('Bạn có chắc muốn xóa ảnh này?');"
+                                    class="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition">
+
+
+                                    <button type="submit"
+                                        class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 shadow"
+                                        title="Xóa ảnh">
+                                        <span class="material-symbols-outlined text-xs">close</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div
+                                class="col-span-2 py-6 text-center text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <span
+                                    class="material-symbols-outlined text-2xl mb-1 text-slate-300">image_not_supported</span>
+                                <p class="text-xs">Chưa có ảnh nào trong thư viện.</p>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- MODAL THÊM LỊCH TRÌNH -->
+        <div id="addScheduleModal"
+            class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100">
+                <div
+                    class="bg-gradient-to-r from-blue-900 to-blue-700 px-6 py-4 text-white flex justify-between items-center">
+                    <h3 class="font-bold text-base flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">add_location_alt</span>
+                        Thêm Ngày Mới Vào Lịch Trình
                     </h3>
-                    <button type="button" disabled data-tour-upload onclick="openUploadModal()" class="text-xs bg-blue-50 text-blue-900 px-3 py-1 rounded-full font-bold hover:bg-blue-100 transition cursor-pointer">
-                        + Tải ảnh lên
+                    <button onclick="closeAddScheduleModal()" class="text-white/80 hover:text-white">
+                        <span class="material-symbols-outlined text-lg">close</span>
                     </button>
                 </div>
-                <div data-tour-gallery class="grid grid-cols-2 gap-3">
+                <form id="addScheduleForm" action="#" method="POST" class="p-6 space-y-4">
 
-                    
-                    <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden relative group border border-slate-200">
-                        <img src="" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" alt="Tour image">
-                        
-                            <div class="absolute top-1.5 left-1.5 bg-orange-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
-                                Bìa
-                            </div>
-                        
-                        <form action="#" method="POST"
-                              onsubmit="return confirm('Bạn có chắc muốn xóa ảnh này?');"
-                              class="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition">
-                            
-                            
-                            <button type="submit" class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 shadow" title="Xóa ảnh">
-                                <span class="material-symbols-outlined text-xs">close</span>
-                            </button>
-                        </form>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số thứ tự ngày (VD: 1, 2,
+                            3...) <span class="text-red-500">*</span></label>
+                        <input type="number" name="day_number" value="" min="1" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm font-bold" />
                     </div>
-                    
-                    <div class="col-span-2 py-6 text-center text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                        <span class="material-symbols-outlined text-2xl mb-1 text-slate-300">image_not_supported</span>
-                        <p class="text-xs">Chưa có ảnh nào trong thư viện.</p>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề hoạt động trong
+                            ngày <span class="text-red-500">*</span></label>
+                        <input type="text" name="title" placeholder="VD: Hà Nội - Vịnh Hạ Long - Thăm Hang Sửng Sốt"
+                            required
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm font-semibold" />
                     </div>
-                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Chi tiết hoạt động trong
+                            ngày</label>
+                        <textarea name="activities" rows="4"
+                            placeholder="Nhập lịch trình chi tiết: sáng ăn gì, trưa đi đâu, chiều tối làm gì..."
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="closeAddScheduleModal()"
+                            class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">Hủy</button>
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl bg-blue-900 text-white font-bold hover:bg-blue-800 transition text-sm">Lưu
+                            Lịch Trình</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL SỬA LỊCH TRÌNH -->
+        <div id="editScheduleModal"
+            class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100">
+                <div
+                    class="bg-gradient-to-r from-orange-600 to-amber-600 px-6 py-4 text-white flex justify-between items-center">
+                    <h3 class="font-bold text-base flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">edit_calendar</span>
+                        Cập Nhật Lịch Trình Ngày
+                    </h3>
+                    <button onclick="closeEditScheduleModal()" class="text-white/80 hover:text-white">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                    </button>
                 </div>
-                
+                <form id="editScheduleForm" method="POST" class="p-6 space-y-4">
 
-                
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số thứ tự ngày <span
+                                class="text-red-500">*</span></label>
+                        <input type="number" id="editDayNumber" name="day_number" min="1" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm font-bold" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề ngày <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" id="editScheduleTitle" name="title" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm font-semibold" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Chi tiết hoạt động</label>
+                        <textarea id="editScheduleActivities" name="activities" rows="4"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="closeEditScheduleModal()"
+                            class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">Hủy</button>
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl bg-orange-600 text-white font-bold hover:bg-orange-700 transition text-sm">Lưu
+                            Thay Đổi</button>
+                    </div>
+                </form>
             </div>
-
         </div>
 
-    </div>
+        <!-- MODAL TẢI ẢNH LÊN -->
+        <div id="uploadModal"
+            class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100">
+                <div
+                    class="bg-gradient-to-r from-blue-900 to-blue-700 px-6 py-4 text-white flex justify-between items-center">
+                    <h3 class="font-bold text-base flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">add_photo_alternate</span>
+                        Thêm Ảnh Cho Tour
+                    </h3>
+                    <button onclick="closeUploadModal()" class="text-white/80 hover:text-white">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                    </button>
+                </div>
 
-</div>
+                <form action="#" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
 
-<!-- MODAL THÊM LỊCH TRÌNH -->
-<div id="addScheduleModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100">
-        <div class="bg-gradient-to-r from-blue-900 to-blue-700 px-6 py-4 text-white flex justify-between items-center">
-            <h3 class="font-bold text-base flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">add_location_alt</span>
-                Thêm Ngày Mới Vào Lịch Trình
-            </h3>
-            <button onclick="closeAddScheduleModal()" class="text-white/80 hover:text-white">
-                <span class="material-symbols-outlined text-lg">close</span>
-            </button>
-        </div>
-        <form id="addScheduleForm" action="#" method="POST" class="p-6 space-y-4">
-            
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số thứ tự ngày (VD: 1, 2, 3...) <span class="text-red-500">*</span></label>
-                <input type="number" name="day_number" value="" min="1" required
-                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm font-bold"/>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề hoạt động trong ngày <span class="text-red-500">*</span></label>
-                <input type="text" name="title" placeholder="VD: Hà Nội - Vịnh Hạ Long - Thăm Hang Sửng Sốt" required
-                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm font-semibold"/>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Chi tiết hoạt động trong ngày</label>
-                <textarea name="activities" rows="4" placeholder="Nhập lịch trình chi tiết: sáng ăn gì, trưa đi đâu, chiều tối làm gì..."
-                          class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm"></textarea>
-            </div>
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeAddScheduleModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">Hủy</button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-blue-900 text-white font-bold hover:bg-blue-800 transition text-sm">Lưu Lịch Trình</button>
-            </div>
-        </form>
-    </div>
-</div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tải ảnh từ máy tính (JPG,
+                            PNG, WebP)</label>
+                        <input type="file" name="imageFile" accept="image/*"
+                            class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-900 file:text-white hover:file:bg-blue-800 cursor-pointer" />
+                        <p class="text-[11px] text-slate-500 mt-1">Ảnh sẽ được tải lên Cloudflare R2 (VD: <strong
+                                class="text-blue-900">*.jpg</strong>)</p>
+                    </div>
 
-<!-- MODAL SỬA LỊCH TRÌNH -->
-<div id="editScheduleModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100">
-        <div class="bg-gradient-to-r from-orange-600 to-amber-600 px-6 py-4 text-white flex justify-between items-center">
-            <h3 class="font-bold text-base flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">edit_calendar</span>
-                Cập Nhật Lịch Trình Ngày
-            </h3>
-            <button onclick="closeEditScheduleModal()" class="text-white/80 hover:text-white">
-                <span class="material-symbols-outlined text-lg">close</span>
-            </button>
-        </div>
-        <form id="editScheduleForm" method="POST" class="p-6 space-y-4">
-            
-            
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Số thứ tự ngày <span class="text-red-500">*</span></label>
-                <input type="number" id="editDayNumber" name="day_number" min="1" required
-                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm font-bold"/>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tiêu đề ngày <span class="text-red-500">*</span></label>
-                <input type="text" id="editScheduleTitle" name="title" required
-                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm font-semibold"/>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Chi tiết hoạt động</label>
-                <textarea id="editScheduleActivities" name="activities" rows="4"
-                          class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-600 text-sm"></textarea>
-            </div>
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeEditScheduleModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">Hủy</button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-orange-600 text-white font-bold hover:bg-orange-700 transition text-sm">Lưu Thay Đổi</button>
-            </div>
-        </form>
-    </div>
-</div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hoặc dán URL hình ảnh trực
+                            tiếp</label>
+                        <input type="url" name="imageUrl" placeholder="https://images.unsplash.com/..."
+                            class="w-full px-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-900" />
+                    </div>
 
-<!-- MODAL TẢI ẢNH LÊN -->
-<div id="uploadModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-100">
-        <div class="bg-gradient-to-r from-blue-900 to-blue-700 px-6 py-4 text-white flex justify-between items-center">
-            <h3 class="font-bold text-base flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">add_photo_alternate</span>
-                Thêm Ảnh Cho Tour
-            </h3>
-            <button onclick="closeUploadModal()" class="text-white/80 hover:text-white">
-                <span class="material-symbols-outlined text-lg">close</span>
-            </button>
+                    <div class="flex items-center gap-2 pt-2">
+                        <input type="checkbox" id="isThumbnail" name="isThumbnail" value="1"
+                            class="w-4 h-4 text-blue-900 rounded focus:ring-blue-900 border-slate-300">
+                        <label for="isThumbnail" class="text-xs font-bold text-slate-700 cursor-pointer">Đặt làm ảnh bìa
+                            đại diện (Thumbnail)</label>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" onclick="closeUploadModal()"
+                            class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">Hủy</button>
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl bg-blue-900 text-white font-bold hover:bg-blue-800 transition text-sm">Tải
+                            Lên</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <form action="#" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
-            
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tải ảnh từ máy tính (JPG, PNG, WebP)</label>
-                <input type="file" name="imageFile" accept="image/*"
-                       class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-900 file:text-white hover:file:bg-blue-800 cursor-pointer"/>
-                <p class="text-[11px] text-slate-500 mt-1">Ảnh sẽ được tải lên Cloudflare R2 (VD: <strong class="text-blue-900">*.jpg</strong>)</p>
-            </div>
+        <script>
+            function openAddScheduleModal() {
+                document.getElementById('addScheduleModal').classList.remove('hidden');
+            }
+            function closeAddScheduleModal() {
+                document.getElementById('addScheduleModal').classList.add('hidden');
+            }
 
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hoặc dán URL hình ảnh trực tiếp</label>
-                <input type="url" name="imageUrl" placeholder="https://images.unsplash.com/..."
-                       class="w-full px-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-900"/>
-            </div>
+            function closeEditScheduleModal() {
+                document.getElementById('editScheduleModal').classList.add('hidden');
+            }
 
-            <div class="flex items-center gap-2 pt-2">
-                <input type="checkbox" id="isThumbnail" name="isThumbnail" value="1" class="w-4 h-4 text-blue-900 rounded focus:ring-blue-900 border-slate-300">
-                <label for="isThumbnail" class="text-xs font-bold text-slate-700 cursor-pointer">Đặt làm ảnh bìa đại diện (Thumbnail)</label>
-            </div>
+            function openUploadModal() {
+                document.getElementById('uploadModal').classList.remove('hidden');
+            }
+            function closeUploadModal() {
+                document.getElementById('uploadModal').classList.add('hidden');
+            }
 
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeUploadModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-sm">Hủy</button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-blue-900 text-white font-bold hover:bg-blue-800 transition text-sm">Tải Lên</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openAddScheduleModal() {
-        document.getElementById('addScheduleModal').classList.remove('hidden');
-    }
-    function closeAddScheduleModal() {
-        document.getElementById('addScheduleModal').classList.add('hidden');
-    }
-
-    function closeEditScheduleModal() {
-        document.getElementById('editScheduleModal').classList.add('hidden');
-    }
-
-    function openUploadModal() {
-        document.getElementById('uploadModal').classList.remove('hidden');
-    }
-    function closeUploadModal() {
-        document.getElementById('uploadModal').classList.add('hidden');
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(function() {
-            let alerts = document.querySelectorAll('.auto-hide-alert');
-            alerts.forEach(function(alert) {
-                alert.classList.remove('opacity-100');
-                alert.classList.add('opacity-0');
-                setTimeout(function() {
-                    alert.style.display = 'none';
-                }, 500);
+            document.addEventListener("DOMContentLoaded", function () {
+                setTimeout(function () {
+                    let alerts = document.querySelectorAll('.auto-hide-alert');
+                    alerts.forEach(function (alert) {
+                        alert.classList.remove('opacity-100');
+                        alert.classList.add('opacity-0');
+                        setTimeout(function () {
+                            alert.style.display = 'none';
+                        }, 500);
+                    });
+                }, 4000);
             });
-        }, 4000);
-    });
-</script>
+        </script>
 
-</main>
+    </main>
 
-<script src="../../assets/js/api-client.js"></script>
-<script src="../../assets/js/mock-data.js"></script>
-<script src="../../assets/js/api-client.js"></script>
-<script src="../../assets/js/admin-pages.js?v=2.3.6"></script>
-<script src="../../assets/js/icons-fallback.js"></script>
-<script src="../../assets/js/admin-router.js"></script>
+    <script src="../../assets/js/api-client.js"></script>
+    <script src="../../assets/js/mock-data.js"></script>
+    <script src="../../assets/js/admin-pages.js?v=2.3.6"></script>
+    <script src="../../assets/js/icons-fallback.js"></script>
+    <script src="../../assets/js/admin-router.js"></script>
 </body>
+
 </html>

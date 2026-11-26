@@ -675,6 +675,14 @@ public class AdminManagementService : IAdminManagementService
             {
                 filters.Add(builder.Eq(c => c.Id, idVal));
             }
+            else
+            {
+                var cleanIdStr = System.Text.RegularExpressions.Regex.Replace(s, @"[^\d]", "");
+                if (!string.IsNullOrEmpty(cleanIdStr) && int.TryParse(cleanIdStr, out var parsedId))
+                {
+                    filters.Add(builder.Eq(c => c.Id, parsedId));
+                }
+            }
 
             filter = builder.Or(filters);
         }
@@ -705,13 +713,13 @@ public class AdminManagementService : IAdminManagementService
 
     public async Task<CustomerStatsDto> GetCustomerStatsAsync()
     {
-        var now = DateTime.UtcNow;
-        var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-        var startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
+        var vnNow = DateTime.UtcNow.AddHours(7);
+        var vnStartOfMonth = new DateTime(vnNow.Year, vnNow.Month, 1, 0, 0, 0, DateTimeKind.Utc).AddHours(-7);
+        var vnStartOfDay = new DateTime(vnNow.Year, vnNow.Month, vnNow.Day, 0, 0, 0, DateTimeKind.Utc).AddHours(-7);
 
         var total = (int)await _context.Customers.CountDocumentsAsync(_ => true);
-        var newMonth = (int)await _context.Customers.CountDocumentsAsync(c => c.CreatedAt >= startOfMonth);
-        var today = (int)await _context.Customers.CountDocumentsAsync(c => c.CreatedAt >= startOfDay);
+        var newMonth = (int)await _context.Customers.CountDocumentsAsync(c => c.CreatedAt >= vnStartOfMonth);
+        var today = (int)await _context.Customers.CountDocumentsAsync(c => c.CreatedAt >= vnStartOfDay);
 
         return new CustomerStatsDto
         {
@@ -779,6 +787,26 @@ public class AdminManagementService : IAdminManagementService
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Password) && request.Password.Trim().Length < 6)
+        {
+            throw new ArgumentException("Mật khẩu phải có tối thiểu 6 ký tự.");
+        }
+
+        DateTime? normalizedBirthday = null;
+        if (request.Birthday.HasValue)
+        {
+            var vnToday = DateTime.UtcNow.AddHours(7).Date;
+            if (request.Birthday.Value.Date > vnToday)
+            {
+                throw new ArgumentException("Ngày sinh không thể là ngày trong tương lai.");
+            }
+            if (request.Birthday.Value.Year < 1900)
+            {
+                throw new ArgumentException("Năm sinh không hợp lệ (phải từ năm 1900 trở đi).");
+            }
+            normalizedBirthday = DateTime.SpecifyKind(request.Birthday.Value.Date, DateTimeKind.Utc);
+        }
+
         var nextId = await _context.GetNextSequenceAsync("customers");
         var now = DateTime.UtcNow;
         var password = !string.IsNullOrWhiteSpace(request.Password) ? request.Password : "123456";
@@ -790,7 +818,7 @@ public class AdminManagementService : IAdminManagementService
             Email = request.Email.Trim(),
             Phone = string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone.Trim(),
             Address = string.IsNullOrWhiteSpace(request.Address) ? null : request.Address.Trim(),
-            Birthday = request.Birthday,
+            Birthday = normalizedBirthday,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
             CreatedAt = now,
             UpdatedAt = now
@@ -830,11 +858,26 @@ public class AdminManagementService : IAdminManagementService
             }
         }
 
+        DateTime? normalizedBirthday = null;
+        if (request.Birthday.HasValue)
+        {
+            var vnToday = DateTime.UtcNow.AddHours(7).Date;
+            if (request.Birthday.Value.Date > vnToday)
+            {
+                throw new ArgumentException("Ngày sinh không thể là ngày trong tương lai.");
+            }
+            if (request.Birthday.Value.Year < 1900)
+            {
+                throw new ArgumentException("Năm sinh không hợp lệ (phải từ năm 1900 trở đi).");
+            }
+            normalizedBirthday = DateTime.SpecifyKind(request.Birthday.Value.Date, DateTimeKind.Utc);
+        }
+
         customer.FullName = request.FullName.Trim();
         customer.Email = request.Email.Trim();
         customer.Phone = string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone.Trim();
         customer.Address = string.IsNullOrWhiteSpace(request.Address) ? null : request.Address.Trim();
-        customer.Birthday = request.Birthday;
+        customer.Birthday = normalizedBirthday;
         customer.UpdatedAt = DateTime.UtcNow;
 
         await _context.Customers.ReplaceOneAsync(c => c.Id == id, customer);
@@ -852,13 +895,19 @@ public class AdminManagementService : IAdminManagementService
         var customerBookingIds = await _context.Bookings.Find(b => b.CustomerId == id).Project(b => b.Id).ToListAsync();
         if (customerBookingIds.Count > 0)
         {
-            throw new InvalidOperationException($"Không thể xóa khách hàng '{customer.FullName}' vì khách hàng đã có lịch sử đặt tour trong hệ thống.");
+            throw new InvalidOperationException($"Không thể xóa khách hàng '{customer.FullName}' vì khách hàng đã có {customerBookingIds.Count} đơn đặt tour trong hệ thống.");
         }
 
-        var hasPayments = customerBookingIds.Count > 0 && await _context.Payments.Find(p => customerBookingIds.Contains(p.BookingId)).AnyAsync();
+        var hasPayments = await _context.Payments.Find(p => p.CustomerId == id).AnyAsync();
         if (hasPayments)
         {
             throw new InvalidOperationException($"Không thể xóa khách hàng '{customer.FullName}' vì đang có giao dịch thanh toán liên kết.");
+        }
+
+        var hasReviews = await _context.Reviews.Find(r => r.CustomerId == id).AnyAsync();
+        if (hasReviews)
+        {
+            throw new InvalidOperationException($"Không thể xóa khách hàng '{customer.FullName}' vì đã có đánh giá tour trong hệ thống.");
         }
 
         var result = await _context.Customers.DeleteOneAsync(c => c.Id == id);

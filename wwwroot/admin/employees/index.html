@@ -37,7 +37,14 @@
     vertical-align: middle;
   }
     body { font-family: 'Public Sans', sans-serif; }
-
+    @media (min-width: 1024px) {
+      .employee-card-center-last {
+        grid-column: span 2 / span 2;
+        width: calc(50% - 0.625rem);
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
   </style>
 <link id="employeeStyles" rel="stylesheet" href="/assets/css/employees.css">
 </head>
@@ -232,18 +239,40 @@
       </form>
   </div>
 
-  
-  <!-- Employee List -->
-  <div class="space-y-4" id="employeeList">Đang tải nhân viên...</div>
+  <!-- Employee List Section -->
+  <div class="mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+      <div>
+        <h3 class="text-base font-bold text-blue-900" id="employeeListHeading">Danh sách Nhân viên</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Quản lý tài khoản, vai trò và thông tin liên hệ của nhân sự</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-900 border border-blue-100">
+          Tổng: <span id="employeeTotalBadge" class="ml-1 font-extrabold">0</span>
+        </span>
+      </div>
+    </div>
 
-  
-  
-  <!-- Pagination -->
-  <div class="mt-8 flex flex-col sm:flex-row items-center justify-between border-t border-slate-200 pt-6 gap-4">
+    <!-- Employee Cards Grid (2 columns on lg screens) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="employeeList">
+      <div class="col-span-full py-16 text-center text-slate-400">
+        <span class="material-symbols-outlined text-4xl animate-spin text-blue-900 mb-2">progress_activity</span>
+        <p class="text-sm font-medium">Đang tải danh sách nhân viên...</p>
+      </div>
+    </div>
+  </div>
 
-      <p class="text-xs text-slate-500 font-medium" id="employeeTotal">Đang tải...</p>
+  <!-- PAGINATION -->
+  <div id="employeePaginationContainer" class="bg-white rounded-2xl shadow-sm border border-slate-100 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p id="employeePaginationSummary" class="text-xs sm:text-sm text-slate-500 font-medium text-center sm:text-left">
+      Đang tải thông tin phân trang...
+    </p>
+    <p class="hidden" id="employeeTotal"></p>
 
-      <div class="flex items-center gap-1" id="employeePagination"></div>
+    <div id="employeePaginationButtons" class="flex items-center justify-center gap-1.5 flex-wrap">
+      <!-- Nút phân trang: < 1 2 3 ... > -->
+    </div>
+    <div class="hidden" id="employeePagination"></div>
   </div>
 
 </div>

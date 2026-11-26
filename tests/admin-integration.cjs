@@ -36,20 +36,28 @@ const base = process.env.PART2_TEST_URL || 'http://localhost:5282';
         document.querySelector('#part2Message')?.hidden,
     );
     await page.waitForFunction(
-      () => getComputedStyle(document.querySelector('.employee-row')).display === 'grid',
+      () => getComputedStyle(document.querySelector('#employeeList')).display === 'grid',
     );
     assert(
       await page.evaluate(() => window.savedAside === document.querySelector('aside')),
       'Header/sidebar was replaced',
     );
-    let labels = await page.locator('.employee-role').allTextContents();
+    let labels = await page.locator('[data-employee-role]').allTextContents();
+    assert(labels.length > 0);
     assert(
       labels.every((v) => ['Quản trị viên', 'Nhân viên kinh doanh', 'Hướng dẫn viên'].includes(v)),
     );
-    const x = await page
-      .locator('.employee-role')
-      .evaluateAll((nodes) => nodes.map((n) => n.getBoundingClientRect().x));
-    assert(Math.max(...x) - Math.min(...x) < 1);
+    assert.equal(await page.locator('#employeeList article').count(), 5);
+    assert(await page.locator('#employeeList article').evaluateAll((cards) =>
+      cards.every((card) => card.scrollWidth <= card.clientWidth),
+    ));
+    const firstCard = await page.locator('#employeeList article').first().textContent();
+    await page.locator('#employeePaginationButtons [data-page="2"]').click();
+    await page.waitForFunction((previous) => {
+      const card = document.querySelector('#employeeList article');
+      return card && card.textContent !== previous;
+    }, firstCard);
+    assert.equal(new URL(page.url()).searchParams.get('page'), '2');
     await page.locator('main a[href="/admin/employees/create.html"]').click();
     await page.waitForURL('**/employees/create.html');
     await page.waitForFunction(
@@ -89,12 +97,12 @@ const base = process.env.PART2_TEST_URL || 'http://localhost:5282';
     );
     assert(
       await page.evaluate(
-        () => getComputedStyle(document.querySelector('.employee-row')).display === 'grid',
+        () => getComputedStyle(document.querySelector('#employeeList')).display === 'grid',
       ),
     );
     assert.deepEqual(errors, []);
     console.log(
-      'PASS persistent admin: preserved shell, 5 modules, employee CSS/role alignment, Vietnamese labels, unique inline validation, working back link.',
+      'PASS persistent admin: preserved shell, 5 modules, employee cards/pagination, Vietnamese labels, unique inline validation, working back link.',
     );
   } finally {
     await browser.close();

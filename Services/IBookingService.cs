@@ -10,6 +10,7 @@ public interface IBookingService
     Task<Booking?> GetBookingByIdAsync(int id, int? customerId = null);
     Task<List<Booking>> GetCustomerBookingsAsync(int customerId);
     Task<List<object>> GetCustomerPaymentHistoryAsync(int customerId);
+    Task<object?> GetCustomerInvoiceAsync(int customerId, int bookingId);
     Task<List<object>> GetPendingPaymentsAsync(bool bankOnly);
     Task ConfirmPendingPaymentAsync(int bookingId, int employeeId, bool bankOnly);
     Task<Review> SubmitReviewAsync(int customerId, int bookingId, ReviewCreateRequest request);

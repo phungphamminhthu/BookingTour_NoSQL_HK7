@@ -37,7 +37,21 @@
 
     if (location.pathname.endsWith('/create.html')) create(user, tour, dep);
     else {
-      const draft = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
+      let draft = null;
+      try {
+        draft = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
+      } catch (_) {
+        draft = null;
+      }
+      const isCurrentUserData = draft && (
+        (draft.userId != null && String(draft.userId) === String(user.id)) ||
+        (!draft.userId && draft.userEmail && user.email && draft.userEmail.toLowerCase() === user.email.toLowerCase())
+      );
+      if (draft && !isCurrentUserData) {
+        sessionStorage.removeItem(draftKey);
+        draft = null;
+      }
+
       if (!draft || draft.departure_id !== Number(id)) {
         if (location.pathname.endsWith('/invoice.html')) {
           const backBtn = $('#checkoutBackLink') || $('#btnBackToPassengers') || $('[data-back-to-passengers]');
@@ -67,8 +81,29 @@
   // Nhập số vé/liên hệ, tính giá hiển thị và nhờ API kiểm tra bản nháp.
   function create(user, tour, dep) {
     const form = $('#bookingForm');
-    const existingDraft = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
-    const draftForDep = existingDraft && existingDraft.departure_id === dep.id ? existingDraft : null;
+    const currentUserId = user?.id;
+    const currentFullName = String(user?.fullName || user?.full_name || '').trim();
+    const currentPhone = String(user?.phone || '').trim();
+    const currentEmail = String(user?.email || '').trim();
+
+    let existingDraft = null;
+    try {
+      existingDraft = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
+    } catch (_) {
+      existingDraft = null;
+    }
+
+    const isCurrentUserData = existingDraft && (
+      (existingDraft.userId != null && String(existingDraft.userId) === String(currentUserId)) ||
+      (!existingDraft.userId && existingDraft.userEmail && currentEmail && existingDraft.userEmail.toLowerCase() === currentEmail.toLowerCase())
+    );
+
+    if (existingDraft && !isCurrentUserData) {
+      sessionStorage.removeItem(draftKey);
+      existingDraft = null;
+    }
+
+    const draftForDep = isCurrentUserData && existingDraft && existingDraft.departure_id === dep.id ? existingDraft : null;
 
     text('#summaryTourTitle', tour.title);
     text('#summaryTourTag', tour.category_name);
@@ -77,9 +112,10 @@
     const summaryImg = $('.rounded-xl.overflow-hidden img');
     if (summaryImg) summaryImg.src = imageUrl(tour.thumbnail_url);
 
-    form.elements.userFullName.value = draftForDep?.userFullName || user.fullName;
-    form.elements.userPhone.value = draftForDep?.userPhone ?? user.phone ?? '';
-    form.elements.userEmail.value = draftForDep?.userEmail || user.email;
+    // Tự động điền theo tài khoản đang đăng nhập; nếu có bản nháp dở của chính user này thì giữ giá trị đang nhập
+    form.elements.userFullName.value = (draftForDep?.userFullName != null && draftForDep.userFullName !== '') ? draftForDep.userFullName : currentFullName;
+    form.elements.userPhone.value = (draftForDep?.userPhone != null && draftForDep.userPhone !== '') ? draftForDep.userPhone : currentPhone;
+    form.elements.userEmail.value = (draftForDep?.userEmail != null && draftForDep.userEmail !== '') ? draftForDep.userEmail : currentEmail;
 
     if (draftForDep) {
       if (form.elements.total_adults) form.elements.total_adults.value = draftForDep.total_adults ?? 2;
@@ -117,11 +153,12 @@
     bindForm(form, async (fd) => {
       const draft = {
         departure_id: dep.id,
+        userId: currentUserId,
         total_adults: Number(fd.get('total_adults')),
         total_children: Number(fd.get('total_children')),
-        userFullName: fd.get('userFullName'),
-        userPhone: fd.get('userPhone'),
-        userEmail: fd.get('userEmail'),
+        userFullName: String(fd.get('userFullName') || '').trim(),
+        userPhone: String(fd.get('userPhone') || '').trim(),
+        userEmail: String(fd.get('userEmail') || '').trim(),
       };
       if (
         draftForDep &&

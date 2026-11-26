@@ -302,8 +302,16 @@ public class CustomerCreateRequest
     [JsonPropertyName("birthday")]
     public DateTime? Birthday { get; set; }
 
+    [JsonPropertyName("birth_date")]
+    public DateTime? BirthDate { set { if (value.HasValue) Birthday = value; } }
+
+    [JsonPropertyName("date_of_birth")]
+    public DateTime? DateOfBirth { set { if (value.HasValue) Birthday = value; } }
+
+    [JsonPropertyName("dob")]
+    public DateTime? Dob { set { if (value.HasValue) Birthday = value; } }
+
     [JsonPropertyName("password")]
-    [MinLength(8, ErrorMessage = "Mật khẩu tối thiểu 8 ký tự.")]
     public string? Password { get; set; }
 }
 
@@ -329,6 +337,15 @@ public class CustomerUpdateRequest
 
     [JsonPropertyName("birthday")]
     public DateTime? Birthday { get; set; }
+
+    [JsonPropertyName("birth_date")]
+    public DateTime? BirthDate { set { if (value.HasValue) Birthday = value; } }
+
+    [JsonPropertyName("date_of_birth")]
+    public DateTime? DateOfBirth { set { if (value.HasValue) Birthday = value; } }
+
+    [JsonPropertyName("dob")]
+    public DateTime? Dob { set { if (value.HasValue) Birthday = value; } }
 }
 
 public class CustomerStatsDto

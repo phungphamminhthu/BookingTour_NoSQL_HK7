@@ -110,7 +110,7 @@
     try {
       const raw = localStorage.getItem('bookingtour_user') || sessionStorage.getItem('bookingtour_user');
       if (raw) user = JSON.parse(raw);
-    } catch (_) {}
+    } catch (_) { }
 
     if (!user) {
       user = {
@@ -160,7 +160,7 @@
 
       // Call API logout if client is available
       if (window.BookingTourApi && typeof window.BookingTourApi.apiRequest === 'function') {
-        window.BookingTourApi.apiRequest('/api/auth/logout', { method: 'POST' }).catch(() => {});
+        window.BookingTourApi.apiRequest('/api/auth/logout', { method: 'POST' }).catch(() => { });
       }
 
       window.location.href = getLoginUrl();
@@ -1038,14 +1038,40 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     let page = 1;
-    const pageSize = 10;
+    const pageSize = 5;
+    let currentTotalPages = 1;
     const previous = document.querySelector('[data-tour-prev]');
     const next = document.querySelector('[data-tour-next]');
     // Người dùng có thể chuyển module trong lúc API danh sách tour đang tải.
     if (!previous || !next) return;
+    const numbersContainer = document.querySelector('[data-tour-page-numbers]');
+    const pageBadge = document.querySelector('[data-tour-page-badge]');
+    const pageLabelSpan = document.querySelector('[data-tour-page]');
     let keyword = urlParams.get('keyword') || '';
     let catId = urlParams.get('category_id') || '';
     let provId = urlParams.get('province_id') || '';
+
+    if (pageBadge) {
+      pageBadge.textContent = '';
+      pageBadge.classList.add('hidden');
+    }
+    if (pageLabelSpan) {
+      pageLabelSpan.textContent = '';
+      pageLabelSpan.classList.add('hidden');
+    }
+
+    function getPaginationRange(current, total) {
+      if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+      }
+      if (current <= 4) {
+        return [1, 2, 3, 4, 5, '...', total];
+      }
+      if (current >= total - 3) {
+        return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+      }
+      return [1, '...', current - 1, current, current + 1, '...', total];
+    }
 
     // Populate Category select
     const catSelect = document.querySelector('select[name="category_id"]');
@@ -1084,18 +1110,55 @@
       const filtered = allTours.filter(t =>
         (!catId || String(t.category_id) === catId) &&
         (!provId || String(t.province_id) === provId) &&
-        (!q || [t.title, t.pickup_point, t.province_name].some(value => value?.toLocaleLowerCase('vi').includes(q)))
+        (!q || [t.title, t.pickup_point, t.province_name, t.destination, t.category_name].some(value => value?.toLocaleLowerCase('vi').includes(q)))
       );
 
       const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
-      page = Math.min(page, pages);
+      currentTotalPages = pages;
+      if (page > pages) page = pages;
+      if (page < 1) page = 1;
       const offset = (page - 1) * pageSize;
       const visible = filtered.slice(offset, offset + pageSize);
-      previous.disabled = page <= 1;
-      next.disabled = page >= pages;
-      const pageLabel = page + ' / ' + pages;
-      document.querySelector('[data-tour-page]').textContent = pageLabel;
-      document.querySelector('[data-tour-page-badge]').textContent = 'Trang ' + pageLabel;
+
+      if (previous) previous.disabled = page <= 1;
+      if (next) next.disabled = page >= pages;
+
+      if (numbersContainer) {
+        if (filtered.length === 0) {
+          numbersContainer.innerHTML = '';
+        } else {
+          const pageNumbers = getPaginationRange(page, pages);
+          numbersContainer.innerHTML = pageNumbers.map(p => {
+            if (p === '...') {
+              return `<span class="w-9 h-9 flex items-center justify-center text-slate-400 font-bold text-sm select-none">...</span>`;
+            }
+            if (p === page) {
+              return `<span class="w-9 h-9 flex items-center justify-center rounded-xl border border-blue-900 bg-blue-900 text-white font-bold text-sm shadow-xs select-none">${p}</span>`;
+            }
+            return `<button type="button" class="btn-tour-page-num w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 transition shadow-xs font-bold text-sm" data-page="${p}">${p}</button>`;
+          }).join('');
+
+          numbersContainer.querySelectorAll('.btn-tour-page-num').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const p = Number(btn.getAttribute('data-page'));
+              if (p && p !== page) {
+                page = p;
+                renderTours();
+              }
+            });
+          });
+        }
+      }
+
+      if (pageBadge) {
+        pageBadge.textContent = '';
+        pageBadge.classList.add('hidden');
+      }
+      if (pageLabelSpan) {
+        pageLabelSpan.textContent = '';
+        pageLabelSpan.classList.add('hidden');
+      }
+
       const headingCountEl = document.querySelector('[data-tour-list-title]');
       if (headingCountEl) headingCountEl.textContent = `Danh sách Tour (${filtered.length})`;
 
@@ -1104,9 +1167,14 @@
         if (filtered.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="7" class="px-8 py-12 text-center text-slate-400">
-                <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">tour</span>
-                <p>Không tìm thấy tour du lịch nào phù hợp với bộ lọc.</p>
+              <td colspan="7" class="px-8 py-16 text-center text-slate-400">
+                <div class="max-w-sm mx-auto flex flex-col items-center">
+                  <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                    <span class="material-symbols-outlined text-3xl">tour</span>
+                  </div>
+                  <p class="font-semibold text-slate-700 text-base">Không tìm thấy tour du lịch nào</p>
+                  <p class="text-xs text-slate-500 mt-1">Vui lòng thử tìm kiếm với từ khóa khác hoặc điều chỉnh lại bộ lọc danh mục, tỉnh thành.</p>
+                </div>
               </td>
             </tr>`;
         } else {
@@ -1183,14 +1251,18 @@
 
       const paginationInfoEl = document.querySelector('[data-tour-list-pagination]');
       if (paginationInfoEl) {
-        paginationInfoEl.textContent = visible.length
-          ? 'Hiển thị ' + (offset + 1) + '–' + (offset + visible.length) + ' trên ' + filtered.length + ' tour'
-          : 'Không có tour';
+        if (filtered.length === 0) {
+          paginationInfoEl.innerHTML = 'Hiển thị <span class="font-bold text-slate-800">0</span> trên tổng số <span class="font-bold text-slate-800">0</span> tour';
+        } else {
+          const start = offset + 1;
+          const end = offset + visible.length;
+          paginationInfoEl.innerHTML = `Hiển thị <span class="font-bold text-blue-900">${start}–${end}</span> trên tổng số <span class="font-bold text-blue-900">${filtered.length}</span> tour`;
+        }
       }
     }
 
-    const filterForm = catSelect?.form;
-    if (filterForm && !filterForm.classList.contains('px-4')) {
+    const filterForm = catSelect?.form || document.querySelector('form');
+    if (filterForm) {
       filterForm.addEventListener('submit', (e) => {
         e.preventDefault();
         page = 1;
@@ -1201,8 +1273,61 @@
       });
     }
 
-    previous.onclick = () => { page--; renderTours(); };
-    next.onclick = () => { page++; renderTours(); };
+    if (keywordInput) {
+      keywordInput.addEventListener('input', () => {
+        page = 1;
+        keyword = (keywordInput.value || '').trim();
+        renderTours();
+      });
+    }
+
+    if (catSelect) {
+      catSelect.addEventListener('change', () => {
+        page = 1;
+        catId = catSelect.value || '';
+        renderTours();
+      });
+    }
+
+    if (provSelect) {
+      provSelect.addEventListener('change', () => {
+        page = 1;
+        provId = provSelect.value || '';
+        renderTours();
+      });
+    }
+
+    const resetBtn = filterForm?.querySelector('a[href="index.html"]') || filterForm?.querySelector('a[title*="bộ lọc"]');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (keywordInput) keywordInput.value = '';
+        if (catSelect) catSelect.value = '';
+        if (provSelect) provSelect.value = '';
+        keyword = '';
+        catId = '';
+        provId = '';
+        page = 1;
+        renderTours();
+      });
+    }
+
+    if (previous) {
+      previous.onclick = () => {
+        if (page > 1) {
+          page--;
+          renderTours();
+        }
+      };
+    }
+    if (next) {
+      next.onclick = () => {
+        if (page < currentTotalPages) {
+          page++;
+          renderTours();
+        }
+      };
+    }
     renderTours();
   }
 
@@ -1300,7 +1425,7 @@
     });
     const stats = root.querySelectorAll('ul.space-y-3\\.5 > li > span:last-child');
     ['#' + id, tour.category_name, tour.duration_days + ' ngày ' + tour.duration_nights + ' đêm',
-      tour.pickup_point, formatMoney(tour.min_price)].forEach((text, index) => {
+    tour.pickup_point, formatMoney(tour.min_price)].forEach((text, index) => {
       if (stats[index]) stats[index].textContent = text || '—';
     });
     const tourEditLink = root.querySelector('[data-tour-edit]');
@@ -1468,6 +1593,7 @@
   function handleToursEdit() {
     return handleTourForm(true).catch(showTourError);
   }
+
   // -------------------------------------------------------------
   // MODULE 3: QUẢN LÝ CHUYẾN ĐI (DEPARTURES)
   // -------------------------------------------------------------
@@ -3904,9 +4030,11 @@
           emailEl.innerHTML = `<span class="material-symbols-outlined text-sm text-slate-400">mail</span><span>${escapeHtml(c.email || 'Chưa cập nhật')}</span>`;
         }
 
+        const bday = c.birthday || c.Birthday || c.date_of_birth || c.birth_date || c.dob;
         const birthdayEl = document.getElementById('custDetailBirthday');
         if (birthdayEl) {
-          birthdayEl.innerHTML = `<span class="material-symbols-outlined text-sm text-slate-400">cake</span><span>${formatDate(c.birthday)}</span>`;
+          const formattedBday = formatDate(bday);
+          birthdayEl.innerHTML = `<span class="material-symbols-outlined text-sm text-slate-400">cake</span><span>${escapeHtml(formattedBday)}</span>`;
         }
 
         const addressEl = document.getElementById('custDetailAddress');
@@ -3949,6 +4077,10 @@
               let statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">Đã xác nhận</span>';
               if (status === 'pending') {
                 statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">Chờ xác nhận</span>';
+              } else if (status === 'paid') {
+                statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-teal-100 text-teal-800">Đã thanh toán</span>';
+              } else if (status === 'completed') {
+                statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800">Hoàn thành</span>';
               } else if (status === 'cancelled' || status === 'canceled') {
                 statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800">Đã hủy</span>';
               }
@@ -4026,8 +4158,10 @@
         if (inputEmail) inputEmail.value = c.email || '';
         if (inputPhone) inputPhone.value = c.phone || '';
         if (inputAddress) inputAddress.value = c.address || '';
+        const bday = c.birthday || c.Birthday || c.date_of_birth || c.birth_date || c.dob;
         if (inputBirthday) {
-          inputBirthday.value = toVietnamDateInput(c.birthday);
+          inputBirthday.value = toVietnamDateInput(bday);
+          inputBirthday.max = new Date().toISOString().split('T')[0];
         }
 
         if (btnSubmitEditModal) {
@@ -4058,6 +4192,22 @@
         const phone = (document.getElementById('modalEdit_phone')?.value || '').trim();
         const address = (document.getElementById('modalEdit_address')?.value || '').trim();
         const birthdayVal = document.getElementById('modalEdit_birthday')?.value || null;
+        if (birthdayVal) {
+          const bDate = new Date(birthdayVal);
+          const today = new Date();
+          today.setHours(23, 59, 59, 999);
+          if (bDate > today) {
+            if (editError && editErrorText) {
+              editErrorText.textContent = 'Ngày sinh không thể là ngày trong tương lai!';
+              editError.classList.remove('hidden');
+            }
+            if (btnSubmitEditModal) {
+              btnSubmitEditModal.disabled = false;
+              btnSubmitEditModal.innerHTML = '<span class="material-symbols-outlined text-sm">save</span><span>Lưu thay đổi</span>';
+            }
+            return;
+          }
+        }
 
         if (!fullName) {
           if (editError && editErrorText) {
@@ -4096,7 +4246,7 @@
             email: email,
             phone: phone || null,
             address: address || null,
-            birthday: birthdayVal ? new Date(birthdayVal).toISOString() : null
+            birthday: birthdayVal ? birthdayVal + 'T00:00:00Z' : null
           };
 
           await window.BookingTourApi.apiRequest(`/api/customers/${editingCustomerId}`, {
@@ -4106,6 +4256,7 @@
 
           closeEditModal();
           showSuccess(`Cập nhật thông tin khách hàng "${fullName}" thành công!`);
+          fetchStats();
           fetchAndRender();
         } catch (err) {
           console.error('Lỗi cập nhật khách hàng:', err);
@@ -4183,6 +4334,159 @@
         }
       });
     }
+
+    // =========================================================
+    // MODAL: THÊM KHÁCH HÀNG MỚI (CREATE MODAL)
+    // =========================================================
+    const createModal = document.getElementById('custCreateModal');
+    const createForm = document.getElementById('modalCreateCustomerForm');
+    const createError = document.getElementById('modalCreateError');
+    const createErrorText = document.getElementById('modalCreateErrorText');
+    const btnOpenCreateModal = document.getElementById('btnOpenCreateCustomerModal');
+    const btnCloseCreateModal = document.getElementById('btnCloseCreateModal');
+    const btnCancelCreateModal = document.getElementById('btnCancelCreateModal');
+    const btnSubmitCreateModal = document.getElementById('btnSubmitCreateModal');
+
+    function openCreateModal() {
+      if (!createModal) return;
+      if (createForm) createForm.reset();
+      if (createError) createError.classList.add('hidden');
+      const bdayInput = document.getElementById('modalCreate_birthday');
+      if (bdayInput) bdayInput.max = new Date().toISOString().split('T')[0];
+      createModal.classList.remove('hidden');
+      setTimeout(() => document.getElementById('modalCreate_fullName')?.focus(), 50);
+    }
+
+    function closeCreateModal() {
+      if (createModal) createModal.classList.add('hidden');
+      if (createError) createError.classList.add('hidden');
+    }
+
+    if (btnOpenCreateModal) btnOpenCreateModal.addEventListener('click', openCreateModal);
+    if (btnCloseCreateModal) btnCloseCreateModal.addEventListener('click', closeCreateModal);
+    if (btnCancelCreateModal) btnCancelCreateModal.addEventListener('click', closeCreateModal);
+
+    if (createForm) {
+      createForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (createError) createError.classList.add('hidden');
+
+        const fullName = (document.getElementById('modalCreate_fullName')?.value || '').trim();
+        const email = (document.getElementById('modalCreate_email')?.value || '').trim();
+        const phone = (document.getElementById('modalCreate_phone')?.value || '').trim();
+        const birthdayVal = document.getElementById('modalCreate_birthday')?.value || null;
+        if (birthdayVal) {
+          const bDate = new Date(birthdayVal);
+          const today = new Date();
+          today.setHours(23, 59, 59, 999);
+          if (bDate > today) {
+            if (createError && createErrorText) {
+              createErrorText.textContent = 'Ngày sinh không thể là ngày trong tương lai!';
+              createError.classList.remove('hidden');
+            }
+            if (btnSubmitCreateModal) {
+              btnSubmitCreateModal.disabled = false;
+              btnSubmitCreateModal.innerHTML = '<span class="material-symbols-outlined text-sm">person_add</span><span>Thêm khách hàng</span>';
+            }
+            return;
+          }
+        }
+        const password = (document.getElementById('modalCreate_password')?.value || '').trim();
+        const address = (document.getElementById('modalCreate_address')?.value || '').trim();
+
+        if (!fullName) {
+          if (createError && createErrorText) {
+            createErrorText.textContent = 'Vui lòng nhập họ và tên khách hàng!';
+            createError.classList.remove('hidden');
+          }
+          return;
+        }
+
+        if (!email) {
+          if (createError && createErrorText) {
+            createErrorText.textContent = 'Vui lòng nhập địa chỉ email!';
+            createError.classList.remove('hidden');
+          }
+          return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          if (createError && createErrorText) {
+            createErrorText.textContent = 'Định dạng email không hợp lệ!';
+            createError.classList.remove('hidden');
+          }
+          return;
+        }
+
+        if (password && password.length < 6) {
+          if (createError && createErrorText) {
+            createErrorText.textContent = 'Mật khẩu phải có tối thiểu 6 ký tự!';
+            createError.classList.remove('hidden');
+          }
+          return;
+        }
+
+        if (btnSubmitCreateModal) {
+          btnSubmitCreateModal.disabled = true;
+          btnSubmitCreateModal.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Đang thêm...</span>';
+        }
+
+        try {
+          const payload = {
+            full_name: fullName,
+            fullName: fullName,
+            email: email,
+            phone: phone || null,
+            address: address || null,
+            birthday: birthdayVal ? birthdayVal + 'T00:00:00Z' : null,
+            password: password || undefined
+          };
+
+          await window.BookingTourApi.apiRequest('/api/customers', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+
+          closeCreateModal();
+          showSuccess(`Thêm khách hàng "${fullName}" thành công!`);
+          fetchStats();
+          fetchAndRender();
+        } catch (err) {
+          console.error('Lỗi khi thêm khách hàng:', err);
+          if (createError && createErrorText) {
+            createErrorText.textContent = err.message || 'Không thể tạo khách hàng. Vui lòng thử lại.';
+            createError.classList.remove('hidden');
+          }
+        } finally {
+          if (btnSubmitCreateModal) {
+            btnSubmitCreateModal.disabled = false;
+            btnSubmitCreateModal.innerHTML = '<span class="material-symbols-outlined text-sm">person_add</span><span>Thêm khách hàng</span>';
+          }
+        }
+      });
+    }
+
+    // Close modals on backdrop click
+    [detailModal, editModal, deleteModal, createModal].forEach(modal => {
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            modal.classList.add('hidden');
+          }
+        });
+      }
+    });
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDetailModal();
+        closeEditModal();
+        closeDeleteModal();
+        closeCreateModal();
+      }
+    });
 
     async function fetchStats() {
       const statTotal = document.getElementById('statTotalCustomers');
@@ -4374,10 +4678,9 @@
           // Prev button
           const isPrevDisabled = currentPage <= 1;
           btnsHtml += `
-            <button type="button" class="btn-page-cust px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center justify-center ${
-              isPrevDisabled
-                ? 'text-slate-300 bg-slate-50 cursor-not-allowed border border-slate-200'
-                : 'text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-sm'
+            <button type="button" class="btn-page-cust px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center justify-center ${isPrevDisabled
+              ? 'text-slate-300 bg-slate-50 cursor-not-allowed border border-slate-200'
+              : 'text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-sm'
             }" data-page="${currentPage - 1}" ${isPrevDisabled ? 'disabled' : ''} title="Trang trước">
               <span class="material-symbols-outlined text-sm">chevron_left</span>
             </button>
@@ -4387,10 +4690,9 @@
           for (let p = 1; p <= totalPages; p++) {
             const isActive = p === currentPage;
             btnsHtml += `
-              <button type="button" class="btn-page-cust px-3.5 py-1.5 rounded-lg text-sm transition font-bold ${
-                isActive
-                  ? 'bg-blue-900 text-white shadow-sm'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+              <button type="button" class="btn-page-cust px-3.5 py-1.5 rounded-lg text-sm transition font-bold ${isActive
+                ? 'bg-blue-900 text-white shadow-sm'
+                : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
               }" data-page="${p}">
                 ${p}
               </button>
@@ -4400,10 +4702,9 @@
           // Next button
           const isNextDisabled = currentPage >= totalPages;
           btnsHtml += `
-            <button type="button" class="btn-page-cust px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center justify-center ${
-              isNextDisabled
-                ? 'text-slate-300 bg-slate-50 cursor-not-allowed border border-slate-200'
-                : 'text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-sm'
+            <button type="button" class="btn-page-cust px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center justify-center ${isNextDisabled
+              ? 'text-slate-300 bg-slate-50 cursor-not-allowed border border-slate-200'
+              : 'text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-sm'
             }" data-page="${currentPage + 1}" ${isNextDisabled ? 'disabled' : ''} title="Trang sau">
               <span class="material-symbols-outlined text-sm">chevron_right</span>
             </button>
@@ -4425,11 +4726,25 @@
       }
     }
 
-    // Search and Reset Form
+    // Search and Reset Form with Debounce
+    let searchDebounceTimer = null;
+    const keywordInput = document.getElementById('customerKeyword');
+    if (keywordInput) {
+      keywordInput.addEventListener('input', () => {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+          searchKeyword = (keywordInput.value || '').trim();
+          currentPage = 1;
+          fetchAndRender();
+        }, 350);
+      });
+    }
+
     const searchForm = document.getElementById('customerFilterForm') || document.querySelector('form');
     if (searchForm) {
       searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        clearTimeout(searchDebounceTimer);
         searchKeyword = (document.getElementById('customerKeyword')?.value || '').trim();
         currentPage = 1;
         fetchAndRender();
@@ -4439,6 +4754,7 @@
     const resetBtn = document.getElementById('btnResetCustomerFilter');
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
+        clearTimeout(searchDebounceTimer);
         const input = document.getElementById('customerKeyword');
         if (input) input.value = '';
         searchKeyword = '';
@@ -4450,11 +4766,13 @@
     const retryBtn = document.getElementById('btnRetryCustomers');
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
+        fetchStats();
         fetchAndRender();
       });
     }
 
-    // Initial load
+    // Initial load: load real stats and customer list
+    fetchStats();
     fetchAndRender();
   }
 
@@ -4481,6 +4799,17 @@
         const phone = (document.getElementById('cust_phone')?.value || '').trim();
         const email = (document.getElementById('cust_email')?.value || '').trim();
         const address = (document.getElementById('cust_address')?.value || '').trim();
+        const birthdayVal = (document.getElementById('cust_birthday')?.value || '').trim() || null;
+
+        if (birthdayVal) {
+          const bDate = new Date(birthdayVal);
+          const today = new Date();
+          today.setHours(23, 59, 59, 999);
+          if (bDate > today) {
+            showError('Ngày sinh không thể là ngày trong tương lai!');
+            return;
+          }
+        }
 
         if (!fullName) {
           showError('Vui lòng nhập họ tên khách hàng!');
@@ -4505,7 +4834,14 @@
           if (window.BookingTourApi && typeof window.BookingTourApi.apiRequest === 'function') {
             await window.BookingTourApi.apiRequest('/api/customers', {
               method: 'POST',
-              body: JSON.stringify({ full_name: fullName, fullName, phone, email, address })
+              body: JSON.stringify({
+                full_name: fullName,
+                fullName,
+                phone,
+                email,
+                address,
+                birthday: birthdayVal ? birthdayVal + 'T00:00:00Z' : null
+              })
             });
             alert(`Đã thêm khách hàng "${fullName}" thành công!`);
             window.location.href = 'index.html';
@@ -4560,8 +4896,10 @@
           if (emailInput) emailInput.value = c.email || '';
           if (phoneInput) phoneInput.value = c.phone || '';
           if (addressInput) addressInput.value = c.address || '';
+          const bday = c.birthday || c.Birthday || c.date_of_birth || c.birth_date || c.dob;
           if (birthdayInput) {
-            birthdayInput.value = toVietnamDateInput(c.birthday);
+            birthdayInput.value = toVietnamDateInput(bday);
+            birthdayInput.max = new Date().toISOString().split('T')[0];
           }
 
           const titleEl = document.getElementById('editCustomerTitle');
@@ -4585,7 +4923,21 @@
         const phone = (phoneInput?.value || '').trim();
         const email = (emailInput?.value || '').trim();
         const address = (addressInput?.value || '').trim();
-        const birthdayVal = birthdayInput?.value || null;
+        const birthdayVal = (birthdayInput?.value || '').trim() || null;
+        if (birthdayVal) {
+          const bDate = new Date(birthdayVal);
+          const today = new Date();
+          today.setHours(23, 59, 59, 999);
+          if (bDate > today) {
+            showError('Ngày sinh không thể là ngày trong tương lai!');
+            const submitBtn = document.getElementById('btnSubmitEditCustomer');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.classList.remove('opacity-75');
+            }
+            return;
+          }
+        }
 
         if (!fullName) {
           showError('Vui lòng nhập họ tên khách hàng!');
@@ -4613,7 +4965,7 @@
                 phone: phone || null,
                 email,
                 address: address || null,
-                birthday: birthdayVal ? new Date(birthdayVal).toISOString() : null
+                birthday: birthdayVal ? birthdayVal + 'T00:00:00Z' : null
               })
             });
             alert('Cập nhật thông tin khách hàng thành công!');
@@ -4665,6 +5017,10 @@
 
           const addressEl = document.getElementById('showCustomerAddress');
           if (addressEl) addressEl.textContent = c.address || 'Chưa cập nhật';
+
+          const bday = c.birthday || c.Birthday || c.date_of_birth || c.birth_date || c.dob;
+          const birthdayEl = document.getElementById('showCustomerBirthday');
+          if (birthdayEl) birthdayEl.textContent = formatDate(bday);
 
           const createdEl = document.getElementById('showCustomerCreatedAt');
           if (createdEl) createdEl.textContent = formatDate(c.created_at || c.createdAt);
@@ -5190,8 +5546,7 @@
         // Prev button
         const isPrevDisabled = currentPage <= 1;
         btns += `
-          <button type="button" class="btn-page-prev flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-xs font-bold transition ${
-            isPrevDisabled ? 'cursor-not-allowed text-slate-300 bg-slate-50' : 'text-slate-600 bg-white hover:bg-slate-50 shadow-sm'
+          <button type="button" class="btn-page-prev flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-xs font-bold transition ${isPrevDisabled ? 'cursor-not-allowed text-slate-300 bg-slate-50' : 'text-slate-600 bg-white hover:bg-slate-50 shadow-sm'
           }" ${isPrevDisabled ? 'disabled' : ''} title="Trang trước">
             <span class="material-symbols-outlined text-lg">chevron_left</span>
           </button>
@@ -5201,10 +5556,9 @@
         for (let p = 1; p <= totalPages; p++) {
           const isActive = p === currentPage;
           btns += `
-            <button type="button" class="btn-page-num flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold transition ${
-              isActive
-                ? 'bg-blue-900 text-white shadow-sm'
-                : 'border border-slate-200 text-slate-600 bg-white hover:bg-blue-50 hover:text-blue-900'
+            <button type="button" class="btn-page-num flex h-9 w-9 items-center justify-center rounded-lg text-xs font-bold transition ${isActive
+              ? 'bg-blue-900 text-white shadow-sm'
+              : 'border border-slate-200 text-slate-600 bg-white hover:bg-blue-50 hover:text-blue-900'
             }" data-page="${p}">
               ${p}
             </button>
@@ -5214,8 +5568,7 @@
         // Next button
         const isNextDisabled = currentPage >= totalPages;
         btns += `
-          <button type="button" class="btn-page-next flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-xs font-bold transition ${
-            isNextDisabled ? 'cursor-not-allowed text-slate-300 bg-slate-50' : 'text-slate-600 bg-white hover:bg-slate-50 shadow-sm'
+          <button type="button" class="btn-page-next flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-xs font-bold transition ${isNextDisabled ? 'cursor-not-allowed text-slate-300 bg-slate-50' : 'text-slate-600 bg-white hover:bg-slate-50 shadow-sm'
           }" ${isNextDisabled ? 'disabled' : ''} title="Trang sau">
             <span class="material-symbols-outlined text-lg">chevron_right</span>
           </button>
@@ -5371,7 +5724,7 @@
       let filtered = allEmps;
       if (searchKeyword) {
         const kw = searchKeyword.toLowerCase();
-        filtered = filtered.filter(e => 
+        filtered = filtered.filter(e =>
           (e.full_name || e.fullName || '').toLowerCase().includes(kw) ||
           (e.email || '').toLowerCase().includes(kw) ||
           (e.phone || '').includes(kw)
