@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Backend_DotNet.Models;
 
+[BsonIgnoreExtraElements]
 public class Customer : BaseEntity
 {
     [BsonElement("email")]

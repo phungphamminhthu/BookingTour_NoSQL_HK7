@@ -256,6 +256,7 @@ public class DepartureService : IDepartureService
             .Set(d => d.GuideId, request.GuideId)
             .Set(d => d.GuideName, guide?.FullName)
             .Set(d => d.UpdatedAt, DateTime.UtcNow);
+        // Optimistic Locking là cơ chế kiểm soát xung đột dữ liệu khi nhiều người cùng thao tác trên một dữ liệu
         var updated = await _context.TourDepartures.FindOneAndUpdateAsync(
             d => d.Id == id && d.AvailableSeats == departure.AvailableSeats &&
                  d.MaxSeats == departure.MaxSeats && d.UpdatedAt == departure.UpdatedAt,
@@ -375,6 +376,7 @@ public class DepartureService : IDepartureService
         };
     }
 
+    // $in truy vấn từng Tour và từng Hướng dẫn viên riêng lẻ cho mỗi chuyến khởi hành, hệ thống gom các ID cần lấy và sử dụng toán tử $in để truy vấn nhiều bản ghi cùng lúc
     private async Task PopulateDepartureRelationsAsync(List<TourDeparture> departures)
     {
         if (!departures.Any()) return;
@@ -382,9 +384,11 @@ public class DepartureService : IDepartureService
         var tourIds = departures.Select(d => d.TourId).Distinct().ToList();
         var guideIds = departures.Where(d => d.GuideId.HasValue).Select(d => d.GuideId!.Value).Distinct().ToList();
 
+        // Truy vấn hàng loạt (Tránh lỗi N+1 Query)
         var tours = await _context.Tours.Find(t => tourIds.Contains(t.Id)).ToListAsync();
         var guides = await _context.Employees.Find(e => guideIds.Contains(e.Id)).ToListAsync();
 
+        //Chuyển danh sách sang dạng bảng băm (Dictionary) với khóa chính là Id
         var tourMap = tours.ToDictionary(t => t.Id);
         var guideMap = guides.ToDictionary(g => g.Id);
 

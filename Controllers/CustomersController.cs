@@ -91,7 +91,16 @@ public class CustomersController : ControllerBase
         }
     }
 
+    [HttpGet("{id:int}/bookings")]
+    public async Task<IActionResult> GetBookings(int id)
+    {
+        var customer = await _service.GetCustomerByIdAsync(id);
+        if (customer == null) return NotFound(ApiResponse<object>.Fail($"Không tìm thấy khách hàng mã {id}."));
+        return Ok(ApiResponse<List<Booking>>.Ok(customer.Bookings ?? new List<Booking>(), "Lấy lịch sử đặt tour thành công."));
+    }
+
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         try
