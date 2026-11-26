@@ -5,6 +5,7 @@ namespace Backend_DotNet.Models;
 
 public class Review : BaseEntity
 {
+    // Tham chiếu đơn được đánh giá; có thể null ở dữ liệu mẫu cũ, index unique chỉ áp dụng khi mã là số.
     [BsonElement("booking_id")]
     [JsonPropertyName("booking_id")]
     public int? BookingId { get; set; }

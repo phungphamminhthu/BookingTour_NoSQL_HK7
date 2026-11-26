@@ -16,12 +16,12 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuration bindings
+// Ánh xạ cấu hình vào các nhóm thiết lập.
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.Configure<R2Settings>(builder.Configuration.GetSection(R2Settings.SectionName));
 
-// Cloudflare R2 S3 Client registration
+// Đăng ký bộ kết nối S3 tương thích Cloudflare R2.
 builder.Services.AddSingleton<IAmazonS3>(sp =>
 {
     var r2 = sp.GetRequiredService<IOptions<R2Settings>>().Value;
@@ -34,23 +34,23 @@ builder.Services.AddSingleton<IAmazonS3>(sp =>
     return new AmazonS3Client(new BasicAWSCredentials(r2.AccessKeyId, r2.SecretAccessKey), config);
 });
 
-// Storage Service
+// Đăng ký dịch vụ lưu trữ ảnh.
 builder.Services.AddScoped<IStorageService, CloudflareR2StorageService>();
 builder.Services.AddScoped<ImageMigrationService>();
 
-// Core services
+// Đăng ký các dịch vụ nền tảng.
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<DbSeeder>();
 builder.Services.AddScoped<JwtHelper>();
 
-// Business services
+// Đăng ký các lớp xử lý nghiệp vụ.
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<IDepartureService, DepartureService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IAdminManagementService, AdminManagementService>();
 
-// CORS configuration: Allow all origins, methods, headers
+// Cấu hình CORS hiện cho phép mọi nguồn, phương thức và tiêu đề yêu cầu.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -61,7 +61,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Authentication & JWT configuration
+// Cấu hình xác thực và kiểm tra JWT.
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>() ?? new JwtSettings();
 builder.Services.AddAuthentication(options =>
 {
@@ -114,7 +114,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
 
-// Swagger / OpenAPI documentation
+// Cấu hình tài liệu và giao diện thử API Swagger/OpenAPI.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -125,7 +125,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "ASP.NET Core Web API with MongoDB for Booking Tour System"
     });
 
-    // JWT Bearer scheme in Swagger
+    // Khai báo cơ chế nhập JWT Bearer trong Swagger.
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -154,17 +154,17 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Ensure wwwroot/uploads exists
+// Tạo thư mục wwwroot/uploads nếu chưa có.
 var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "uploads");
 if (!Directory.Exists(uploadsPath))
 {
     Directory.CreateDirectory(uploadsPath);
 }
 
-// Exception handling middleware
+// Middleware đổi ngoại lệ thành phản hồi lỗi API.
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Configure the HTTP request pipeline
+// Sắp xếp các middleware xử lý yêu cầu HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -195,7 +195,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Migration runner CLI mode
+// Chế độ chạy chuyển dữ liệu qua tham số dòng lệnh.
 if (args.Contains("--migrate-images"))
 {
     using (var scope = app.Services.CreateScope())
@@ -284,7 +284,7 @@ if (args.Contains("--refresh-tour-content"))
     return;
 }
 
-// Automatically seed MongoDB on application startup
+// Khởi tạo index và bổ sung dữ liệu mẫu theo điều kiện của seeder khi ứng dụng chạy.
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();

@@ -6,11 +6,13 @@
     const el = $(selector);
     if (el) el.textContent = value ?? '—';
   };
+  // Mã hóa ký tự HTML trong dữ liệu để nội dung nhập không trở thành thẻ hoặc mã chạy trên trang.
   const escape = (value) =>
     String(value ?? '').replace(
       /[&<>"']/g,
       (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch],
     );
+  // Chỉ chấp nhận URL ảnh http/https, loại các giao thức không phù hợp khi gắn vào HTML.
   const imageUrl = (value) => {
     try {
       const url = new URL(value, location.origin);
@@ -19,6 +21,7 @@
       return '';
     }
   };
+  // Hiển thị hoặc ẩn thông báo trạng thái/lỗi ở khu vực nội dung trang.
   function notice(message, error = false) {
     let box = $('#part2Message');
     if (!box) {
@@ -32,6 +35,7 @@
     box.textContent = message;
     box.hidden = !message;
   }
+  // Xử lý lỗi API, chuyển về đăng nhập khi hết phiên và giải thích lỗi quyền truy cập.
   function failure(error) {
     if (error.status === 401) {
       for (const storage of [localStorage, sessionStorage]) {
@@ -43,6 +47,7 @@
     } else
       notice(error.status === 403 ? 'Tài khoản không có quyền sử dụng chức năng này.' : error.message, true);
   }
+  // Xác minh phiên qua API và đối chiếu vai trò trước khi nạp trang riêng.
   async function requireUser(role) {
     if (!api.getAuthToken()) {
       location.href = '/client/auth/login.html';
@@ -59,6 +64,7 @@
     text('aside p.truncate', data.email);
     return data;
   }
+  // Gắn gửi form bất đồng bộ, khóa nút khi đang gửi và đưa lỗi ra giao diện.
   function bindForm(form, action) {
     if (!form) return;
     form.addEventListener('submit', async (event) => {
@@ -75,6 +81,7 @@
       }
     });
   }
+  // Tính số trang bằng làm tròn lên tổng bản ghi / số bản ghi mỗi trang và tạo nút.
   function pagination(container, result, params, onPage) {
     if (!container) return;
     const pages = Math.ceil(result.total / result.pageSize);
@@ -92,6 +99,7 @@
       container.append(button);
     }
   }
+  // Chỉ định dạng tiền/ngày để hiển thị; không thay thế phép tính tiền hay kiểm tra lịch ở backend.
   const money = (value) => Number(value || 0).toLocaleString('vi-VN') + ' đ';
   const date = (value) =>
     value ? new Date(value).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '—';

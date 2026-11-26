@@ -6,6 +6,7 @@ namespace Backend_DotNet.Models;
 
 public abstract class BaseEntity
 {
+    // _id dùng ObjectId của MongoDB; id số nguyên là mã nghiệp vụ để API/giao diện tham chiếu.
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonPropertyName("mongoId")]

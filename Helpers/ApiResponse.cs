@@ -29,6 +29,7 @@ public class ApiResponse<T>
     public int? PageSize { get; set; }
 
     [JsonPropertyName("totalPages")]
+    // Tổng số trang = làm tròn lên (tổng bản ghi / kích thước trang), vì trang cuối có thể chưa đầy.
     public int? TotalPages => (Total.HasValue && PageSize.HasValue && PageSize.Value > 0)
         ? (int)Math.Ceiling((double)Total.Value / PageSize.Value)
         : null;

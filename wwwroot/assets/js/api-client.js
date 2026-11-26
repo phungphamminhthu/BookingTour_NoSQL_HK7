@@ -1,11 +1,13 @@
-// BookingTour API client. Frontend and API are served by the same ASP.NET Core host.
-// For a separately hosted frontend, set window.BOOKINGTOUR_API_BASE_URL before this file.
+// Bộ gọi API dùng chung; giao diện và API chạy trên cùng máy chủ ASP.NET Core.
+// Nếu giao diện chạy riêng, đặt window.BOOKINGTOUR_API_BASE_URL trước khi nạp file này.
 const API_BASE_URL = (window.BOOKINGTOUR_API_BASE_URL || window.location.origin).replace(/\/$/, '');
 
+// Đọc JWT của phiên hiện tại từ bộ nhớ trình duyệt.
 function getAuthToken() {
   return localStorage.getItem('bookingtour_token') || sessionStorage.getItem('bookingtour_token');
 }
 
+// Gọi API kèm JWT, đọc JSON và chuyển lỗi HTTP/validation cho trang xử lý.
 async function apiRequest(path, options = {}) {
   const headers = new Headers(options.headers || {});
   headers.set('Accept', 'application/json');

@@ -4,6 +4,7 @@
   const getParams = () => new URLSearchParams(window.location.search);
 
   // Chỉ dịch tên hiển thị; giữ nguyên mã vai trò dùng cho phân quyền và API.
+  // Dịch nhãn vai trò sang tiếng Việt, giữ nguyên giá trị phân quyền trên API.
   function roleLabel(name) {
     const labels = {
       Admin: 'Quản trị viên',
@@ -16,6 +17,7 @@
   let starting = null;
   let initializedForm = null;
 
+  // Điều phối khởi tạo module, tránh gắn nhiều lần xử lý trên cùng một form.
   function start() {
     // Các lần gọi từ router cùng đợi lần tải đang chạy, không khởi tạo chồng lên nhau.
     if (starting) return starting.then(() => start());
@@ -25,6 +27,7 @@
     return starting;
   }
 
+  // Kiểm tra quyền Admin, nạp CSS/vai trò rồi chọn trang danh sách hoặc form.
   async function loadPage(pageForm) {
     // Router chỉ thay nội dung trang, nên nạp CSS nhân viên khi mở module lần đầu.
     if (!document.getElementById('employeeStyles')) {
@@ -68,6 +71,7 @@
     }
   }
 
+  // Gọi API tìm kiếm/thống kê nhân viên, dựng các dòng dữ liệu và gắn thao tác xóa.
   async function list(current, roles) {
     const params = getParams();
     const form = $('main form');
@@ -105,11 +109,13 @@
     $('#employeeList').innerHTML =
       result.data
         .map(
-          (
-            e,
-          ) => `<article class="employee-row bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-      <div class="employee-identity flex items-center gap-4 min-w-0"><div class="w-14 h-14 shrink-0 rounded-full bg-blue-900 text-white flex items-center justify-center font-black">${esc(e.full_name.slice(0, 1))}</div><div class="min-w-0 break-words"><h3 class="font-extrabold text-blue-950">${esc(e.full_name)}</h3><p class="text-xs text-slate-500 mt-1 break-all">#${e.id} · ${esc(e.email)}</p><p class="text-xs mt-1 break-all">${esc(e.phone)} · ${esc(e.username)}</p></div></div>
-      <span class="employee-role text-xs font-bold text-purple-700">${esc(roleLabel(e.role_name))}</span><div class="employee-actions flex gap-4"><a class="text-primary font-bold" href="/admin/employees/edit.html?id=${e.id}">Sửa</a><button type="button" class="text-red-600" data-delete="${e.id}" ${e.id === current.id ? 'disabled' : ''}>Xóa</button></div></article>`,
+          (e) => {
+            // Tài khoản đang đăng nhập không được tự xóa; backend cũng kiểm tra lại điều kiện này.
+            const isCurrent = e.id === current.id;
+            return `<article class="employee-row bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+      <div class="employee-identity flex items-center gap-4 min-w-0"><div class="w-14 h-14 shrink-0 rounded-full bg-blue-900 text-white flex items-center justify-center font-black">${esc(e.full_name.slice(0, 1))}</div><div class="min-w-0 break-words"><h3 class="font-extrabold text-blue-950">${esc(e.full_name)}</h3><p class="text-xs text-slate-500 mt-1 break-all">#${e.id} · ${esc(e.email)}</p><p class="text-xs mt-1 break-all">${esc(e.phone)} · ${esc(e.username)}</p>${isCurrent ? `<p id="employee-delete-reason-${e.id}" class="text-xs text-slate-500 mt-2">Tài khoản đang đăng nhập — không thể tự xóa.</p>` : ''}</div></div>
+      <span class="employee-role text-xs font-bold text-purple-700">${esc(roleLabel(e.role_name))}</span><div class="employee-actions flex gap-4"><a class="text-primary font-bold" href="/admin/employees/edit.html?id=${e.id}">Sửa</a><button type="button" class="text-red-600" data-delete="${e.id}" ${isCurrent ? `disabled title="Không thể xóa tài khoản đang đăng nhập" aria-describedby="employee-delete-reason-${e.id}"` : ''}>Xóa</button></div></article>`;
+          },
         )
         .join('') || '<p class="p-8 text-center">Không tìm thấy nhân viên.</p>';
     text('#employeeTotal', `Tổng ${result.total} nhân viên phù hợp`);
@@ -127,12 +133,14 @@
             location.reload();
           } catch (error) {
             failure(error);
+            $('#part2Message')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
             button.disabled = false;
           }
         }),
     );
   }
 
+  // Điền dữ liệu form thêm/sửa và thiết lập kiểm tra trường nhập.
   async function edit(roles) {
     const form = $('main form');
     if (!form) return;
@@ -190,6 +198,7 @@
     if (cancel) cancel.href = '/admin/employees/index.html';
   }
 
+  // Gắn kiểm tra đầu vào và hiển thị lỗi tiếng Việt trước khi gửi API.
   function setupEmployeeValidation(form, creating, id, roles) {
     // Trang mở trực tiếp và admin router có thể cùng khởi tạo một form.
     if (form.dataset.employeeValidationReady === 'true') return;
@@ -230,6 +239,7 @@
         showErrors(validate(readValues()), touched);
       });
     }
+    // Lấy giá trị form, cắt khoảng trắng và chuẩn hóa số điện thoại/mã vai trò.
     function readValues() {
       const values = Object.fromEntries(new FormData(form));
       for (const name of ['full_name', 'email', 'phone', 'username'])
@@ -238,6 +248,7 @@
       values.role_id = Number(values.role_id);
       return values;
     }
+    // Kiểm tra tên, email, điện thoại, username, mật khẩu và vai trò ở giao diện.
     function validate(values) {
       const errors = {};
       if (!values.full_name) errors.full_name = 'Vui lòng nhập họ và tên.';
@@ -272,6 +283,7 @@
         errors.role_id = 'Vui lòng chọn vai trò hợp lệ.';
       return errors;
     }
+    // Đưa lỗi vào đúng ô nhập và cập nhật trạng thái hỗ trợ trình đọc màn hình.
     function showErrors(errors, names = fields) {
       for (const name of names) {
         const input = form.elements[name];

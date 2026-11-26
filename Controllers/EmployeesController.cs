@@ -24,6 +24,7 @@ public class EmployeesController : ControllerBase
 
     [HttpGet]
     [HttpGet("/employees")]
+    // API dành cho Admin: nhận tìm kiếm, vai trò và thông tin phân trang.
     public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] int? roleId,
         [FromQuery, Range(1, int.MaxValue)] int page = 1, [FromQuery, Range(1, 100)] int pageSize = 10)
     {
@@ -32,13 +33,16 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet("roles")]
+    // Trả danh sách vai trò để dựng bộ lọc và form nhân viên.
     public async Task<IActionResult> Roles() => Ok(ApiResponse<object>.Ok(await _service.GetRolesAsync()));
 
     [HttpDelete("{id:int}")]
+    // Truyền mã người đang đăng nhập từ JWT để Service chặn thao tác tự xóa.
     public async Task<IActionResult> Delete(int id) => Ok(ApiResponse<bool>.Ok(
         await _service.DeleteEmployeeAsync(id, int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)), "Đã xóa nhân viên."));
 
     [HttpGet("{id:int}")]
+    // Lấy hồ sơ nhân viên để điền form chỉnh sửa.
     public async Task<IActionResult> GetById(int id)
     {
         var item = await _service.GetEmployeeByIdAsync(id);
@@ -47,6 +51,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost]
+    // Nhận dữ liệu đã kiểm tra từ DTO, tạo nhân viên và trả lỗi theo trường khi cần.
     public async Task<IActionResult> Create([FromBody] EmployeeCreateRequest request)
     {
         if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail("Dữ liệu không hợp lệ.", ModelState));
@@ -71,6 +76,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    // Cập nhật nhân viên qua Service và trả lỗi kiểm tra dữ liệu cho form.
     public async Task<IActionResult> Update(int id, [FromBody] EmployeeUpdateRequest request)
     {
         if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail("Dữ liệu không hợp lệ.", ModelState));
@@ -98,6 +104,7 @@ public class EmployeesController : ControllerBase
         }
     }
 
+    // Đổi lỗi kiểm tra dữ liệu thành danh sách thông báo gắn với từng ô nhập.
     private IActionResult FieldValidationError(ValidationException exception)
     {
         var errors = exception.ValidationResult!.MemberNames.ToDictionary(

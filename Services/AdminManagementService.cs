@@ -19,6 +19,7 @@ public class AdminManagementService : IAdminManagementService
     }
 
     #region Categories
+    // Lấy danh mục cho bộ lọc và dùng aggregation đếm số tour theo danh mục.
     public async Task<List<CategoryResponse>> GetAllCategoriesAsync()
     {
         var categories = await _context.TourCategories.Find(_ => true).SortBy(c => c.CategoryName).ToListAsync();
@@ -207,7 +208,7 @@ public class AdminManagementService : IAdminManagementService
 
         await _context.TourCategories.ReplaceOneAsync(c => c.Id == id, category);
 
-        // Update category name in tours
+        // Đồng bộ tên danh mục được lưu kèm trong các document tour.
         await _context.Tours.UpdateManyAsync(
             t => t.CategoryId == id,
             Builders<Tour>.Update.Set(t => t.CategoryName, category.CategoryName)
@@ -242,6 +243,7 @@ public class AdminManagementService : IAdminManagementService
     #endregion
 
     #region Provinces
+    // Lấy tỉnh/thành cùng số tour tham chiếu để phục vụ bộ lọc điểm đến.
     public async Task<List<Province>> GetAllProvincesAsync()
     {
         var provinces = await _context.Provinces.Find(_ => true).SortBy(p => p.ProvinceName).ToListAsync();
@@ -388,7 +390,7 @@ public class AdminManagementService : IAdminManagementService
 
         await _context.Provinces.ReplaceOneAsync(p => p.Id == id, province);
 
-        // Update province name in tours
+        // Đồng bộ tên tỉnh/thành được lưu kèm trong các document tour.
         await _context.Tours.UpdateManyAsync(
             t => t.ProvinceId == id,
             Builders<Tour>.Update.Set(t => t.ProvinceName, province.ProvinceName)
@@ -501,6 +503,7 @@ public class AdminManagementService : IAdminManagementService
             }
             if (bookedPassengers == 0 && depCount > 0)
             {
+                // Giá trị hiển thị dự phòng: giả định 14 khách/chuyến, không phải số khách đặt thực tế.
                 bookedPassengers = depCount * 14;
             }
 
@@ -531,16 +534,19 @@ public class AdminManagementService : IAdminManagementService
     #endregion
 
     #region Employees
+    // Đọc danh sách nhân viên theo mã tăng dần.
     public async Task<List<Employee>> GetAllEmployeesAsync()
     {
         return await _context.Employees.Find(_ => true).SortBy(e => e.Id).ToListAsync();
     }
 
+    // Tìm document nhân viên theo mã nghiệp vụ id.
     public async Task<Employee?> GetEmployeeByIdAsync(int id)
     {
         return await _context.Employees.Find(e => e.Id == id).FirstOrDefaultAsync();
     }
 
+    // Kiểm tra tên/email/vai trò, băm mật khẩu BCrypt rồi lưu nhân viên mới.
     public async Task<Employee> CreateEmployeeAsync(EmployeeCreateRequest request)
     {
         var existingUser = await _context.Employees.Find(e => e.Username.ToLower() == request.Username.ToLower().Trim()).FirstOrDefaultAsync();
@@ -578,6 +584,7 @@ public class AdminManagementService : IAdminManagementService
         return employee;
     }
 
+    // Sửa hồ sơ/vai trò; giữ mật khẩu khi để trống và bảo vệ quản trị viên cuối cùng.
     public async Task<Employee> UpdateEmployeeAsync(int id, EmployeeUpdateRequest request)
     {
         var employee = await _context.Employees.Find(e => e.Id == id).FirstOrDefaultAsync()
@@ -611,8 +618,10 @@ public class AdminManagementService : IAdminManagementService
         return employee;
     }
 
+    // Đọc các vai trò từ MongoDB để form chọn đúng mã phân quyền.
     public Task<List<Role>> GetRolesAsync() => _context.Roles.Find(_ => true).SortBy(r => r.Id).ToListAsync();
 
+    // Tìm theo tên/username/email, lọc vai trò và phân trang trên MongoDB.
     public async Task<(List<Employee> Items, long Total)> QueryEmployeesAsync(string? search, int? roleId, int page, int pageSize)
     {
         var builder = Builders<Employee>.Filter;
@@ -629,6 +638,7 @@ public class AdminManagementService : IAdminManagementService
         return (items, total);
     }
 
+    // Chặn tự xóa, xóa Admin cuối cùng hoặc nhân viên có liên kết tour/chuyến/hóa đơn.
     public async Task<bool> DeleteEmployeeAsync(int id, int currentEmployeeId)
     {
         if (id == currentEmployeeId) throw new ArgumentException("Không thể xóa tài khoản đang đăng nhập.");
@@ -872,13 +882,13 @@ public class AdminManagementService : IAdminManagementService
         var builder = Builders<Payment>.Filter;
         var filters = new List<FilterDefinition<Payment>>();
 
-        // 1. Search filter
+        // 1. Lọc theo từ khóa.
         if (!string.IsNullOrWhiteSpace(search))
         {
             var kw = search.Trim();
             var searchFilters = new List<FilterDefinition<Payment>>();
 
-            // Try parse integer ID or TXN-ID
+            // Thử đọc từ khóa thành mã số hoặc mã TXN.
             if (int.TryParse(kw, out int numId))
             {
                 searchFilters.Add(builder.Eq(x => x.Id, numId));
@@ -889,10 +899,10 @@ public class AdminManagementService : IAdminManagementService
                 searchFilters.Add(builder.Eq(x => x.Id, txnNum));
             }
 
-            // Payment method regex
+            // Tìm phương thức thanh toán bằng regex.
             searchFilters.Add(builder.Regex(x => x.PaymentMethod, new MongoDB.Bson.BsonRegularExpression(Regex.Escape(kw), "i")));
 
-            // Search related Bookings (BookingCode, CustomerName, TourTitle)
+            // Tìm booking liên quan theo mã đơn, tên khách hoặc tên tour.
             var bookingRegex = new MongoDB.Bson.BsonRegularExpression(Regex.Escape(kw), "i");
             var bookingFilter = Builders<Booking>.Filter.Or(
                 Builders<Booking>.Filter.Regex(b => b.BookingCode, bookingRegex),
@@ -901,7 +911,7 @@ public class AdminManagementService : IAdminManagementService
             );
             var matchedBookingIds = await _context.Bookings.Find(bookingFilter).Project(b => b.Id).ToListAsync();
 
-            // Search related Customers (FullName, Email, Phone)
+            // Tìm khách liên quan theo tên, email hoặc điện thoại.
             var custFilter = Builders<Customer>.Filter.Or(
                 Builders<Customer>.Filter.Regex(c => c.FullName, bookingRegex),
                 Builders<Customer>.Filter.Regex(c => c.Email, bookingRegex),
@@ -914,7 +924,7 @@ public class AdminManagementService : IAdminManagementService
                 matchedBookingIds.AddRange(custBookings);
             }
 
-            // Search related Bills (BillNumber)
+            // Tìm hóa đơn liên quan theo số hóa đơn.
             var billFilter = Builders<Bill>.Filter.Regex(b => b.BillNumber, bookingRegex);
             var matchedBillBookings = await _context.Bills.Find(billFilter).Project(b => b.BookingId).ToListAsync();
             if (matchedBillBookings.Count > 0)
@@ -931,13 +941,13 @@ public class AdminManagementService : IAdminManagementService
             filters.Add(builder.Or(searchFilters));
         }
 
-        // 2. Payment method filter
+        // 2. Lọc phương thức thanh toán.
         if (!string.IsNullOrWhiteSpace(paymentMethod))
         {
             filters.Add(builder.Regex(x => x.PaymentMethod, new MongoDB.Bson.BsonRegularExpression(Regex.Escape(paymentMethod.Trim()), "i")));
         }
 
-        // 3. Status filter (Filter by booking status)
+        // 3. Lọc theo trạng thái booking.
         if (!string.IsNullOrWhiteSpace(status))
         {
             var st = status.Trim().ToLower();
@@ -963,7 +973,7 @@ public class AdminManagementService : IAdminManagementService
             filters.Add(builder.In(x => x.BookingId, statusBookingIds));
         }
 
-        // 4. Date filter
+        // 4. Lọc khoảng ngày.
         if (!string.IsNullOrWhiteSpace(transactionDate) && DateTime.TryParse(transactionDate.Trim(), out var parsedDate))
         {
             var startUtc = DateTime.SpecifyKind(parsedDate.Date, DateTimeKind.Utc);
@@ -974,7 +984,7 @@ public class AdminManagementService : IAdminManagementService
         var combinedFilter = filters.Count > 0 ? builder.And(filters) : builder.Empty;
         var total = await _context.Payments.CountDocumentsAsync(combinedFilter);
 
-        // 5. Sorting with tie-breaker
+        // 5. Sắp xếp kèm khóa phụ để kết quả ổn định.
         var sortDef = Builders<Payment>.Sort.Descending(p => p.CreatedAt).Descending(p => p.Id);
         if (!string.IsNullOrWhiteSpace(sort))
         {
@@ -1093,7 +1103,7 @@ public class AdminManagementService : IAdminManagementService
 
         var totalTours = await _context.Tours.CountDocumentsAsync(_ => true);
 
-        // Booking filter
+        // Lọc đơn đặt tour.
         var bookingFilterBuilder = Builders<Booking>.Filter;
         var bookingFilter = bookingFilterBuilder.Empty;
         if (startUtc.HasValue)
@@ -1114,7 +1124,7 @@ public class AdminManagementService : IAdminManagementService
             ? Math.Round((double)cancelledBookings / totalBookings * 100, 1)
             : 0;
 
-        // Customer filter
+        // Lọc khách hàng.
         var customerFilterBuilder = Builders<Customer>.Filter;
         var customerFilter = customerFilterBuilder.Empty;
         if (startUtc.HasValue)
@@ -1127,7 +1137,7 @@ public class AdminManagementService : IAdminManagementService
         }
         var newCustomers = await _context.Customers.CountDocumentsAsync(customerFilter);
 
-        // Payment / Revenue filter
+        // Lọc khoản thanh toán để tính doanh thu.
         var paymentFilterBuilder = Builders<Payment>.Filter;
         var paymentFilter = paymentFilterBuilder.Empty;
         if (startUtc.HasValue)
@@ -1142,7 +1152,7 @@ public class AdminManagementService : IAdminManagementService
         var payments = await _context.Payments.Find(paymentFilter).ToListAsync();
         decimal totalRevenue = payments.Sum(p => p.Amount);
 
-        // Fallback to confirmed bookings totalAmount if payments is empty
+        // Nếu chưa có khoản thu, dự phòng bằng tổng giá trị đơn confirmed.
         if (totalRevenue == 0)
         {
             var confirmedBookings = await _context.Bookings.Find(
@@ -1153,7 +1163,7 @@ public class AdminManagementService : IAdminManagementService
 
         var openDepartures = await _context.TourDepartures.CountDocumentsAsync(d => d.Status == "open");
 
-        // Top 5 recent bookings matching filter (or newest overall)
+        // Lấy 5 đơn gần nhất phù hợp với bộ lọc.
         var recentBookingsRaw = await _context.Bookings.Find(bookingFilter)
             .SortByDescending(b => b.CreatedAt)
             .Limit(5)
@@ -1163,7 +1173,7 @@ public class AdminManagementService : IAdminManagementService
         var recentPayments = await _context.Payments.Find(p => recentBookingIds.Contains(p.BookingId)).ToListAsync();
         var paymentMap = recentPayments.ToDictionary(p => p.BookingId);
 
-        // Enrich customer names and tour titles if missing
+        // Ghép bổ sung tên khách và tour khi dữ liệu chưa có.
         var missingCustIds = recentBookingsRaw
             .Where(b => string.IsNullOrWhiteSpace(b.CustomerName) && b.CustomerId > 0)
             .Select(b => b.CustomerId)
@@ -1234,7 +1244,7 @@ public class AdminManagementService : IAdminManagementService
         Payment? payment = null;
         Booking? booking = null;
 
-        // 1. Try parse integer for payment ID or booking ID
+        // 1. Thử đọc mã khoản thu hoặc booking dạng số.
         if (int.TryParse(identifier, out int numId))
         {
             payment = await _context.Payments.Find(p => p.Id == numId).FirstOrDefaultAsync();
@@ -1244,13 +1254,13 @@ public class AdminManagementService : IAdminManagementService
             }
             else
             {
-                // Try find payment by BookingId, and booking by ID
+                // Tìm khoản thu qua BookingId và booking qua mã đơn.
                 payment = await _context.Payments.Find(p => p.BookingId == numId).FirstOrDefaultAsync();
                 booking = await _context.Bookings.Find(b => b.Id == numId).FirstOrDefaultAsync();
             }
         }
 
-        // 2. If not found, try lookup by booking_code (e.g. BK001, BK011) or transaction code (e.g. TXN-0001, TXN-BK001)
+        // 2. Thử tìm bằng booking_code hoặc mã giao dịch TXN.
         if (payment == null && booking == null)
         {
             var cleanCode = identifier.Trim();
@@ -1267,7 +1277,7 @@ public class AdminManagementService : IAdminManagementService
                 }
                 if (booking == null)
                 {
-                    cleanCode = sub; // Might be TXN-BK001 -> BK001
+                    cleanCode = sub; // Ví dụ chuyển TXN-BK001 thành BK001.
                 }
             }
 
@@ -1280,7 +1290,7 @@ public class AdminManagementService : IAdminManagementService
                 }
             }
 
-            // Also check BillNumber (e.g. INV-001)
+            // Kiểm tra thêm số hóa đơn, ví dụ INV-001.
             if (booking == null && payment == null)
             {
                 var billByNum = await _context.Bills.Find(bl => bl.BillNumber == cleanCode).FirstOrDefaultAsync();
@@ -1292,13 +1302,13 @@ public class AdminManagementService : IAdminManagementService
             }
         }
 
-        // If neither payment nor booking found, return null
+        // Không tìm thấy cả khoản thu và booking thì trả null.
         if (payment == null && booking == null)
         {
             return null;
         }
 
-        // 3. Link customer
+        // 3. Ghép khách hàng.
         Customer? customer = null;
         var custId = booking?.CustomerId ?? 0;
         if (custId > 0)
@@ -1306,7 +1316,7 @@ public class AdminManagementService : IAdminManagementService
             customer = await _context.Customers.Find(c => c.Id == custId).FirstOrDefaultAsync();
         }
 
-        // 4. Link departure and tour
+        // 4. Ghép lịch khởi hành và tour.
         TourDeparture? departure = null;
         var depId = booking?.DepartureId ?? 0;
         if (depId > 0)
@@ -1321,7 +1331,7 @@ public class AdminManagementService : IAdminManagementService
             tour = await _context.Tours.Find(t => t.Id == tourId).FirstOrDefaultAsync();
         }
 
-        // 5. Link Bill
+        // 5. Ghép hóa đơn nội bộ.
         Bill? bill = null;
         var bId = booking?.Id ?? payment?.BookingId ?? 0;
         if (bId > 0)
@@ -1329,7 +1339,7 @@ public class AdminManagementService : IAdminManagementService
             bill = await _context.Bills.Find(bl => bl.BookingId == bId).FirstOrDefaultAsync();
         }
 
-        // Assemble DTO
+        // Gom dữ liệu thành DTO trả về API.
         var txnId = payment?.Id ?? booking?.Id ?? 0;
         var txnCode = payment != null 
             ? $"TXN-{payment.Id:D4}" 

@@ -22,6 +22,7 @@ public class ToursController : ControllerBase
 
     [HttpGet]
     [HttpGet("/tours")]
+    // Nhận tham số tìm kiếm từ URL và trả danh sách tour có tổng số/phân trang.
     public async Task<IActionResult> GetTours([FromQuery] TourQueryParameters parameters)
     {
         var (items, total) = await _tourService.QueryToursAsync(parameters);
@@ -29,6 +30,7 @@ public class ToursController : ControllerBase
     }
 
     [HttpGet("featured")]
+    // Cung cấp tour mới nhất cho khu vực nổi bật trên trang chủ.
     public async Task<IActionResult> GetFeaturedTours([FromQuery] int limit = 8)
     {
         var items = await _tourService.GetFeaturedToursAsync(limit);
@@ -37,6 +39,7 @@ public class ToursController : ControllerBase
 
     [HttpGet("{id:int}")]
     [HttpGet("/tours/{id:int}")]
+    // Trả chi tiết tour hoặc 404 nếu mã không tồn tại.
     public async Task<IActionResult> GetTourById(int id)
     {
         var tour = await _tourService.GetTourByIdAsync(id);
@@ -49,6 +52,7 @@ public class ToursController : ControllerBase
 
     [HttpGet("province/{provinceId:int}")]
     [HttpGet("/tours/province/{provinceId:int}")]
+    // Trả danh sách tour thuộc tỉnh/thành được chọn.
     public async Task<IActionResult> GetToursByProvince(int provinceId)
     {
         var items = await _tourService.GetToursByProvinceIdAsync(provinceId);
